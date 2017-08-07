@@ -1,0 +1,1270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  
+  
+    
+    <entry>
+      <title><![CDATA[记一次微信开发者工具debug]]></title>
+      <url>https://cytle.github.io/2017/06/18/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%BE%AE%E4%BF%A1%E5%BC%80%E5%8F%91%E8%80%85%E5%B7%A5%E5%85%B7debug/</url>
+      <content type="html"><![CDATA[<p>在维护的项目<a href="https://github.com/cytle/wechat_web_devtools" target="_blank" rel="external">Linux微信web开发者工具</a>中，有多个issues报小程序请求返回不成功，并且终端报异常</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">[7031:7031:0601/201040:ERROR:CONSOLE(1588)] &quot;TypeError: Cannot read property &apos;certificateDetailsPromise&apos; of undefined TypeError: Cannot read property &apos;certificateDetailsPromise&apos; of undefined</div><div class="line">    at r (&lt;anonymous&gt;:1:1116)</div><div class="line">    at WebInspector.NetworkManager.dispatchEventToListeners (chrome-devtools://devtools/bundled/inspector.js:737:185)</div><div class="line">    at WebInspector.NetworkDispatcher.responseReceived (chrome-devtools://devtools/bundled/inspector.js:7384:236)</div><div class="line">    at Object.dispatch (chrome-devtools://devtools/bundled/inspector.js:4608:63)</div><div class="line">    at WebInspector.MainConnection.dispatch (chrome-devtools://devtools/bundled/inspector.js:4548:31)</div><div class="line">    at WebInspector.MainConnection._dispatchMessage (chrome-devtools://devtools/bundled/inspector.js:10773:7)</div><div class="line">    at WebInspector.Object.dispatchEventToListeners (chrome-devtools://devtools/bundled/inspector.js:737:185)</div><div class="line">    at innerDispatch (chrome-devtools://devtools/bundled/inspector.js:1588:58)</div><div class="line">    at InspectorFrontendAPIImpl._dispatch (chrome-devtools://devtools/bundled/inspector.js:1587:1)</div><div class="line">    at DevToolsAPIImpl._dispatchOnInspectorFrontendAPI (devtools_compatibility.js:62:21)</div><div class="line">    at DevToolsAPIImpl.dispatchMessage (devtools_compatibility.js:147:14)&quot;, source: chrome-devtools://devtools/bundled/inspector.js (1588)</div></pre></td></tr></table></figure>
+<h2 id="原因和解决方式如下："><a href="#原因和解决方式如下：" class="headerlink" title="原因和解决方式如下："></a>原因和解决方式如下：</h2><p><strong>本文运行环境为</strong></p>
+<ul>
+<li>nw.js: linux 0.19.4 chrome版本55</li>
+<li>小程序: 0.17.172600</li>
+</ul>
+<p>在<code>package.nw/app/dist/inject/devtools.js</code>中有如下代码，</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> a, r = <span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</div><div class="line">  <span class="comment">/**</span></div><div class="line">   * @typedef &#123;WebInspector.NetworkRequest&#125;</div><div class="line">   */</div><div class="line">  <span class="keyword">var</span> t = e.data;</div><div class="line">  a || (a = <span class="built_in">document</span>.getElementsByTagName(<span class="string">"iframe"</span>)[<span class="number">0</span>]);</div><div class="line">  <span class="comment">// 1. 请求的安全信息</span></div><div class="line">  <span class="keyword">var</span> n = t.securityDetails(),</div><div class="line">    o = &#123; <span class="attr">command</span>: <span class="string">"securityDetails"</span>, <span class="attr">url</span>: t.url, <span class="attr">statusCode</span>: t.statusCode, <span class="attr">remoteAddress</span>: t._remoteAddress &#125;;</div><div class="line">  <span class="keyword">if</span> (n) &#123;</div><div class="line">    o.protocol = n.protocol, o.securityState = t.securityState();</div><div class="line">    <span class="keyword">new</span> <span class="built_in">Date</span>;</div><div class="line">    <span class="comment">// 0. 在运行时t.target()并没有对象networkManager，在此引发错误</span></div><div class="line">    t.target().networkManager.certificateDetailsPromise(n.certificateId).then(<span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</div><div class="line">        <span class="keyword">var</span> t = e.issuer ? e.issuer.toLocaleLowerCase() : <span class="string">""</span>;</div><div class="line">        t.indexOf(<span class="string">"rapidssl"</span>) === <span class="number">-1</span></div><div class="line">        &amp;&amp; t.indexOf(<span class="string">"symantec"</span>) === <span class="number">-1</span></div><div class="line">        &amp;&amp; t.indexOf(<span class="string">"geotrust"</span>) === <span class="number">-1</span></div><div class="line">        &amp;&amp; t.indexOf(<span class="string">"thawte"</span>) === <span class="number">-1</span></div><div class="line">        &amp;&amp; t.indexOf(<span class="string">"trustasia"</span>) === <span class="number">-1</span></div><div class="line">        || (o.securityState = <span class="string">"secure"</span>);</div><div class="line">        a.contentWindow.postMessage(o, <span class="string">"*"</span>)</div><div class="line">    &#125;)</div><div class="line">  &#125; <span class="keyword">else</span></div><div class="line">      a.contentWindow.postMessage(o, <span class="string">"*"</span>)</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>在注释0处发生上文终端所报异常,利用<code>nw --remote-debugging-port=9222</code>进行远程debug,
+打印出<code>t</code>,类型为<code>WebInspector.NetworkRequest</code>，t.target()类型为<code>WebInspector.Target</code>
+并没有属性<code>networkManager</code>，因此运行时类似</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="literal">undefined</span>.certificateDetailsPromise(n.certificateId).then(<span class="comment">/* ... */</span>)</div></pre></td></tr></table></figure>
+<p>根据<code>WebInspector</code>、<code>NetworkRequest</code>关键词能找到这里用的是chrome开发者工具的sdk，
+项目地址为<a href="https://github.com/ChromeDevTools/devtools-frontend" target="_blank" rel="external">devtools-frontend</a></p>
+<p>在此项目下，关键词<code>certificateDetailsPromise</code>出现的地方只有一处<a href="https://github.com/ChromeDevTools/devtools-frontend/blob/c03abd24fb64d646bc4845699b7ff428dddbd507/front_end/security/SecurityPanel.js#L361" target="_blank" rel="external">front_end/security/SecurityPanel.js:361</a></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * @typedef &#123;Object&#125;</div><div class="line"> * @property &#123;!Protocol.Security.SecurityState&#125; securityState - Current security state of the origin.</div><div class="line"> * @property &#123;?Protocol.Network.SecurityDetails&#125; securityDetails - Security details of the origin, if available.</div><div class="line"> * @property &#123;?Promise&lt;&gt;&#125; *certificateDetailsPromise* - Certificate details of the origin.</div><div class="line"> * @property &#123;?Security.SecurityOriginView&#125; originView - Current SecurityOriginView corresponding to origin.</div><div class="line"> */</div><div class="line">Security.SecurityPanel.OriginState;</div></pre></td></tr></table></figure>
+<p><code>Security.SecurityPanel.OriginState</code>离我们的<code>WebInspector.NetworkRequest</code>有点距离，<strong>而解决这类问题我的宗旨是尽量少改源码</strong>，这条路有点远先放一旁。</p>
+<p>上文异常代码中，在<code>certificateDetailsPromise</code>的then中获得到数据就是<code>issuer</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> t = e.issuer ? e.issuer.toLocaleLowerCase() : <span class="string">""</span>;</div></pre></td></tr></table></figure>
+<p>那么issuer是什么含义呢？</p>
+<p>在<code>devtools-frontend</code>搜索下</p>
+<p>这个关键字只出现了一次在
+<a href="https://github.com/ChromeDevTools/devtools-frontend/blob/c03abd24fb64d646bc4845699b7ff428dddbd507/front_end/security/SecurityPanel.js#L907" target="_blank" rel="external">front_end/security/SecurityPanel.js:907</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">table.addRow(Common.UIString(&apos;Issuer&apos;), originState.securityDetails.issuer);</div></pre></td></tr></table></figure>
+<p>而这里的<code>originState.securityDetails</code>和上文注释1处获取的<code>t.securityDetails()</code>好像是同一个，惊不惊喜，意不意外！！</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">var n = t.securityDetails(),</div></pre></td></tr></table></figure>
+<p>使用远程断点，看到<code>n</code>变量真有属性<code>issuer</code>,值为:”TrustAsia DV SSL CA - G5”</p>
+<p>既然如此，现在的sdk是不是想让我们直接使用<code>securityDetails</code>，而不用通过<code>certificateDetailsPromise</code>来获取<code>issuer</code>呢？</p>
+<p>将有问题的代码，修改为以下代码</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 声明issuer</span></div><div class="line"><span class="keyword">var</span> issuer, t = e.data;</div><div class="line"></div><div class="line">a || (a = <span class="built_in">document</span>.getElementsByTagName(<span class="string">"iframe"</span>)[<span class="number">0</span>]);</div><div class="line"><span class="keyword">var</span> n = t.securityDetails(),</div><div class="line">  o = &#123; <span class="attr">command</span>: <span class="string">"securityDetails"</span>, <span class="attr">url</span>: t.url, <span class="attr">statusCode</span>: t.statusCode, <span class="attr">remoteAddress</span>: t._remoteAddress &#125;;</div><div class="line"><span class="keyword">if</span> (n) &#123;</div><div class="line">  <span class="built_in">console</span>.error(n);</div><div class="line"></div><div class="line">  o.protocol = n.protocol, o.securityState = t.securityState();</div><div class="line">  <span class="keyword">new</span> <span class="built_in">Date</span>;</div><div class="line">  <span class="comment">// 移除certificateDetailsPromise，从n取issuer</span></div><div class="line">  issuer = n.issuer ? n.issuer.toLocaleLowerCase() : <span class="string">""</span>;</div><div class="line">  issuer.indexOf(<span class="string">"rapidssl"</span>) === <span class="number">-1</span></div><div class="line">  &amp;&amp; issuer.indexOf(<span class="string">"symantec"</span>) === <span class="number">-1</span></div><div class="line">  &amp;&amp; issuer.indexOf(<span class="string">"geotrust"</span>) === <span class="number">-1</span></div><div class="line">  &amp;&amp; issuer.indexOf(<span class="string">"thawte"</span>) === <span class="number">-1</span></div><div class="line">  &amp;&amp; issuer.indexOf(<span class="string">"trustasia"</span>) === <span class="number">-1</span></div><div class="line">  || (o.securityState = <span class="string">"secure"</span>), a.contentWindow.postMessage(o, <span class="string">"*"</span>)</div><div class="line">&#125; <span class="keyword">else</span></div><div class="line">  a.contentWindow.postMessage(o, <span class="string">"*"</span>)</div></pre></td></tr></table></figure>
+<p><em>6/23更新: 为了替换更方便使用如下方式替换</em></p>
+<p><code>t.target().networkManager.certificateDetailsPromise(n.certificateId)</code> 替换为 <code>Promise.resolve(n)</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> a, r = <span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</div><div class="line">  <span class="keyword">var</span> t = e.data;</div><div class="line">  a || (a = <span class="built_in">document</span>.getElementsByTagName(<span class="string">"iframe"</span>)[<span class="number">0</span>]);</div><div class="line">  <span class="keyword">var</span> n = t.securityDetails(),</div><div class="line">    o = &#123; <span class="attr">command</span>: <span class="string">"securityDetails"</span>, <span class="attr">url</span>: t.url, <span class="attr">statusCode</span>: t.statusCode, <span class="attr">remoteAddress</span>: t._remoteAddress &#125;;</div><div class="line">  <span class="keyword">if</span> (n) &#123;</div><div class="line">    o.protocol = n.protocol, o.securityState = t.securityState();</div><div class="line">    <span class="keyword">new</span> <span class="built_in">Date</span>;</div><div class="line">    <span class="built_in">Promise</span>.resolve(n).then(<span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</div><div class="line">        <span class="keyword">var</span> t = e.issuer ? e.issuer.toLocaleLowerCase() : <span class="string">""</span>;</div><div class="line">        t.indexOf(<span class="string">"rapidssl"</span>) === <span class="number">-1</span></div><div class="line">        &amp;&amp; t.indexOf(<span class="string">"symantec"</span>) === <span class="number">-1</span></div><div class="line">        &amp;&amp; t.indexOf(<span class="string">"geotrust"</span>) === <span class="number">-1</span></div><div class="line">        &amp;&amp; t.indexOf(<span class="string">"thawte"</span>) === <span class="number">-1</span></div><div class="line">        &amp;&amp; t.indexOf(<span class="string">"trustasia"</span>) === <span class="number">-1</span></div><div class="line">        || (o.securityState = <span class="string">"secure"</span>);</div><div class="line">        a.contentWindow.postMessage(o, <span class="string">"*"</span>)</div><div class="line">    &#125;)</div><div class="line">  &#125; <span class="keyword">else</span></div><div class="line">      a.contentWindow.postMessage(o, <span class="string">"*"</span>)</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>运行成功</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>查了下，<code>issuer</code>是指域名型证书型号，而TrustAsia（亚洲诚信）是一证书机构，”TrustAsia DV SSL CA - G5”是证书型号。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">issuer.indexOf(<span class="string">"rapidssl"</span>) === <span class="number">-1</span></div><div class="line">&amp;&amp; issuer.indexOf(<span class="string">"symantec"</span>) === <span class="number">-1</span></div><div class="line">&amp;&amp; issuer.indexOf(<span class="string">"geotrust"</span>) === <span class="number">-1</span></div><div class="line">&amp;&amp; issuer.indexOf(<span class="string">"thawte"</span>) === <span class="number">-1</span></div><div class="line">&amp;&amp; issuer.indexOf(<span class="string">"trustasia"</span>) === <span class="number">-1</span></div><div class="line">|| (o.securityState = <span class="string">"secure"</span>)</div></pre></td></tr></table></figure>
+<p>rapidssl、symantec、geotrust、thawte和trustasia一样是各证书机构。
+这部分代码的意思是只有当<code>issuer</code>中有这些机构关键字，就认为是有证书的，把<code>securityState</code>设置为”secure”，然后把信息传给业务层。</p>
+<p><strong>这次还有个需要纠结的地方是<code>networkManager.certificateDetailsPromise()</code>为毛没了，而小程序在用，mac和windows下没有问题，这是以后linux微信小程序升级需要注意的地方。</strong></p>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> chrome nwjs 微信开发者工具 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[微信web开发者工具linux支持]]></title>
+      <url>https://cytle.github.io/2017/03/20/%E5%BE%AE%E4%BF%A1web%E5%BC%80%E5%8F%91%E8%80%85%E5%B7%A5%E5%85%B7linux%E6%94%AF%E6%8C%81/</url>
+      <content type="html"><![CDATA[<h1 id="微信web开发者工具"><a href="#微信web开发者工具" class="headerlink" title="微信web开发者工具"></a>微信web开发者工具</h1><p>凌晨三点终于搞定了linux下开发者工具的使用,已经完美使用,之后上完整安装教程和npm包.</p>
+<p>github:<a href="https://github.com/cytle/wechat_web_devtools" target="_blank" rel="external">cytle/wechat_web_devtools</a></p>
+<p><img src="/uploads/wechatwebtools.png" alt="截图"></p>
+]]></content>
+      
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[sublime-packagecontrol-channel_v3]]></title>
+      <url>https://cytle.github.io/2017/02/22/sublime-packagecontrol-channel-v3/</url>
+      <content type="html"><![CDATA[<p><a href="https://packagecontrol.io/channel_v3.json" target="_blank" rel="external">官方地址</a></p>
+<p><a href="https://raw.githubusercontent.com/cytle/blog/master/source/uploads/channel_v3.1.json" target="_blank" rel="external">拷贝</a></p>
+<p><a href="https://raw.githubusercontent.com/cytle/blog/master/source/uploads/channel_v3.json" target="_blank" rel="external">拷贝2</a>(会更新)</p>
+]]></content>
+      
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[2difre-前端多工程协作环境配置]]></title>
+      <url>https://cytle.github.io/2017/02/18/2difre-%E5%89%8D%E7%AB%AF%E5%A4%9A%E5%B7%A5%E7%A8%8B%E5%8D%8F%E4%BD%9C%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/</url>
+      <content type="html"><![CDATA[<blockquote>
+<p><strong>问题:</strong>
+原来要打包到项目环境,得修改多个源文件(<code>Gruntfile.js</code>,<code>http.js</code>,<code>config/dev.js</code>),常常引发冲突.
+实际上需要修改的是这三个配置:</p>
+<ol>
+<li>跳转地址</li>
+<li>api基础地址</li>
+<li>资源地址</li>
+</ol>
+<p>另一个<strong>蛋疼</strong>的事是为了各项目协作,需要配置不需要修改的项目(还得经常合并master),部署到本地和项目环境.</p>
+</blockquote>
+<p>以下用<strong>相对路径</strong>(所有路径都使用相对路径,特别是引入<code>/api</code>来表示api地址)来解决上述问题,操作步骤为以下两步</p>
+<ol>
+<li>配置<code>nginx</code>分为本地开发环境和项目测试环境</li>
+<li>项目修改<ul>
+<li>修改<code>Gruntfile.js</code>,<code>http.js</code>,<code>config/dev.js</code></li>
+</ul>
+</li>
+</ol>
+<h2 id="常见url说明"><a href="#常见url说明" class="headerlink" title="常见url说明"></a>常见url说明</h2><p>常见静态资源请求<code>url</code>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">http://api.l.whereask.com /invoice  /meal     /page/checkout.html</div><div class="line">根地址                    /变更分支 /工程名字 /资源地址</div></pre></td></tr></table></figure></p>
+<p>常见api<code>url</code>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">http://api.l.whereask.com /invoice  /api         /orders/v1/get_query_shop_tax</div><div class="line">根地址                    /变更分支 /api特殊名字 /资源地址</div></pre></td></tr></table></figure></p>
+<h2 id="nginx配置"><a href="#nginx配置" class="headerlink" title="nginx配置"></a>nginx配置</h2><h3 id="本地开发配置"><a href="#本地开发配置" class="headerlink" title="本地开发配置"></a>本地开发配置</h3><p>使用如下配置</p>
+<hr>
+<p><strong><code>*</code>: 表示需要经常配置的部分</strong></p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div></pre></td><td class="code"><pre><div class="line"><span class="section">server</span> &#123;</div><div class="line">  <span class="attribute">listen</span> <span class="number">9981</span>;</div><div class="line">  <span class="comment">#rewrite_log on;</span></div><div class="line">  <span class="comment">#access_log /var/log/nginx/2dfire.access.log;</span></div><div class="line">  <span class="comment">#error_log /var/log/nginx/2dfire.error.log notice;</span></div><div class="line"></div><div class="line">  <span class="attribute">server_name</span> <span class="number">127.0.0.1</span>;</div><div class="line"></div><div class="line">  <span class="attribute">location</span><span class="regexp"> ^~</span> / &#123;</div><div class="line">    <span class="comment"># 所有api转到whereask</span></div><div class="line">    <span class="attribute">rewrite</span><span class="regexp"> ^/([^/]*/api/.*)$</span> /whereask/<span class="variable">$1</span> <span class="literal">last</span>;</div><div class="line">    <span class="comment"># 其余重写到dev</span></div><div class="line">    <span class="attribute">rewrite</span><span class="regexp"> ^/(.*)$</span> /dev/<span class="variable">$1</span>;</div><div class="line">  &#125;</div><div class="line">  <span class="attribute">location</span> /whereask/ &#123; <span class="attribute">proxy_pass</span> http://api.l.whereask.com/; &#125;</div><div class="line"></div><div class="line">  <span class="comment"># build后静态资源路径,选用</span></div><div class="line">  <span class="attribute">location</span> /build/ &#123;</div><div class="line">    <span class="attribute">rewrite</span><span class="regexp"> ^/build/[^/]*/(shop|bill|meal|marketing|om)/(.*)$</span>  /build/static-<span class="variable">$1</span>/release/min/<span class="variable">$2</span> <span class="literal">last</span>;</div><div class="line">    <span class="attribute">rewrite</span><span class="regexp"> ^/build/(.*)$</span> /whereask/<span class="variable">$1</span> <span class="literal">last</span>;</div><div class="line">    <span class="comment"># 静态地址</span></div><div class="line">    <span class="attribute">alias</span> /c/src/js/;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment"># A. webpack热加载路径重写*</span></div><div class="line">  <span class="attribute">location</span> /__webpack_hmr &#123;</div><div class="line">    <span class="comment"># 设置需要热加载的工程</span></div><div class="line">    <span class="attribute">rewrite</span><span class="regexp"> ^/(.*)$</span> /dev/meal/<span class="variable">$1</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment"># B. 开发地址部分，根据需要打开相应重写规则*</span></div><div class="line">  <span class="attribute">location</span> /dev/ &#123;</div><div class="line">    <span class="comment">#1. `/daily/meal/` 经过 ``^~ /` 后为 `/dev/daily/meal/`</span></div><div class="line">    <span class="comment">#2. 经过 `/dev/` 变为 `/dev/meal/`</span></div><div class="line">    <span class="comment">#3. 同样shop是不匹配的，则 `/daily/shop/`重写为 `/whereask/daily/shop/`,使用whererask资源</span></div><div class="line"></div><div class="line">    <span class="comment">#rewrite ^/dev/[^/]*/(shop/.*)$ /dev/$1 last;</span></div><div class="line">    <span class="comment">#rewrite ^/dev/[^/]*/(bill/.*)$ /dev/$1 last;</span></div><div class="line">    <span class="comment">#rewrite ^/dev/[^/]*/(marketing/.*)$ /dev/$1 last;</span></div><div class="line">    <span class="attribute">rewrite</span><span class="regexp"> ^/dev/[^/]*/(meal/.*)$</span> /dev/<span class="variable">$1</span> <span class="literal">last</span>;</div><div class="line">    <span class="comment">#rewrite ^/dev/[^/]*/(om/.*)$ /dev/$1 last;</span></div><div class="line">    <span class="attribute">rewrite</span><span class="regexp"> ^/dev/(.*)$</span> /whereask/<span class="variable">$1</span> <span class="literal">last</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment"># 本地webpack服务</span></div><div class="line">  <span class="attribute">location</span> /dev/shop/ &#123; <span class="attribute">proxy_pass</span> http://localhost:8086/; &#125;</div><div class="line">  <span class="attribute">location</span> /dev/bill/ &#123; <span class="attribute">proxy_pass</span> http://localhost:8089/; &#125;</div><div class="line">  <span class="attribute">location</span> /dev/marketing/ &#123; <span class="attribute">proxy_pass</span> http://localhost:8085/; &#125;</div><div class="line">  <span class="attribute">location</span> /dev/meal/ &#123; <span class="attribute">proxy_pass</span> http://localhost:8088/; &#125;</div><div class="line">  <span class="attribute">location</span> /dev/om/ &#123; <span class="attribute">proxy_pass</span> http://localhost:8087/; &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<hr>
+<p>可以实现</p>
+<p><strong><code>==&gt;</code>: 表示最后指向地址</strong></p>
+<h4 id="1-将含变更分支的url重写到本地webpack服务或whereask变更环境"><a href="#1-将含变更分支的url重写到本地webpack服务或whereask变更环境" class="headerlink" title="1. 将含变更分支的url重写到本地webpack服务或whereask变更环境"></a>1. 将含<code>变更分支</code>的url重写到<code>本地webpack服务</code>或<code>whereask变更环境</code></h4><p>即实现根据<code>变更分支</code>自动使用对应变更静态资源</p>
+<p>如根据以下配置
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#开发地址部分，根据需要打开相应重写规则*</span></div><div class="line"><span class="attribute">location</span> /dev/ &#123;</div><div class="line">  <span class="comment">#1. `/daily/meal/` 经过 ``^~ /` 后为 `/dev/daily/meal/`</span></div><div class="line">  <span class="comment">#2. 经过 `/dev/` 变为 `/dev/meal/`</span></div><div class="line">  <span class="comment">#3. 同样shop是不匹配的，则 `/daily/shop/`重写为 `/whereask/daily/shop/`,使用whererask资源</span></div><div class="line"></div><div class="line">  <span class="comment">#rewrite ^/dev/[^/]*/(shop/.*)$ /dev/$1 last;</span></div><div class="line">  <span class="comment">#rewrite ^/dev/[^/]*/(bill/.*)$ /dev/$1 last;</span></div><div class="line">  <span class="comment">#rewrite ^/dev/[^/]*/(marketing/.*)$ /dev/$1 last;</span></div><div class="line">  <span class="attribute">rewrite</span><span class="regexp"> ^/dev/[^/]*/(meal/.*)$</span> /dev/<span class="variable">$1</span> <span class="literal">last</span>;</div><div class="line">  <span class="comment">#rewrite ^/dev/[^/]*/(om/.*)$ /dev/$1 last;</span></div><div class="line">  <span class="attribute">rewrite</span><span class="regexp"> ^/dev/(.*)$</span> /whereask/<span class="variable">$1</span> <span class="literal">last</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>可以将以下url重写到<code>本地webpack服务</code></p>
+<ul>
+<li><code>localhost:9981/invoice/meal</code>/page/checkout.html ==&gt; <code>localhost:8088</code>/page/checkout.html</li>
+<li><code>localhost:9981/fire-one/meal</code>/page/checkout.html ==&gt; <code>localhost:8088</code>/page/checkout.html</li>
+<li><code>localhost:9981/[任意变更分支]/meal</code>/page/checkout.html ==&gt; <code>localhost:8088</code>/page/checkout.html</li>
+</ul>
+<p>将以下非<code>meal</code>工程url反向代理到<code>http://api.l.whereask.com/invoice/...</code>部分</p>
+<ul>
+<li><code>localhost:9981</code>/invoice/om/page/om.html ==&gt; <code>api.l.whereask.com</code>/invoice/om/page/om.html</li>
+</ul>
+<h4 id="2-将webpack热加载路径重写"><a href="#2-将webpack热加载路径重写" class="headerlink" title="2. 将webpack热加载路径重写"></a>2. 将webpack热加载路径重写</h4><ul>
+<li><code>localhost:9981</code>/<strong>webpack_hmr ==&gt; <code>localhost:8088</code>/</strong>webpack_hmr</li>
+</ul>
+<h4 id="3-将apiurl反向代理到http-api-l-whereask-com-变更分支-api-部分"><a href="#3-将apiurl反向代理到http-api-l-whereask-com-变更分支-api-部分" class="headerlink" title="3. 将apiurl反向代理到http://api.l.whereask.com/变更分支/api/...部分"></a>3. 将<code>api</code>url反向代理到<code>http://api.l.whereask.com/变更分支/api/...</code>部分</h4><p>即实现根据<code>变更分支</code>自动使用对应变更api资源</p>
+<ul>
+<li><code>localhost:9981</code>/invoice/api/orders/v1/get_query_shop_tax ==&gt; <code>api.l.whereask.com</code>/invoice/api/orders/v1/get_query_shop_tax</li>
+</ul>
+<h3 id="项目环境配置-10-1-7-159"><a href="#项目环境配置-10-1-7-159" class="headerlink" title="项目环境配置(10.1.7.159)"></a>项目环境配置(10.1.7.159)</h3><p><strong>项目环境各分支作用说明</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">分支名称</th>
+<th style="text-align:left">作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">daily</td>
+<td style="text-align:left">日常环境,大家都可以上的车,代码从master中检出</td>
+</tr>
+<tr>
+<td style="text-align:left">dev_193</td>
+<td style="text-align:left">可以支付的分支</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 工程默认使用daily代码</span></div><div class="line"><span class="attribute">location</span> /invoice/ &#123;</div><div class="line">  <span class="attribute">rewrite</span><span class="regexp"> ^/[\w]*?/(.*)$</span> /daily/<span class="variable">$1</span> <span class="literal">last</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment"># 真实api地址 重写到server_from_meal</span></div><div class="line"><span class="attribute">location</span> /invoice/api/ &#123;</div><div class="line">    <span class="attribute">rewrite</span><span class="regexp"> ^/invoice/api/(.*)$</span>  /invoice_server/<span class="variable">$1</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment"># 假设meal和bill是本次变更会修改的工程,添加以下两条</span></div><div class="line"><span class="attribute">location</span> /invoice/meal/ &#123;</div><div class="line">  <span class="attribute">proxy_pass</span>       http://10.1.4.186/nginx/meal/;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="attribute">location</span> /invoice/bill/ &#123;</div><div class="line">  <span class="attribute">proxy_pass</span>       http://10.1.4.187/nginx/bill/;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<hr>
+<p><strong>配置dev_193</strong></p>
+<p>如果需要dev_193使用invoice分支代码，可以如下修改dev_193配置</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">location</span> /dev_193/ &#123;</div><div class="line">    <span class="comment">#全部重写到invoice</span></div><div class="line">    <span class="attribute">rewrite</span><span class="regexp"> ^/dev_193/(.*)$</span> /invoice/<span class="variable">$1</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="项目修改细节"><a href="#项目修改细节" class="headerlink" title="项目修改细节"></a>项目修改细节</h2><p>static-meal, static-shop, static-om, static-bill, static-markting在项目中都需要做以下修改(只涉及到dev环境打包)</p>
+<h3 id="Gruntfile-js"><a href="#Gruntfile-js" class="headerlink" title="Gruntfile.js"></a>Gruntfile.js</h3><p>删除<code>dev</code>环境替换相对路径的配置</p>
+<hr>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="comment">// ...</span></div><div class="line">    dev: &#123;</div><div class="line">        <span class="attr">replacements</span>: [</div><div class="line">            <span class="comment">/* 为了页面间传递url,需要修改../page为../../&#123;当前工程&#125;/page */</span></div><div class="line">            &#123;</div><div class="line">                <span class="attr">from</span>: <span class="regexp">/(\.\.\/page)/g</span>,</div><div class="line">                <span class="attr">to</span>: <span class="string">'../../meal/page'</span></div><div class="line">            &#125;,</div><div class="line">            <span class="comment">/* 从这开始删除</span></div><div class="line">            &#123;</div><div class="line">                from: /(\.\.\/public)/g,</div><div class="line">                to: 'http://10.1.4.186/nginx/meal/public'</div><div class="line">            &#125;,</div><div class="line">            &#123;</div><div class="line">                from: /(\.\.\/images)/g,</div><div class="line">                to: 'http://10.1.4.186/nginx/meal/images'</div><div class="line">            &#125;,</div><div class="line">            &#123;</div><div class="line">                from: /(\.\.\/css)/g,</div><div class="line">                to: 'http://10.1.4.186/nginx/meal/css'</div><div class="line">            &#125;,</div><div class="line">            &#123;</div><div class="line">                from: /(\.\.\/js)/g,</div><div class="line">                to: 'http://10.1.4.186/nginx/meal/js'</div><div class="line">            &#125;,</div><div class="line">            &#123;</div><div class="line">                from: /(\.\.\/page)/g,</div><div class="line">                to: 'http://api.l.whereask.com/fromMeal/meal/page'</div><div class="line">            &#125;,</div><div class="line">            &#123;</div><div class="line">                from: /(\.\.\/\.\.\/marketing)/g,</div><div class="line">                to: 'http://api.l.whereask.com/fromMeal/marketing'</div><div class="line">            &#125;,</div><div class="line">            &#123;</div><div class="line">                from: /(\.\.\/\.\.\/bill)/g,</div><div class="line">                to: 'http://api.l.whereask.com/fromMeal/bill'</div><div class="line">            &#125;,</div><div class="line">            &#123;</div><div class="line">                from: /(\.\.\/\.\.\/om)/g,</div><div class="line">                to: 'http://api.l.whereask.com/fromMeal/om'</div><div class="line">            &#125;,</div><div class="line">            &#123;</div><div class="line">                from: /(\.\.\/\.\.\/shop)/g,</div><div class="line">                to: 'http://api.l.whereask.com/fromMeal/shop'</div><div class="line">            &#125;,</div><div class="line">            &#123;</div><div class="line">                from: 'grunt_env_dev',</div><div class="line">                to: 'grunt_env_dev'</div><div class="line">            &#125;</div><div class="line">            结束 */</div><div class="line">        ]</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// ...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="http-js"><a href="#http-js" class="headerlink" title="http.js"></a>http.js</h3><p>修改api基础地址为相对路径</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// var API_BASE_URL = 'http://api.l.whereask.com/server_from_meal';</span></div><div class="line"><span class="keyword">var</span> API_BASE_URL = <span class="string">'../../api'</span>;</div><div class="line"></div><div class="line"><span class="comment">// var RETAIL_BASE_URL = 'http://retailweixin.2dfire-dev.com/retail-weidian-api';</span></div><div class="line"><span class="keyword">var</span> RETAIL_BASE_URL = <span class="string">'../../retail-weidian-api'</span>;</div></pre></td></tr></table></figure>
+<h4 id="config-dev-js"><a href="#config-dev-js" class="headerlink" title="config/dev.js"></a>config/dev.js</h4><p>修改api基础地址为相对路径</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">module</span>.exports = &#123;</div><div class="line">    <span class="comment">// API_BASE_URL: 'http://api.l.whereask.com/server_from_meal',</span></div><div class="line">    API_BASE_URL: <span class="string">'../../api'</span>,</div><div class="line"></div><div class="line">    <span class="comment">// RETAIL_BASE_URL: 'http://retailweixin.2dfire-dev.com/retail-weidian-api',</span></div><div class="line">    RETAIL_BASE_URL: <span class="string">'../../retail-weidian-api'</span>,</div><div class="line"></div><div class="line">    <span class="attr">SHARE_BASE_URL</span>: <span class="string">'http://api.l.whereask.com'</span>,</div><div class="line">    <span class="attr">IMAGE_BASE_URL</span>: <span class="string">'http://ifiletest.2dfire.com/'</span>,</div><div class="line">    <span class="attr">API_WEB_SOCKET</span>: <span class="string">'http://10.1.5.114:9003/web_socket'</span></div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> nginx </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[css3 progress bar]]></title>
+      <url>https://cytle.github.io/2017/02/18/css3-progress-bar/</url>
+      <content type="html"><![CDATA[<h3 id="实现的效果"><a href="#实现的效果" class="headerlink" title="实现的效果"></a>实现的效果</h3><div class="progress-bar"></div>
+
+<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><ol>
+<li>用css3的<code>linear-gradient</code>在节点的背景上画一个渐变效果;</li>
+<li><strong>给背景一个动画</strong></li>
+<li>结束</li>
+</ol>
+<h3 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"progress-bar"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">type</span>=<span class="string">"text/css"</span>&gt;</span><span class="undefined"></span></div><div class="line">  @keyframes progress_bar_key_frames &#123;</div><div class="line">    from &#123;</div><div class="line">      transform: translateX(-100%);</div><div class="line">    &#125;</div><div class="line">    to &#123;</div><div class="line">      transform: translateX(100%);</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  @keyframes progress_bar_scale &#123;</div><div class="line">    from &#123;</div><div class="line">      transform: scaleX(0);</div><div class="line">    &#125;</div><div class="line">    to &#123;</div><div class="line">      transform: scaleX(1);</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  .progress-bar &#123;</div><div class="line">    width: 100%;</div><div class="line">    height: 20px;</div><div class="line">    background-color: white;</div><div class="line">    overflow: hidden;</div><div class="line">    position: relative;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  .progress-bar:before, .progress-bar:after &#123;</div><div class="line">    height: 100%;</div><div class="line">    display: block;</div><div class="line">    content: '';</div><div class="line">    position: absolute;</div><div class="line">    top: 0px;</div><div class="line">    left: 0px;</div><div class="line">    width: 100%;</div><div class="line">  &#125;</div><div class="line">  .progress-bar:before &#123;</div><div class="line">    background-color: #3ba776;</div><div class="line">    transform-origin: left center;</div><div class="line">    transform: scaleX(1);</div><div class="line">    /*transition: transform 1s ease-out;*/</div><div class="line">    animation: progress_bar_scale 20s infinite;</div><div class="line">  &#125;</div><div class="line">  .progress-bar:after &#123;</div><div class="line">    background-repeat: no-repeat;</div><div class="line">    animation: progress_bar_key_frames 2s ease-out infinite;</div><div class="line">    /*// animation-direction: alternate;*/</div><div class="line">    background-image: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.6) 90%, transparent 100% );</div><div class="line">  &#125;</div><div class="line"><span class="tag">&lt;/<span class="name">style</span>&gt;</span></div></pre></td></tr></table></figure>
+<style type="text/css">
+@keyframes progress_bar_key_frames {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+@keyframes progress_bar_scale {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+.progress-bar {
+  width: 100%;
+  height: 20px;
+  background-color: white;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-bar:before, .progress-bar:after {
+  height: 100%;
+  display: block;
+  content: '';
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+}
+.progress-bar:before {
+  background-color: #3ba776;
+  transform-origin: left center;
+  transform: scaleX(1);
+  /*transition: transform 1s ease-out;*/
+  animation: progress_bar_scale 20s infinite;
+}
+.progress-bar:after {
+  background-repeat: no-repeat;
+  animation: progress_bar_key_frames 2s ease-out infinite;
+  /*// animation-direction: alternate;*/
+  background-image: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.6) 90%, transparent 100% );
+}
+</style>
+]]></content>
+      
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[eslint]]></title>
+      <url>https://cytle.github.io/2017/02/14/eslint/</url>
+      <content type="html"><![CDATA[<figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  <span class="attr">"root"</span>: <span class="literal">true</span>,</div><div class="line">  <span class="attr">"env"</span>: &#123;</div><div class="line">    <span class="attr">"es6"</span>: <span class="literal">true</span>,</div><div class="line">    <span class="attr">"node"</span>: <span class="literal">true</span>,</div><div class="line">    <span class="attr">"browser"</span>: <span class="literal">true</span>,</div><div class="line">    <span class="attr">"commonjs"</span>: <span class="literal">true</span>,</div><div class="line">    <span class="attr">"jquery"</span>: <span class="literal">true</span></div><div class="line">  &#125;,</div><div class="line">  <span class="attr">"plugins"</span>: [</div><div class="line">    <span class="string">"import"</span>,</div><div class="line">    <span class="string">"html"</span>,</div><div class="line">    <span class="string">"react"</span></div><div class="line">  ],</div><div class="line">  <span class="attr">"extends"</span>: [</div><div class="line">    <span class="string">"eslint:recommended"</span>,</div><div class="line">    <span class="string">"plugin:import/errors"</span>,</div><div class="line">    <span class="string">"plugin:import/warnings"</span>,</div><div class="line">    <span class="string">"plugin:react/recommended"</span></div><div class="line">  ],</div><div class="line">  <span class="attr">"settings"</span> : &#123;</div><div class="line">      <span class="attr">"import/resolver"</span>: &#123;</div><div class="line">        <span class="attr">"webpack"</span>: &#123;</div><div class="line">          <span class="attr">"config"</span>: <span class="string">"build/webpack.dev.js"</span></div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">  &#125;,</div><div class="line">  <span class="attr">"parserOptions"</span>: &#123;</div><div class="line">      <span class="attr">"ecmaFeatures"</span>: &#123;</div><div class="line">          <span class="attr">"experimentalObjectRestSpread"</span>: <span class="literal">true</span>,</div><div class="line">          <span class="attr">"jsx"</span>: <span class="literal">true</span></div><div class="line">      &#125;,</div><div class="line">      <span class="attr">"sourceType"</span>: <span class="string">"module"</span></div><div class="line">  &#125;,</div><div class="line">  <span class="attr">"globals"</span>: &#123;</div><div class="line">  &#125;,</div><div class="line">  <span class="attr">"rules"</span>: &#123;</div><div class="line">    <span class="attr">"react/react-in-jsx-scope"</span>: [<span class="string">"off"</span>],</div><div class="line">    <span class="attr">"react/prop-types"</span>: [<span class="string">"off"</span>],</div><div class="line">    <span class="attr">"indent"</span>: [</div><div class="line">      <span class="string">"error"</span>,</div><div class="line">      <span class="number">4</span></div><div class="line">    ],</div><div class="line">    <span class="attr">"linebreak-style"</span>: [</div><div class="line">      <span class="string">"error"</span>,</div><div class="line">      <span class="string">"unix"</span></div><div class="line">    ],</div><div class="line">    <span class="attr">"quotes"</span>: [</div><div class="line">      <span class="string">"off"</span>,</div><div class="line">      <span class="string">"single"</span></div><div class="line">    ],</div><div class="line">    <span class="attr">"semi"</span>: [</div><div class="line">      <span class="string">"error"</span>,</div><div class="line">      <span class="string">"always"</span></div><div class="line">    ]</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="文件是否存在判断"><a href="#文件是否存在判断" class="headerlink" title="文件是否存在判断"></a>文件是否存在判断</h3><p>插件<code>eslint-plugin-import</code></p>
+<p><strong>增加配置</strong></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  <span class="attr">"plugins"</span>: [</div><div class="line">    <span class="string">"import"</span></div><div class="line">  ],</div><div class="line">  <span class="attr">"extends"</span>: [</div><div class="line">    <span class="string">"eslint:recommended"</span>,</div><div class="line">    <span class="string">"plugin:import/errors"</span>,</div><div class="line">    <span class="string">"plugin:import/warnings"</span>,</div><div class="line">  ]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="兼顾Webpack"><a href="#兼顾Webpack" class="headerlink" title="兼顾Webpack"></a>兼顾Webpack</h4><p>插件<code>eslint-import-resolver-webpack</code></p>
+<p><strong>增加配置</strong></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  <span class="attr">"settings"</span> : &#123;</div><div class="line">      <span class="attr">"import/resolver"</span>: &#123;</div><div class="line">        <span class="attr">"webpack"</span>: &#123;</div><div class="line">          <span class="attr">"config"</span>: <span class="string">"build/webpack.dev.js"</span></div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">  &#125;,</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="react支持"><a href="#react支持" class="headerlink" title="react支持"></a>react支持</h3><p>插件<code>eslint-plugin-react</code></p>
+<p><strong>增加配置</strong></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  <span class="attr">"plugins"</span>: [</div><div class="line">    <span class="string">"react"</span></div><div class="line">  ],</div><div class="line">  <span class="attr">"extends"</span>: [</div><div class="line">    <span class="string">"plugin:react/recommended"</span>,</div><div class="line">  ]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="集成"><a href="#集成" class="headerlink" title="集成"></a>集成</h3><h4 id="sublime"><a href="#sublime" class="headerlink" title="sublime"></a>sublime</h4><p>插件推荐</p>
+<ul>
+<li>SublimeLinter + SublimeLinter-eslint</li>
+<li>Eslint-Formater</li>
+</ul>
+<p>安装<code>SublimeLinter</code>后按需要修改环境地址</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attr">"user"</span>: &#123;</div><div class="line">        <span class="attr">"paths"</span>: &#123;</div><div class="line">            <span class="attr">"linux"</span>: [</div><div class="line">                <span class="string">"/usr/local/bin"</span></div><div class="line">            ],</div><div class="line">            <span class="attr">"osx"</span>: [],</div><div class="line">            <span class="attr">"windows"</span>: []</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+]]></content>
+      
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[sublime快捷键备忘]]></title>
+      <url>https://cytle.github.io/2016/11/16/sublime%E5%BF%AB%E6%8D%B7%E9%94%AE%E5%A4%87%E5%BF%98/</url>
+      <content type="html"><![CDATA[<p><code>Ctrl+Shift+P</code>：打开命令面板</p>
+<p><code>Ctrl+P</code>：搜索项目中的文件</p>
+<p><code>Ctrl+G</code>：跳转到第几行</p>
+<p><code>Ctrl+W</code>：关闭当前打开文件</p>
+<p><code>Ctrl+Shift+W</code>：关闭所有打开文件</p>
+<p><code>Ctrl+Shift+V</code>：粘贴并格式化</p>
+<p><code>Ctrl+D</code>：选择单词，重复可增加选择下一个相同的单词</p>
+<p><code>Ctrl+L</code>：选择行，重复可依次增加选择下一行</p>
+<p><code>Ctrl+Shift+L</code>：选择多行</p>
+<p><code>Ctrl+Shift+Enter</code>：在当前行前插入新行</p>
+<p><code>Ctrl+X</code>：删除当前行</p>
+<p><code>Ctrl+M</code>：跳转到对应括号</p>
+<p><code>Ctrl+U</code>：软撤销，撤销光标位置</p>
+<p><code>Ctrl+J</code>：选择标签内容</p>
+<p><code>Ctrl+F</code>：查找内容</p>
+<p><code>Ctrl+Shift+F</code>：查找并替换</p>
+<p><code>Ctrl+H</code>：替换</p>
+<p><code>Ctrl+R</code>：前往method</p>
+<p><code>Ctrl+N</code>：新建窗口</p>
+<p><code>Ctrl+K+B</code>：开关侧栏</p>
+<p><code>Ctrl+Shift+M</code>：选中当前括号内容，重复可选着括号本身</p>
+<p><code>Ctrl+F2</code>：设置/删除标记</p>
+<p><code>Ctrl+/</code>：注释当前行</p>
+<p><code>Ctrl+Shift+/</code>：当前位置插入注释</p>
+<p><code>Ctrl+Alt+/</code>：块注释，并Focus到首行，写注释说明用的</p>
+<p><code>Ctrl+Shift+A</code>：选择当前标签前后，修改标签用的</p>
+<p><code>F11</code>：全屏</p>
+<p><code>Shift+F11</code>：全屏免打扰模式，只编辑当前文件</p>
+<p><code>Alt+F3</code>：选择所有相同的词</p>
+<p><code>Alt+.</code>：闭合标签</p>
+<p><code>Alt+Shift+数字</code>：分屏显示</p>
+<p><code>Alt+数字</code>：切换打开第N个文件</p>
+<p><code>Shift+右键拖动</code>：光标多不，用来更改或插入列内容</p>
+<p>??鼠标的前进后退键可切换Tab文件</p>
+<p><code>Ctrl+依次点击或选取</code>：可需要编辑的多个位置</p>
+<p><code>Ctrl+Shift+上下键</code>：可替换行</p>
+<h2 id="选择类"><a href="#选择类" class="headerlink" title="选择类"></a>选择类</h2><p><code>Ctrl+D</code>：选中光标所占的文本，继续操作则会选中下一个相同的文本。</p>
+<p><code>Alt+F3</code>：选中文本按下快捷键，即可一次性选择全部的相同文本进行同时编辑。举个栗子：快速选中并更改所有相同的变量名、函数名等。</p>
+<p><code>Ctrl+L</code>：选中整行，继续操作则继续选择下一行，效果和<code>Shift+↓</code>效果一样。</p>
+<p><code>Ctrl+Shift+L</code>：先选中多行，再按下快捷键，会在每行行尾插入光标，即可同时编辑这些行。</p>
+<p><code>Ctrl+Shift+M</code>：选择括号内的内容（继续选择父括号）。举个栗子：快速选中删除函数中的代码，重写函数体代码或重写括号内里的内容。</p>
+<p><code>Ctrl+M</code>：光标移动至括号内结束或开始的位置。</p>
+<p><code>Ctrl+Enter</code>：在下一行插入新行。举个栗子：即使光标不在行尾，也能快速向下插入一行。</p>
+<p><code>Ctrl+Shift+Enter</code>：在上一行插入新行。举个栗子：即使光标不在行首，也能快速向上插入一行。</p>
+<p><code>Ctrl+Shift+[</code>：选中代码，按下快捷键，折叠代码。</p>
+<p><code>Ctrl+Shift+]</code>：选中代码，按下快捷键，展开代码。</p>
+<p><code>Ctrl+K+0</code>：展开所有折叠代码。</p>
+<p><code>Ctrl+←</code>：向左单位性地移动光标，快速移动光标。</p>
+<p><code>Ctrl+→</code>：向右单位性地移动光标，快速移动光标。</p>
+<p><code>shift+↑</code>：向上选中多行。</p>
+<p><code>shift+↓</code>：向下选中多行。</p>
+<p><code>Shift+←</code>：向左选中文本。</p>
+<p><code>Shift+→</code>：向右选中文本。</p>
+<p><code>Ctrl+Shift+←</code>：向左单位性地选中文本。</p>
+<p><code>Ctrl+Shift+→</code>：向右单位性地选中文本。</p>
+<p><code>Ctrl+Shift+↑</code>：将光标所在行和上一行代码互换（将光标所在行插入到上一行之前）。</p>
+<p><code>Ctrl+Shift+↓</code>：将光标所在行和下一行代码互换（将光标所在行插入到下一行之后）。</p>
+<p><code>Ctrl+Alt+↑</code>：向上添加多行光标，可同时编辑多行。</p>
+<p><code>Ctrl+Alt+↓</code>：向下添加多行光标，可同时编辑多行。</p>
+<h2 id="编辑类"><a href="#编辑类" class="headerlink" title="编辑类"></a>编辑类</h2><p><code>Ctrl+J</code>：合并选中的多行代码为一行。举个栗子：将多行格式的CSS属性合并为一行。</p>
+<p><code>Ctrl+Shift+D</code>：复制光标所在整行，插入到下一行。</p>
+<p><code>Tab</code>：向右缩进。</p>
+<p><code>Shift+Tab</code>：向左缩进。</p>
+<p><code>Ctrl+K+K</code>：从光标处开始删除代码至行尾。</p>
+<p><code>Ctrl+Shift+K</code>：删除整行。</p>
+<p><code>Ctrl+/</code>：注释单行。</p>
+<p><code>Ctrl+Shift+/</code>：注释多行。</p>
+<p><code>Ctrl+K+U</code>：转换大写。</p>
+<p><code>Ctrl+K+L</code>：转换小写。</p>
+<p><code>Ctrl+Z</code>：撤销。</p>
+<p><code>Ctrl+Y</code>：恢复撤销。</p>
+<p><code>Ctrl+U</code>：软撤销，感觉和<code>Gtrl+Z</code>一样。</p>
+<p><code>Ctrl+F2</code>：设置书签</p>
+<p><code>Ctrl+T</code>：左右字母互换。</p>
+<p><code>F6</code>：单词检测拼写</p>
+<h2 id="搜索类"><a href="#搜索类" class="headerlink" title="搜索类"></a>搜索类</h2><p><code>Ctrl+F</code>：打开底部搜索框，查找关键字。</p>
+<p><code>Ctrl+shift+F</code>：在文件夹内查找，与普通编辑器不同的地方是sublime允许添加多个文件夹进行查找，略高端，未研究。</p>
+<p><code>Ctrl+P</code>：打开搜索框。举个栗子：1、输入当前项目中的文件名，快速搜索文件，2、输入@和关键字，查找文件中函数名，3、输入：和数字，跳转到文件中该行代码，4、输入#和关键字，查找变量名。</p>
+<p><code>Ctrl+G</code>：打开搜索框，自动带：，输入数字跳转到该行代码。举个栗子：在页面代码比较长的文件中快速定位。</p>
+<p><code>Ctrl+R</code>：打开搜索框，自动带@，输入关键字，查找文件中的函数名。举个栗子：在函数较多的页面快速查找某个函数。</p>
+<p><code>Ctrl+：</code>：打开搜索框，自动带#，输入关键字，查找文件中的变量名、属性名等。</p>
+<p><code>Ctrl+Shift+P</code>：打开命令框。场景栗子：打开命名框，输入关键字，调用sublime text或插件的功能，例如使用package安装插件。</p>
+<p><code>Esc</code>：退出光标多行选择，退出搜索框，命令框等。</p>
+<h3 id="查找模式下"><a href="#查找模式下" class="headerlink" title="查找模式下"></a>查找模式下</h3><p><code>Alt+R</code>：正则模式
+<code>Alt+C</code>：严格大小写
+<code>Alt+W</code>：一个单词
+<code>F3</code>：查找下一个
+<code>Shift+F3</code>：查找上一个
+<code>Alt+Enter</code>：查找所有
+<code>Ctrl+Alt+Enter</code>：替换所有
+<code>Ctrl+Shift+H</code>：替换</p>
+<h2 id="显示类"><a href="#显示类" class="headerlink" title="显示类"></a>显示类</h2><p><code>Ctrl+Tab</code>：按文件浏览过的顺序，切换当前窗口的标签页。</p>
+<p><code>Ctrl+PageDown</code>：向左切换当前窗口的标签页。</p>
+<p><code>Ctrl+PageUp</code>：向右切换当前窗口的标签页。</p>
+<p><code>Alt+Shift+1</code>：窗口分屏，恢复默认1屏（非小键盘的数字）</p>
+<p><code>Alt+Shift+2</code>：左右分屏-2列</p>
+<p><code>Alt+Shift+3</code>：左右分屏-3列</p>
+<p><code>Alt+Shift+4</code>：左右分屏-4列</p>
+<p><code>Alt+Shift+5</code>：等分4屏</p>
+<p><code>Alt+Shift+8</code>：垂直分屏-2屏</p>
+<p><code>Alt+Shift+9</code>：垂直分屏-3屏</p>
+<p><code>Ctrl+K+B</code>：开启/关闭侧边栏。</p>
+<p><code>F11</code> 全屏模式</p>
+<p><code>Shift+F11</code>：免打扰模式</p>
+<p>update</p>
+<p><code>Ctrl+k+2</code>：折叠注释和方法</p>
+<p><code>Ctrl+k+3</code>：折叠if</p>
+<p><code>Ctrl+k+4</code>：折叠switch</p>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> sublime </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[不熟sublime快捷键备忘]]></title>
+      <url>https://cytle.github.io/2016/11/16/%E4%B8%8D%E7%86%9Fsublime%E5%BF%AB%E6%8D%B7%E9%94%AE%E5%A4%87%E5%BF%98/</url>
+      <content type="html"><![CDATA[<p>查找模式下</p>
+<p><code>Alt+R</code>:正则模式</p>
+<p><code>Alt+C</code>:严格大小写</p>
+<p><code>Alt+W</code>:一个单词</p>
+<p><code>F3</code>:查找下一个</p>
+<p><code>Shift+F3</code>:查找上一个</p>
+<p><code>Alt+Enter</code>:查找所有</p>
+<p><code>Ctrl+Alt+Enter</code>:替换所有</p>
+<p><code>Ctrl+Shift+H</code>:替换</p>
+<p><code>Ctrl+Shift+V</code>：粘贴并格式化</p>
+<p><code>Ctrl+Shift+Enter</code>：在当前行前插入新行</p>
+<p><code>Ctrl+M</code>：跳转到对应括号</p>
+<p><code>Ctrl+U</code>：软撤销，撤销光标位置</p>
+<p><code>Ctrl+J</code>：选择标签内容</p>
+<p><code>Ctrl+K+B</code>：开关侧栏</p>
+<p><code>Ctrl+Shift+M</code>：选中当前括号内容，重复可选着括号本身</p>
+<p><code>Ctrl+F2</code>：设置/删除标记</p>
+<p><code>Ctrl+Alt+/</code>：块注释，并Focus到首行，写注释说明用的</p>
+<p><code>Ctrl+Shift+A</code>：选择当前标签前后，修改标签用的</p>
+<p><code>Alt+F3</code>：选择所有相同的词</p>
+<p><code>Alt+.</code>：闭合标签</p>
+<p><code>Shift+右键拖动</code>：光标多不，用来更改或插入列内容</p>
+<p>??鼠标的前进后退键可切换Tab文件</p>
+<p><code>Alt+F3</code>：选中文本按下快捷键，即可一次性选择全部的相同文本进行同时编辑。举个栗子：快速选中并更改所有相同的变量名、函数名等。</p>
+<p><code>Ctrl+Shift+L</code>：先选中多行，再按下快捷键，会在每行行尾插入光标，即可同时编辑这些行。</p>
+<p><code>Ctrl+Shift+M</code>：选择括号内的内容（继续选择父括号）。举个栗子：快速选中删除函数中的代码，重写函数体代码或重写括号内里的内容。</p>
+<p><code>Ctrl+M</code>：光标移动至括号内结束或开始的位置。</p>
+<p><code>Ctrl+Enter</code>：在下一行插入新行。举个栗子：即使光标不在行尾，也能快速向下插入一行。</p>
+<p><code>Ctrl+Shift+Enter</code>：在上一行插入新行。举个栗子：即使光标不在行首，也能快速向上插入一行。</p>
+<p><code>Ctrl+Shift+[</code>：选中代码，按下快捷键，折叠代码。</p>
+<p><code>Ctrl+Shift+]</code>：选中代码，按下快捷键，展开代码。</p>
+<p><code>Ctrl+K+0</code>：展开所有折叠代码。</p>
+<p><code>Ctrl+Alt+↑</code>：向上添加多行光标，可同时编辑多行。</p>
+<p><code>Ctrl+Alt+↓</code>：向下添加多行光标，可同时编辑多行。</p>
+<p><code>Ctrl+J</code>：合并选中的多行代码为一行。举个栗子：将多行格式的CSS属性合并为一行。</p>
+<p><code>Ctrl+Shift+D</code>：复制光标所在整行，插入到下一行。</p>
+<p><code>Ctrl+K+K</code>：从光标处开始删除代码至行尾。</p>
+<p><code>Ctrl+Shift+K</code>：删除整行。</p>
+<p><code>Ctrl+U</code>：软撤销，感觉和<code>Gtrl+Z</code>一样。</p>
+<p><code>Ctrl+F2</code>：设置书签</p>
+<p><code>Ctrl+T</code>：左右字母互换。</p>
+<p><code>F6</code>：单词检测拼写</p>
+<p><code>Ctrl+：</code>：打开搜索框，自动带#，输入关键字，查找文件中的变量名、属性名等。</p>
+<p><code>Ctrl+k+2</code>：折叠注释和方法</p>
+<p><code>Ctrl+k+3</code>：折叠if</p>
+<p><code>Ctrl+k+4</code>：折叠switch</p>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> sublime </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[ubuntu美化]]></title>
+      <url>https://cytle.github.io/2016/11/14/ubuntu%E7%BE%8E%E5%8C%96/</url>
+      <content type="html"><![CDATA[<ul>
+<li>NUMIX</li>
+<li>docky</li>
+</ul>
+]]></content>
+      
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[ngrok-使用]]></title>
+      <url>https://cytle.github.io/2016/10/19/ngrok-%E4%BD%BF%E7%94%A8/</url>
+      <content type="html"><![CDATA[<h3 id="安装ngrok客户端"><a href="#安装ngrok客户端" class="headerlink" title="安装ngrok客户端"></a>安装ngrok客户端</h3><p>mac下使用brew安装(来自cask)</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">$</span> brew cask install ngork</div></pre></td></tr></table></figure>
+<h3 id="得到一个服务器"><a href="#得到一个服务器" class="headerlink" title="得到一个服务器"></a>得到一个服务器</h3><h4 id="直接使用ngrok-com"><a href="#直接使用ngrok-com" class="headerlink" title="直接使用ngrok.com"></a>直接使用ngrok.com</h4><p>比较坑，需要翻墙。代理的域名也要翻墙访问。。</p>
+<p><a href="https://dashboard.ngrok.com/user/signup" target="_blank" rel="external">ngrok.com注册</a></p>
+<p>ngrok.com会提供一个<code>authtoken</code></p>
+<h4 id="这里应该有配置自己的服务器"><a href="#这里应该有配置自己的服务器" class="headerlink" title="这里应该有配置自己的服务器"></a>这里应该有配置自己的服务器</h4><p>挖一个坑</p>
+<h3 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h3><p>在客户端终端执行
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">$</span> ngrok authtoken xxxxxxxxxxxxxxxxxxxxxxxxxxxx</div></pre></td></tr></table></figure></p>
+<p>绑定本地端口，并且启动
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">$</span> ngrok http 80</div></pre></td></tr></table></figure></p>
+<p>访问<a href="http://127.0.0.1:4040/可以看到ngrok运行状态" target="_blank" rel="external">http://127.0.0.1:4040/可以看到ngrok运行状态</a></p>
+<p><img src="/uploads/ngrok-使用/界面截图.png" alt="界面截图"></p>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> mac ngrok </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Laravel-group-使用]]></title>
+      <url>https://cytle.github.io/2016/10/17/Laravel-group-%E4%BD%BF%E7%94%A8/</url>
+      <content type="html"><![CDATA[<p>group接受这几个属性，namespace、prefix、where、as。同时group可以嵌套使用。</p>
+<p>以下两段代码功能相同</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;?php</span></div><div class="line">    Route::group([<span class="string">'prefix'</span> =&gt; <span class="string">'users'</span>, <span class="string">'namespace'</span> =&gt; <span class="string">'User'</span>], <span class="function"><span class="keyword">function</span><span class="params">()</span></span></div><div class="line">    &#123;</div><div class="line">        Route::post(<span class="string">''</span>, [</div><div class="line">            <span class="string">'as'</span> =&gt; <span class="string">'新增用户'</span>,</div><div class="line">            <span class="string">'uses'</span> =&gt; <span class="string">'UserController@store'</span></div><div class="line">            ]);</div><div class="line"></div><div class="line">        Route::get(<span class="string">'&#123;id&#125;'</span>, [</div><div class="line">            <span class="string">'as'</span> =&gt; <span class="string">'用户详情'</span>,</div><div class="line">            <span class="string">'uses'</span> =&gt; <span class="string">'UserController@show'</span></div><div class="line">            ])-&gt;where([<span class="string">'id'</span> =&gt; <span class="string">'\\d+'</span>]);</div><div class="line">    &#125;);</div><div class="line"><span class="meta">?&gt;</span></div></pre></td></tr></table></figure>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;?php</span></div><div class="line">    Route::post(<span class="string">'users'</span>, [</div><div class="line">        <span class="string">'as'</span> =&gt; <span class="string">'新增用户'</span>,</div><div class="line">        <span class="string">'uses'</span> =&gt; <span class="string">'User\UserController@store'</span></div><div class="line">        ]);</div><div class="line"></div><div class="line">    Route::get(<span class="string">'users\&#123;id&#125;'</span>, [</div><div class="line">        <span class="string">'as'</span> =&gt; <span class="string">'用户详情'</span>,</div><div class="line">        <span class="string">'uses'</span> =&gt; <span class="string">'User\UserController@show'</span></div><div class="line">        ])-&gt;where([<span class="string">'id'</span> =&gt; <span class="string">'\\d+'</span>]);</div><div class="line"><span class="meta">?&gt;</span></div></pre></td></tr></table></figure>
+]]></content>
+      
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[HessianJava从U+10000到U+10FFFF的码位传输错误]]></title>
+      <url>https://cytle.github.io/2016/10/13/HessianJava%E4%BB%8EU+10000%E5%88%B0U+10FFFF%E7%9A%84%E7%A0%81%E4%BD%8D%E4%BC%A0%E8%BE%93%E9%94%99%E8%AF%AF/</url>
+      <content type="html"><![CDATA[<blockquote>
+<p>这段时间使用Hessian传递数据，发现有很多大坑。年久失修的Hessian的PHP实现库在64位下传递数字错误连连。
+之前还发现了传递emoji表情出现了问题，这几天终于追踪到问题所在。</p>
+</blockquote>
+<h2 id="现象说明"><a href="#现象说明" class="headerlink" title="现象说明"></a>现象说明</h2><p>使用PHP作为client调用Java开发的Server，返回的字符串中含有不能被json编码的字符，表现为实际的字符
+串为「你好🌍，abc！」，经过HessianJava和HessianPHP后，结果输出为「你好������，abc！」，
+除了这个「🌍」emoji表情外其它的字符都能正确输出。比较奇怪的是Java到Java没有问题。</p>
+<p>我先在数据库中写了一堆emoji表情，然后在hessian2parse解析字符串的地方拦截其收到内容，打印它们的字节</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">表情</th>
+<th style="text-align:left">Unicode</th>
+<th style="text-align:left">UTF-16</th>
+<th style="text-align:left">UTF-8 bytes</th>
+<th style="text-align:left">服务器收到bytes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">🌍</td>
+<td style="text-align:left">1 F3 0D</td>
+<td style="text-align:left">D8 3C DF 0D</td>
+<td style="text-align:left">F0 9F 8C 8D</td>
+<td style="text-align:left">ED A0 BC ED BC 8D</td>
+</tr>
+<tr>
+<td style="text-align:left">🐁</td>
+<td style="text-align:left">1 F4 01</td>
+<td style="text-align:left">D8 3D DC 01</td>
+<td style="text-align:left">F0 9F 90 81</td>
+<td style="text-align:left">ED A0 BD ED B0 81</td>
+</tr>
+</tbody>
+</table>
+<p>这里选择部分打印出来</p>
+<p>Hessian协议在传递数据时用的字符编码是UTF-8，可变长度，有效的压缩了数据长度，从上面的表格可以发现应
+该是4字节的UTF-8，结果变成6字节，而HessianPHP这边对utf8字符串几乎没有什么处理，这么搞，字符串肯
+定是乱码的。</p>
+<h2 id="找问题"><a href="#找问题" class="headerlink" title="找问题"></a>找问题</h2><p><code>HessianPHP</code>这边对字符几乎的0处理，当然如果当前环境是别的字符集，会将字符串转码。但发现
+<code>HessianPHP</code>读字符串时，只对1-3字节的UTF-8字符有识别，对4字节的UTF-8没有处理。如果把PHP这边同
+时作为服务和客户端测试时，也出现bug，长度读取不对。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;?php</span></div><div class="line">  <span class="comment">// 修改后</span></div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">readUTF8Bytes</span><span class="params">($len)</span></span>&#123;</div><div class="line">        $string = <span class="keyword">$this</span>-&gt;read($len);</div><div class="line">        $pos = <span class="number">0</span>;</div><div class="line">        $pass = <span class="number">1</span>;</div><div class="line"></div><div class="line">        <span class="keyword">while</span>($pass &lt;= $len)&#123;</div><div class="line">            $charCode = ord($string[$pos]);</div><div class="line">            <span class="keyword">if</span>($charCode &lt; <span class="number">0x80</span>)&#123;</div><div class="line">                $pos++;</div><div class="line">            &#125; <span class="keyword">elseif</span>(($charCode &amp; <span class="number">0xe0</span>) == <span class="number">0xc0</span>)&#123;</div><div class="line">                $pos += <span class="number">2</span>;</div><div class="line">                $string .= <span class="keyword">$this</span>-&gt;read(<span class="number">1</span>);</div><div class="line">            &#125; <span class="keyword">elseif</span> (($charCode &amp; <span class="number">0xf0</span>) == <span class="number">0xe0</span>) &#123;</div><div class="line">                $pos += <span class="number">3</span>;</div><div class="line">                $string .= <span class="keyword">$this</span>-&gt;read(<span class="number">2</span>);</div><div class="line">            &#125; <span class="keyword">else</span></div><div class="line">            <span class="comment">// 在此加入4字节字符识别，参考UTF-8编码规则</span></div><div class="line">            <span class="keyword">if</span> (($charCode &amp; <span class="number">0xf8</span>) == <span class="number">0xf0</span>) &#123;</div><div class="line">                $pos += <span class="number">4</span>;</div><div class="line">                $string .= <span class="keyword">$this</span>-&gt;read(<span class="number">3</span>);</div><div class="line">            &#125;</div><div class="line">            $pass++;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span>(! HessianUtils::isInternalUTF8())&#123;</div><div class="line">            $string = utf8_decode($string);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">return</span> $string;</div><div class="line">    &#125;</div><div class="line"><span class="meta">?&gt;</span></div></pre></td></tr></table></figure>
+<p>这么修改后，php之间的传递就没有问题了。详细的UTF-8说明参考这，
+<a href="https://zh.wikipedia.org/wiki/UTF-8" target="_blank" rel="external">wiki:UTF-8</a></p>
+<p>再看Java部分前，有一个背景需要知道，从1.5版开始，Java储存字符使用<code>UTF-16</code>的方式，
+每个char长度为2Bytes。可以参考<a href="https://zh.wikipedia.org/wiki/UTF-16" target="_blank" rel="external">wiki:UTF-16</a>，
+了解其编码方式。</p>
+<blockquote>
+<p>在Unicode的零号平面(BMP)中，<strong>UTF-16数值等价于对应的码位</strong>。
+Unicode中除了BMP外，还有16个辅助平面，码位为U+10000到U+10FFFF。
+在UTF-16中被编码为一对16比特长的码元（即32bit,4Bytes）。</p>
+</blockquote>
+<p>简而言之，就是像ASCII字符、中文字符等这些在零号平面中的字符在Java中由一个char（2Bytes）表示，
+而emoji这样在辅助平面上的字符由2个char（4Bytes）表示，理论上能实现所有的Unicode字符编码了。</p>
+<p>看看Java这边的处理，以下是写入部分
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Prints a string to the stream, encoded as UTF-8</div><div class="line"> *</div><div class="line"> * <span class="doctag">@param</span> v the string to print.</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printString</span><span class="params">(String v, <span class="keyword">int</span> strOffset, <span class="keyword">int</span> length)</span></span></div><div class="line">  <span class="keyword">throws</span> IOException</div><div class="line">&#123;</div><div class="line">  <span class="keyword">int</span> offset = _offset;</div><div class="line">  <span class="keyword">byte</span> []buffer = _buffer;</div><div class="line"></div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; length; i++) &#123;</div><div class="line">    <span class="keyword">if</span> (SIZE &lt;= offset + <span class="number">16</span>) &#123;</div><div class="line">      _offset = offset;</div><div class="line">      flushBuffer();</div><div class="line">      offset = _offset;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">char</span> ch = v.charAt(i + strOffset);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (ch &lt; <span class="number">0x80</span>)</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (ch);</div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (ch &lt; <span class="number">0x800</span>) &#123;</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0xc0</span> + ((ch &gt;&gt; <span class="number">6</span>) &amp; <span class="number">0x1f</span>));</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0x80</span> + (ch &amp; <span class="number">0x3f</span>));</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">else</span> &#123;</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0xe0</span> + ((ch &gt;&gt; <span class="number">12</span>) &amp; <span class="number">0xf</span>));</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0x80</span> + ((ch &gt;&gt; <span class="number">6</span>) &amp; <span class="number">0x3f</span>));</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0x80</span> + (ch &amp; <span class="number">0x3f</span>));</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  _offset = offset;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这部分代码的目的是将字符串从Java下的字符串（UTF-16）转为UTF-8编码，但明显它只能满足在BMP上码位的转码，不能支持辅助平面。</p>
+<p>再来看看读的部分
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Parses a single UTF8 character.</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">parseUTF8Char</span><span class="params">()</span></span></div><div class="line">  <span class="keyword">throws</span> IOException</div><div class="line">&#123;</div><div class="line">  <span class="keyword">int</span> ch = _offset &lt; _length ? (_buffer[_offset++] &amp; <span class="number">0xff</span>) : read();</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (ch &lt; <span class="number">0x80</span>)</div><div class="line">    <span class="keyword">return</span> ch;</div><div class="line">  <span class="keyword">else</span> <span class="keyword">if</span> ((ch &amp; <span class="number">0xe0</span>) == <span class="number">0xc0</span>) &#123;</div><div class="line">    <span class="keyword">int</span> ch1 = read();</div><div class="line">    <span class="keyword">int</span> v = ((ch &amp; <span class="number">0x1f</span>) &lt;&lt; <span class="number">6</span>) + (ch1 &amp; <span class="number">0x3f</span>);</div><div class="line"></div><div class="line">    <span class="keyword">return</span> v;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">else</span> <span class="keyword">if</span> ((ch &amp; <span class="number">0xf0</span>) == <span class="number">0xe0</span>) &#123;</div><div class="line">    <span class="keyword">int</span> ch1 = read();</div><div class="line">    <span class="keyword">int</span> ch2 = read();</div><div class="line">    <span class="keyword">int</span> v = ((ch &amp; <span class="number">0x0f</span>) &lt;&lt; <span class="number">12</span>) + ((ch1 &amp; <span class="number">0x3f</span>) &lt;&lt; <span class="number">6</span>) + (ch2 &amp; <span class="number">0x3f</span>);</div><div class="line"></div><div class="line">    <span class="keyword">return</span> v;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">else</span></div><div class="line">    <span class="keyword">throw</span> error(<span class="string">"bad UTF-8 encoding at "</span> + codeName(ch));</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>Hessian是按UTF-8编码传输，在这个方法中应该是将UTF-8转为UTF-16，按照UTF-8编码方案这里没有处理4字节的字符。</p>
+<p>由于写入的函数只是将每一个字符单独转成UTF-8字符，可能由两个char表示一个字符的，也这样分别被转成两个
+UTF-8字符。读取部分，也是这么分别读，最后获取到的char没有问题，弄拙成巧，Java-Java部分就正常传输了。</p>
+<h2 id="解决-未完成方案"><a href="#解决-未完成方案" class="headerlink" title="解决(未完成方案)"></a>解决(未完成方案)</h2><p>需要java那边把读写的方法修改为支持U+10000到U+10FFFF的码位</p>
+<p>写入修复
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Prints a string to the stream, encoded as UTF-8</div><div class="line"> *</div><div class="line"> * <span class="doctag">@param</span> v the string to print.</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printString</span><span class="params">(String v, <span class="keyword">int</span> strOffset, <span class="keyword">int</span> length)</span></span></div><div class="line">  <span class="keyword">throws</span> IOException</div><div class="line">&#123;</div><div class="line">  <span class="keyword">int</span> offset = _offset;</div><div class="line">  <span class="keyword">byte</span> []buffer = _buffer;</div><div class="line"></div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; length; i++) &#123;</div><div class="line">    <span class="keyword">if</span> (SIZE &lt;= offset + <span class="number">16</span>) &#123;</div><div class="line">      _offset = offset;</div><div class="line">      flushBuffer();</div><div class="line">      offset = _offset;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">char</span> ch = v.charAt(i + strOffset);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (ch &lt; <span class="number">0x80</span>)</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (ch);</div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (ch &lt; <span class="number">0x800</span>) &#123;</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0xc0</span> + ((ch &gt;&gt; <span class="number">6</span>) &amp; <span class="number">0x1f</span>));</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0x80</span> + (ch &amp; <span class="number">0x3f</span>));</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">else</span></div><div class="line"></div><div class="line">    <span class="comment">// three Bytes, D800-DFFF do not allow the existence characters</span></div><div class="line">    <span class="keyword">if</span> (ch &lt; <span class="number">0xD800</span> || ch &gt;= <span class="number">0xE000</span>)) &#123;</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0xe0</span> + ((ch &gt;&gt; <span class="number">12</span>) &amp; <span class="number">0xf</span>));</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0x80</span> + ((ch &gt;&gt; <span class="number">6</span>) &amp; <span class="number">0x3f</span>));</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0x80</span> + (ch &amp; <span class="number">0x3f</span>));</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">else</span></div><div class="line">    &#123;</div><div class="line">      <span class="comment">// 0xD800 - 0xE000 Unicode characters, Supplementary Planes, need four bytes</span></div><div class="line"></div><div class="line">      <span class="comment">// take the next char</span></div><div class="line">      i++;</div><div class="line">      <span class="keyword">char</span> ch1 = v.charAt(i + strOffset);</div><div class="line"></div><div class="line">      <span class="comment">// get unicode code point from two chars</span></div><div class="line">      <span class="comment">// int code = ((ch - 0xD800) &lt;&lt; 10) + ch1 - 0xDC00 + 0x10000;</span></div><div class="line">      <span class="keyword">int</span> code = ((ch - <span class="number">0xD800</span>) &lt;&lt; <span class="number">10</span>) + ch1 + <span class="number">0x2400</span>;</div><div class="line"></div><div class="line">      <span class="comment">// unicode code to utf-8</span></div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0xf0</span> + ((code &gt;&gt; <span class="number">18</span>) &amp; <span class="number">0x7</span>));</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0x80</span> + ((code &gt;&gt; <span class="number">12</span>) &amp; <span class="number">0x3f</span>));</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0x80</span> + ((code &gt;&gt; <span class="number">6</span>) &amp; <span class="number">0x3f</span>));</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0x80</span> + (code &amp; <span class="number">0x3f</span>));</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">else</span> &#123;</div><div class="line">      <span class="comment">// throw</span></div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  _offset = offset;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>读取修复，有点蛋疼，在这不能修复，除了<code>parseUTF8Char</code>方法修复，调用此方法的也需要跟踪修复，在此只做了对<code>parseUTF8Char</code>方法的修复。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Parses a single UTF8 character.</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">parseUTF8Char</span><span class="params">()</span></span></div><div class="line">  <span class="keyword">throws</span> IOException</div><div class="line">&#123;</div><div class="line">  <span class="keyword">int</span> ch = _offset &lt; _length ? (_buffer[_offset++] &amp; <span class="number">0xff</span>) : read();</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (ch &lt; <span class="number">0x80</span>)</div><div class="line">    <span class="keyword">return</span> ch;</div><div class="line">  <span class="keyword">else</span> <span class="keyword">if</span> ((ch &amp; <span class="number">0xe0</span>) == <span class="number">0xc0</span>) &#123;</div><div class="line">    <span class="keyword">int</span> ch1 = read();</div><div class="line">    <span class="keyword">int</span> v = ((ch &amp; <span class="number">0x1f</span>) &lt;&lt; <span class="number">6</span>) + (ch1 &amp; <span class="number">0x3f</span>);</div><div class="line"></div><div class="line">    <span class="keyword">return</span> v;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">else</span> <span class="keyword">if</span> ((ch &amp; <span class="number">0xf0</span>) == <span class="number">0xe0</span>) &#123;</div><div class="line">    <span class="keyword">int</span> ch1 = read();</div><div class="line">    <span class="keyword">int</span> ch2 = read();</div><div class="line">    <span class="keyword">int</span> v = ((ch &amp; <span class="number">0x0f</span>) &lt;&lt; <span class="number">12</span>) + ((ch1 &amp; <span class="number">0x3f</span>) &lt;&lt; <span class="number">6</span>) + (ch2 &amp; <span class="number">0x3f</span>);</div><div class="line"></div><div class="line">    <span class="keyword">return</span> v;</div><div class="line">  &#125;</div><div class="line">  <span class="comment">// parse the size of 4 bytes utf-8 characters</span></div><div class="line">  <span class="keyword">else</span> <span class="keyword">if</span> ((ch &amp; <span class="number">0xf8</span>) == <span class="number">0xf0</span>) &#123;</div><div class="line">    <span class="keyword">int</span> ch1 = read();</div><div class="line">    <span class="keyword">int</span> ch2 = read();</div><div class="line">    <span class="keyword">int</span> ch3 = read();</div><div class="line">    <span class="keyword">int</span> v = ((ch &amp; <span class="number">0x7</span>) &lt;&lt; <span class="number">18</span>) + ((ch1 &amp; <span class="number">0x3f</span>) &lt;&lt; <span class="number">12</span>) + ((ch2 &amp; <span class="number">0x3f</span>) &lt;&lt; <span class="number">6</span>) + (ch3 &amp; <span class="number">0x3f</span>);</div><div class="line"></div><div class="line">    <span class="keyword">return</span> v;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">else</span></div><div class="line">    <span class="keyword">throw</span> error(<span class="string">"bad UTF-8 encoding at "</span> + codeName(ch));</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="最后的办法"><a href="#最后的办法" class="headerlink" title="最后的办法"></a>最后的办法</h2><p>java端不进行修改，php端修复根据问题规则修改解析。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;?php</span></div><div class="line"></div><div class="line">  <span class="comment">/**</span></div><div class="line">   * 从Java端返回错误的字符，进行解析</div><div class="line">   *</div><div class="line">   * <span class="doctag">@author</span> 炒饭</div><div class="line">   * 2016年10月14日17:18:54</div><div class="line">   */</div><div class="line">  <span class="function"><span class="keyword">function</span> <span class="title">readUTF8FromBadStr</span><span class="params">($bytes)</span></span></div><div class="line">  &#123;</div><div class="line">    <span class="keyword">if</span> (count($bytes) !== <span class="number">6</span>) &#123;</div><div class="line">      <span class="keyword">return</span> <span class="string">'?'</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">      $bytes = array_map(<span class="function"><span class="keyword">function</span> <span class="params">($v)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> ord($v);</div><div class="line">      &#125;, $bytes);</div><div class="line"></div><div class="line">      <span class="comment">// 获取第一个utf-8码</span></div><div class="line">      $v0 = (($bytes[<span class="number">0</span>] &amp; <span class="number">0xf</span>) &lt;&lt; <span class="number">12</span>) + (($bytes[<span class="number">1</span>] &amp; <span class="number">0x3f</span>) &lt;&lt; <span class="number">6</span>) + ($bytes[<span class="number">2</span>] &amp; <span class="number">0x3f</span>);</div><div class="line"></div><div class="line">      <span class="comment">// 获取第二个utf-8码</span></div><div class="line">      $v1 = (($bytes[<span class="number">3</span>] &amp; <span class="number">0xf</span>) &lt;&lt; <span class="number">12</span>) + (($bytes[<span class="number">4</span>] &amp; <span class="number">0x3f</span>) &lt;&lt; <span class="number">6</span>) + ($bytes[<span class="number">5</span>] &amp; <span class="number">0x3f</span>);</div><div class="line"></div><div class="line">      <span class="comment">// 合并为一个utf-16</span></div><div class="line">      $code = ($v0 &lt;&lt; <span class="number">16</span>) + $v1;</div><div class="line"></div><div class="line">      <span class="comment">// to hex</span></div><div class="line">      $code = base_convert($code, <span class="number">10</span>, <span class="number">16</span>);</div><div class="line"></div><div class="line">      $code = mb_convert_encoding(pack(<span class="string">'H*'</span>, $code), <span class="string">'UTF-8'</span>, <span class="string">'UTF-16BE'</span>);</div><div class="line"></div><div class="line">      <span class="keyword">return</span> $code;</div><div class="line"></div><div class="line">    &#125; <span class="keyword">catch</span> (<span class="keyword">Exception</span> $e) &#123;</div><div class="line">      <span class="keyword">return</span> <span class="string">'?'</span>;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line"></div><div class="line">  <span class="comment">/**</span></div><div class="line">   * 修复支持在错误java端下获取辅助平面字符，原本方法修改名称为readUTF8BytesQuick</div><div class="line">   *</div><div class="line">   * <span class="doctag">@author</span> 炒饭</div><div class="line">   * 2016年10月14日17:18:54</div><div class="line">   */</div><div class="line">  <span class="function"><span class="keyword">function</span> <span class="title">readUTF8Bytes</span><span class="params">($len)</span></span>&#123;</div><div class="line">    $string = <span class="string">''</span>;</div><div class="line"></div><div class="line">    <span class="keyword">for</span>($i = <span class="number">0</span>; $i &lt; $len; $i++)&#123;</div><div class="line">      $ch = <span class="keyword">$this</span>-&gt;read(<span class="number">1</span>);</div><div class="line">      $charCode = ord($ch);</div><div class="line"></div><div class="line">      <span class="keyword">if</span> ($charCode &lt; <span class="number">0x80</span>) &#123;</div><div class="line">        $string .= $ch;</div><div class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (($charCode &amp; <span class="number">0xe0</span>) === <span class="number">0xc0</span>) &#123;</div><div class="line">        $string .= $ch.<span class="keyword">$this</span>-&gt;read(<span class="number">1</span>);</div><div class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> ($charCode === <span class="number">0xed</span>) &#123;</div><div class="line">        <span class="comment">/*</span></div><div class="line">         * 以毒攻毒</div><div class="line">         * 0xD800..0xDBFF</div><div class="line">         * 解出的字符，在[0xD8, 0xDC)区间内，即为U+10000到U+10FFFF码位的字符</div><div class="line">         */</div><div class="line"></div><div class="line">        <span class="comment">// 读取第二个字节</span></div><div class="line">        $ch1 = <span class="keyword">$this</span>-&gt;read();</div><div class="line"></div><div class="line">        $charCode1 = ord($ch1);</div><div class="line"></div><div class="line">        <span class="comment">// 判断第二个4位是否为在[0x8, 0xC)区间内</span></div><div class="line">        $secondFourBit = ($charCode1 &amp; <span class="number">0x3c</span>) &gt;&gt; <span class="number">2</span>;</div><div class="line">        <span class="keyword">if</span> ($secondFourBit &gt;= <span class="number">0x8</span> &amp;&amp; $secondFourBit &lt; <span class="number">0xC</span>) &#123;</div><div class="line">          <span class="comment">// 字符串offset再后移一位</span></div><div class="line">          $i++;</div><div class="line"></div><div class="line">          $bytes = [</div><div class="line">            $ch,</div><div class="line">            $ch1,</div><div class="line">            <span class="keyword">$this</span>-&gt;read(<span class="number">1</span>),</div><div class="line">            <span class="keyword">$this</span>-&gt;read(<span class="number">1</span>),</div><div class="line">            <span class="keyword">$this</span>-&gt;read(<span class="number">1</span>),</div><div class="line">            <span class="keyword">$this</span>-&gt;read(<span class="number">1</span>),</div><div class="line">          ];</div><div class="line"></div><div class="line">          <span class="comment">// 读取问题字符</span></div><div class="line">          $string .= <span class="keyword">$this</span>-&gt;readUTF8FromBadStr($bytes);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">          <span class="comment">// 当做正常的3个字符串输出</span></div><div class="line">          $string .= $ch . $ch1 . <span class="keyword">$this</span>-&gt;read();</div><div class="line">        &#125;</div><div class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (($charCode &amp; <span class="number">0xf0</span>) === <span class="number">0xe0</span>) &#123;</div><div class="line">        <span class="comment">// 3字节字符识别</span></div><div class="line">        $string .= $ch . <span class="keyword">$this</span>-&gt;read(<span class="number">2</span>);</div><div class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (($charCode &amp; <span class="number">0xf8</span>) === <span class="number">0xf0</span>) &#123;</div><div class="line">        <span class="comment">// 4字节字符识别</span></div><div class="line">        $string .= $ch . <span class="keyword">$this</span>-&gt;read(<span class="number">3</span>);</div><div class="line">      &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> HessianParsingException(<span class="string">"Bad utf-8 encoding at pos "</span>.<span class="keyword">$this</span>-&gt;stream-&gt;pos);</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span>(HessianUtils::isInternalUTF8())</div><div class="line">      <span class="keyword">return</span> $string;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> utf8_decode($string);</div><div class="line">  &#125;</div><div class="line"><span class="meta">?&gt;</span></div></pre></td></tr></table></figure>
+<h2 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h2><p>本文使用的<code>HessianPHP</code>版本为<code>v2.0.3</code>，源码来源于此
+<a href="https://code.google.com/archive/p/hessianphp/downloads" target="_blank" rel="external">HessianPHP</a></p>
+<p><code>Java</code>的Hessian包版本为<code>4.0.37</code>，源码来源于此
+<a href="http://hessian.caucho.com/download/hessian-4.0.37-src.jar" target="_blank" rel="external">hessian-4.0.37-src.jar</a></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://www.ibm.com/developerworks/cn/java/j-unicode/" target="_blank" rel="external">使用 Java 语言进行 Unicode 代理编程</a></p>
+<p><a href="https://cytle.github.io/2016/10/12/Unicode、UTF-16、UTF-8相互转换/">Unicode、UTF-16、UTF-8相互转换</a></p>
+<p><a href="http://apps.timwhitlock.info/emoji/tables/unicode" target="_blank" rel="external">Emoji Unicode Tables</a></p>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> Hessian UTF-8-MB4 unicode UTF-16 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Unicode、UTF-16、UTF-8相互转换]]></title>
+      <url>https://cytle.github.io/2016/10/12/unicode%E3%80%81utf-16%E3%80%81utf-8%E7%9B%B8%E4%BA%92%E8%BD%AC%E6%8D%A2/</url>
+      <content type="html"><![CDATA[<blockquote>
+<p>本文从wiki和其它博文中搬了一些定义</p>
+</blockquote>
+<h2 id="字符和字节的区别"><a href="#字符和字节的区别" class="headerlink" title="字符和字节的区别"></a>字符和字节的区别</h2><p>字节(Octet): 是一个八位的存储单元，也称为Byte</p>
+<p>字符(Character): 逻辑上的字，像「A」，「是」，「😝」都是一个字符</p>
+<h2 id="Unicode和UTF"><a href="#Unicode和UTF" class="headerlink" title="Unicode和UTF"></a>Unicode和UTF</h2><p>Unicode是为了解决传统的字符编码方案的局限而产生的。类似所有字符的集合，每一个字符在Unicode中都有唯一『编码』，这个值称为代码点（code point），通常会用“U+”然后紧接着一组十六进制的数字来表示这一个字符。在基本多文种平面（英文：Basic Multilingual Plane，简写BMP。又称为“零号平面”、plane 0）里的所有字符，要用四个数字（即两个char,16bit ,例如U+4AE0，共支持六万多个字符）；在零号平面以外的字符则需要使用五个或六个数字。</p>
+<p>一个字符的Unicode编码是确定的。但是在实际传输过程中，由于不同系统平台的设计不一定一致，以及出于节省空间的目的，对Unicode编码的实现方式有所不同。Unicode的实现方式称为Unicode转换格式（Unicode/UCS Translation Format，简称为UTF）。</p>
+<p>Unicode.org定义了百万个以上的字符，如果将所有的字符用大小表示，需要的是4个字节。“a“的Unicode表示就会变成0x00000061，而“一“的Unicode值是0x00004E00。实际上，这就是UTF32，Linux操作系统上所使用的Unicode方案。而Windows平台下默认的Unicode编码方式为Little Endian的UTF-16。</p>
+<p><img src="/uploads/unicode、utf-16、utf-8相互转换/字符-编码-编码方案关系.jpg" alt="字符-编码-编码方案关系.jpg"></p>
+<h3 id="utf-32编码规则"><a href="#utf-32编码规则" class="headerlink" title="utf-32编码规则"></a>utf-32编码规则</h3><p>UTF-32用四个字节表示代码点，这样就可以完全表示UCS-4的所有代码点，而无需像UTF-16那样使用复杂的算法。与UTF-16类似，UTF-32也包括UTF-32、UTF-32BE、UTF-32LE三种编码，UTF-32也同样需要BOM字符。仅用’ABC’举例：</p>
+<p><img src="/uploads/unicode、utf-16、utf-8相互转换/utf-32编码规则-ABC例子.png" alt="utf-32编码规则-ABC例子.png"></p>
+<p>但是，仔细分析可以发现，其实绝大部分字符只使用2个字节就可以表示了。英文的Unicode范围是0x0000-0x007F，中文的Unicode范围是0x4E00-0x9F**，真正需要扩展到4个字节来表示的字符少之又少，所以有些系统直接使用2个字节来表示Unicode。比如Windows系统上，Unicode就是两个字节的。对于那些需要4个字节才能表示的字符，使用一种代理的手法来扩展(其实就是在低两个字节上做一个标记，表示这是一个代理，需要连接上随后的两个字节，才能组成一个字符)。这样的好处是大量的节约了存取空间，也提高了处理的速度。这种Unicode表示方法就是UTF16。一般在Windows平台上，提到Unicode,那就是指UTF16了。</p>
+<h3 id="utf-16编码规则"><a href="#utf-16编码规则" class="headerlink" title="utf-16编码规则"></a>utf-16编码规则</h3><p>UTF-16由RFC2781规定，它使用两个字节来表示一个代码点。</p>
+<p>不难猜到，UTF-16是完全对应于UCS-2的，即把UCS-2规定的代码点通过Big Endian或Little Endian方式直接保存下来。UTF-16包括三种：UTF-16，UTF-16BE（Big Endian），UTF-16LE（Little Endian）。</p>
+<p>UTF-16BE和UTF-16LE不难理解，而UTF-16就需要通过在文件开头以名为BOM（Byte Order Mark）的字符来表明文件是Big Endian还是Little Endian。BOM为U+FEFF这个字符。</p>
+<p>其实BOM是个小聪明的想法。由于UCS-2没有定义U+FFFE，因此只要出现 FF FE 或者 FE FF 这样的字节序列，就可以认为它是U+FEFF，并且可以判断出是Big Endian还是Little Endian。</p>
+<p>举个例子。“ABC”这三个字符用各种方式编码后的结果如下：</p>
+<p><img src="/uploads/unicode、utf-16、utf-8相互转换/utf-16编码规则-ABC例子.png" alt="utf-16编码规则-ABC例子.png"></p>
+<p>Windows平台下默认的Unicode编码为Little Endian的UTF-16（即上述的 FF FE 41 00 42 00 43 00）。你可以打开记事本，写上ABC，然后保存，再用二进制编辑器看看它的编码结果。</p>
+<h3 id="utf-8编码规则"><a href="#utf-8编码规则" class="headerlink" title="utf-8编码规则"></a>utf-8编码规则</h3><p>UTF-16和UTF-32的一个缺点就是它们固定使用两个或四个字节，这样在表示纯ASCII文件时会有很多00字节，造成浪费。而RFC3629定义的 UTF-8则解决了这个问题。UTF-8用1～4个字节来表示代码点。表示方式如下：</p>
+<p><table style="font-size: 0.75em;">
+    <tbody>
+        <tr>
+            <th style="width: auto;">
+                代码范围<br>
+                十六进制
+            </th>
+            <th style="width: auto;">
+                标量值（scalar value）<br>
+                二进制
+            </th>
+            <th style="width: auto;">
+                UTF-8
+                <br>
+                十六进制
+            </th>
+            <th style="width: 25%;">注释</th>
+        </tr>
+        <tr>
+            <td rowspan="2">
+                000000 - 00007F
+                <br>
+                <small>128个代码</small>
+            </td>
+            <td>00000000 00000000 0zzzzzzz</td>
+            <td>0zzzzzzz（00-7F）</td>
+            <td rowspan="2">ASCII字符范围，字节由零开始</td>
+        </tr>
+        <tr>
+            <td><small>七个z</small></td>
+            <td><small>七个z</small></td>
+        </tr>
+        <tr>
+            <td rowspan="2">
+                000080 - 0007FF<br>
+                <small>1920个代码</small>
+            </td>
+            <td>00000000 00000yyy yyzzzzzz</td>
+            <td style="text-align: left;">110yyyyy（C0-DF) 10zzzzzz(80-BF）</td>
+            <td rowspan="2" align="top">第一个字节由110开始，接着的字节由10开始</td>
+        </tr>
+        <tr>
+            <td><small>三个y；二个y；六个z</small></td>
+            <td><small>五个y；六个z</small></td>
+        </tr>
+        <tr>
+            <td rowspan="2">
+                000800 - 00D7FF<br>
+                00E000 - 00FFFF<br>
+                <small>61440个代码 <b>注<sup>1</sup></b></small>
+            </td>
+            <td>00000000 xxxxyyyy yyzzzzzz</td>
+            <td style="text-align: left;">1110xxxx(E0-EF) 10yyyyyy 10zzzzzz</td>
+            <td rowspan="2" align="top">第一个字节由1110开始，接着的字节由10开始</td>
+        </tr>
+        <tr>
+            <td><small>四个x；四个y；二个y；六个z</small></td>
+            <td><small>四个x；六个y；六个z</small></td>
+        </tr>
+        <tr>
+            <td rowspan="2">
+                010000 - 10FFFF<br>
+                <small>1048576个代码</small>
+            </td>
+            <td>000wwwxx xxxxyyyy yyzzzzzz</td>
+            <td style="text-align: left;">11110www(F0-F7) 10xxxxxx 10yyyyyy 10zzzzzz</td>
+            <td rowspan="2">将由11110开始，接着的字节由10开始</td>
+        </tr>
+        <tr>
+            <td><small>三个w；二个x；四个x；四个y；二个y；六个z</small></td>
+            <td><small>三个w；六个x；六个y；六个z</small></td>
+        </tr>
+    </tbody>
+</table>
+<sub>
+    <b>注<sup>1</sup></b>：Unicode在范围D800-DFFF中不存在任何字符，基本多文种平面中约定了这个范围用于UTF-16扩展标识辅助平面（两个UTF-16表示一个辅助平面字符）。当然，任何编码都是可以被转换到这个范围，但在unicode中他们并不代表任何合法的值。
+</sub></p>
+<p>可见，ASCII字符（U+0000～U+007F）部分完全使用一个字节，避免了存储空间的浪费。而且UTF-8不再需要BOM字节。</p>
+<p>另外，从上表中可以看出，单字节编码的第一字节为[00-7F]，双字节编码的第一字节为[C2-DF]，三字节编码的第一字节为[E0-EF]。这样只要看到第一个字节的范围就可以知道编码的字节数。这样也可以大大简化算法。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://zh.wikipedia.org/wiki/Unicode" target="_blank" rel="external">wiki:Unicode</a></p>
+<p>[wiki:UTF-8]a</p>
+<p><a href="https://zh.wikipedia.org/wiki/UTF-16" target="_blank" rel="external">wiki:UTF-16</a></p>
+<p><a href="http://www.cnblogs.com/skyaspnet/archive/2011/02/18/1957770.html" target="_blank" rel="external">字符编码问题，UNICODE\UTF-8\UTF-16\UTF-32\UCS\ANSI\GBK\GB2312等乱七八糟的名词</a>
+ – 浅显易懂的说明字符编码，还有Big Endian和Little Endian的说明</p>
+<p><a href="http://www.sxt.cn/u/756/blog/2773" target="_blank" rel="external">深入图解字符集与字符集编码（二）——字符集及其编号</a></p>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> Unicode UTF-8 UTF-16 字符 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[nginx-location匹配命令]]></title>
+      <url>https://cytle.github.io/2016/10/11/nginx-location%E5%8C%B9%E9%85%8D%E5%91%BD%E4%BB%A4/</url>
+      <content type="html"><![CDATA[<h2 id="location匹配命令"><a href="#location匹配命令" class="headerlink" title="location匹配命令"></a>location匹配命令</h2><table>
+<thead>
+<tr>
+<th style="text-align:center">符合</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">~</td>
+<td style="text-align:left">波浪线表示执行一个正则匹配，区分大小写</td>
+</tr>
+<tr>
+<td style="text-align:center">~*</td>
+<td style="text-align:left">表示执行一个正则匹配，不区分大小写</td>
+</tr>
+<tr>
+<td style="text-align:center">^~</td>
+<td style="text-align:left">^~表示普通字符匹配，如果该选项匹配，只匹配该选项，不匹配别的选项，一般用来匹配目录</td>
+</tr>
+<tr>
+<td style="text-align:center">=</td>
+<td style="text-align:left">进行普通字符精确匹配</td>
+</tr>
+<tr>
+<td style="text-align:center">@</td>
+<td style="text-align:left">“@” 定义一个命名的 location，使用在内部定向时，例如 error_page, try_files</td>
+</tr>
+</tbody>
+</table>
+<h3 id="location-匹配的优先级-与location在配置文件中的顺序无关"><a href="#location-匹配的优先级-与location在配置文件中的顺序无关" class="headerlink" title="location 匹配的优先级(与location在配置文件中的顺序无关)"></a>location 匹配的优先级(与location在配置文件中的顺序无关)</h3><p>= 精确匹配会第一个被处理。如果发现精确匹配，nginx停止搜索其他匹配。
+普通字符匹配，正则表达式规则和长的块规则将被优先和查询匹配，也就是说如果该项匹配还需去看有没有正则表达式匹配和更长的匹配。</p>
+<p>^~ 则只匹配该规则，nginx停止搜索其他匹配，否则nginx会继续处理其他location指令。
+最后匹配理带有”~”和”~*”的指令，如果找到相应的匹配，则nginx停止搜索其他匹配；当没有正则表达式或者没有正则表达式被匹配的情况下，那么匹配程度最高的逐字匹配指令会被使用。</p>
+<h4 id="location-优先级官方文档"><a href="#location-优先级官方文档" class="headerlink" title="location 优先级官方文档"></a>location 优先级官方文档</h4><p>Directives with the = prefix that match the query exactly. If found, searching stops.
+All remaining directives with conventional strings, longest match first. If this match used the ^~ prefix, searching stops.</p>
+<p>Regular expressions, in order of definition in the configuration file.
+If #3 yielded a match, that result is used. Else the match from #2 is used.</p>
+<p>=前缀的指令严格匹配这个查询。如果找到，停止搜索。</p>
+<p>所有剩下的常规字符串，最长的匹配。如果这个匹配使用^〜前缀，搜索停止。</p>
+<p>正则表达式，在配置文件中定义的顺序。</p>
+<p>如果第3条规则产生匹配的话，结果被使用。否则，如同从第2条规则被使用。</p>
+<p>例如</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">location</span>  = / &#123;</div><div class="line">  <span class="comment"># 只匹配"/".</span></div><div class="line">  <span class="comment"># [ configuration A ]</span></div><div class="line">&#125;</div><div class="line"><span class="attribute">location</span>  / &#123;</div><div class="line">  <span class="comment"># 匹配任何请求，因为所有请求都是以"/"开始</span></div><div class="line">  <span class="comment"># 但是更长字符匹配或者正则表达式匹配会优先匹配</span></div><div class="line">  <span class="comment"># [ configuration B ]</span></div><div class="line">&#125;</div><div class="line"><span class="attribute">location</span><span class="regexp"> ^~</span> /images/ &#123;</div><div class="line">  <span class="comment"># 匹配任何以 /images/ 开始的请求，并停止匹配 其它location</span></div><div class="line">  <span class="comment"># [ configuration C ]</span></div><div class="line">&#125;</div><div class="line"><span class="attribute">location</span> <span class="regexp">~* .(gif|jpg|jpeg)$</span> &#123;</div><div class="line">  <span class="comment"># 匹配以 gif, jpg, or jpeg结尾的请求.</span></div><div class="line">  <span class="comment"># 但是所有 /images/ 目录的请求将由 [Configuration C]处理.</span></div><div class="line">  <span class="comment"># [ configuration D ]</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>请求URI例子:</p>
+<p>/ -&gt; 符合configuration A</p>
+<p>/documents/document.html -&gt; 符合configuration B</p>
+<p>/images/1.gif -&gt; 符合configuration C</p>
+<p>/documents/1.jpg -&gt;符合 configuration D</p>
+<p>@location 例子
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">error_page 404 = @fetch;</div><div class="line"></div><div class="line">location @fetch(</div><div class="line">  proxy_pass http://fetch;</div><div class="line">)</div></pre></td></tr></table></figure></p>
+<p>转载请保留: <a href="http://www.nginx.cn/115.html" target="_blank" rel="external">http://www.nginx.cn/115.html</a></p>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> nginx </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[iterm+zsh+tmux]]></title>
+      <url>https://cytle.github.io/2016/09/25/iterm-zsh-tmux/</url>
+      <content type="html"><![CDATA[<p><img src="/uploads/iterm-zsh-tmux/效果.png" alt="效果"></p>
+<h2 id="tmux"><a href="#tmux" class="headerlink" title="tmux"></a>tmux</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-get install tmux</div></pre></td></tr></table></figure>
+<h2 id="YADR"><a href="#YADR" class="headerlink" title="YADR"></a>YADR</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">sudo apt-get install rake</div><div class="line"><span class="meta"></span></div><div class="line"># install YADR</div><div class="line"><span class="meta">#</span> http://www.agileventures.org/articles/setting-up-yadr-on-ubuntu</div><div class="line">sh -c "`curl -fsSL https://raw.githubusercontent.com/skwp/dotfiles/master/install.sh`"</div><div class="line"></div><div class="line">nautilus ~/.yadr/fonts/</div></pre></td></tr></table></figure>
+<p>终端配色方案修改为<code>solarized</code></p>
+<p>编辑 &gt; 编辑配置文件 &gt; 颜色</p>
+<p><img src="/uploads/iterm-zsh-tmux/终端配置.png" alt="终端配置"></p>
+<h2 id="tmux-powerline"><a href="#tmux-powerline" class="headerlink" title="tmux-powerline"></a>tmux-powerline</h2><p><a href="https://github.com/erikw/tmux-powerline" target="_blank" rel="external">tmux-powerline</a></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">TMUX_POWERLINE_PATH=~/.tmux-powerline</div><div class="line">git clone https://github.com/erikw/tmux-powerline.git $TMUX_POWERLINE_PATH</div></pre></td></tr></table></figure>
+<p>编辑<code>.tmux.conf</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">set-option -g status on</div><div class="line">set-option -g status-interval 2</div><div class="line">set-option -g status-justify "centre"</div><div class="line">set-option -g status-left-length 60</div><div class="line">set-option -g status-right-length 90</div><div class="line">set-option -g status-left "#(~/path/to/tmux-powerline/powerline.sh left)"</div><div class="line">set-option -g status-right "#(~/path/to/tmux-powerline/powerline.sh right)"</div><div class="line"></div><div class="line">set-window-option -g window-status-current-format "#[fg=colour235, bg=colour27]⮀#[fg=colour255, bg=colour27] #I ⮁ #W #[fg=colour27, bg=colour235]⮀"</div><div class="line"><span class="meta"></span></div><div class="line"># You can toggle the visibility of the statusbars</div><div class="line">bind C-[ run '~/path/to/tmux-powerline/mute_powerline.sh left'      # Mute left statusbar.</div><div class="line">bind C-] run '~/path/to/tmux-powerline/mute_powerline.sh right'     # Mute right statusbar.</div></pre></td></tr></table></figure>
+<h3 id="配置城市"><a href="#配置城市" class="headerlink" title="配置城市"></a>配置城市</h3><p>…</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://www.drbunsen.org/the-text-triumvirate/" target="_blank" rel="external">The Text Triumvirate</a></p>
+<p><a href="https://github.com/skwp/dotfiles" target="_blank" rel="external">YADR</a></p>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> zsh tmux unix vim </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[hessian-调用java重载方法]]></title>
+      <url>https://cytle.github.io/2016/09/24/hessian-%E8%B0%83%E7%94%A8java%E9%87%8D%E8%BD%BD%E6%96%B9%E6%B3%95/</url>
+      <content type="html"><![CDATA[<blockquote>
+<p>重载(overloading) 是在一个类里面，方法名字相同，而参数不同。返回类型可以相同也可以不同。每个重
+载的方法（或者构造函数）都有一个独一无二的参数类型列表。</p>
+</blockquote>
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p>Hessian的客户端（调用者，如PHP）不能也不会识别调用的参数类型，从而传递相应的参数列表。另一方面java
+端接受请求后，只通过方法名和参数数量来取得方法。</p>
+<p>在使用像php这样的弱类型语言通过<code>Hessian</code>调用java端服务时，重载方法的使用存在问题。</p>
+<h3 id="源码查看"><a href="#源码查看" class="headerlink" title="源码查看"></a>源码查看</h3><p>下面来看服务端的源码：</p>
+<h4 id="产生方法列表"><a href="#产生方法列表" class="headerlink" title="产生方法列表"></a>产生方法列表</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// com.caucho.services.server.AbstractSkeleton</span></div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">protected</span> <span class="title">AbstractSkeleton</span><span class="params">(Class apiClass)</span></span></div><div class="line">  &#123;</div><div class="line">    _apiClass = apiClass;</div><div class="line">    Method []methodList = apiClass.getMethods();</div><div class="line"></div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; methodList.length; i++) &#123;</div><div class="line">      Method method = methodList[i];</div><div class="line"></div><div class="line">      <span class="comment">// put 方法名</span></div><div class="line">      <span class="keyword">if</span> (_methodMap.get(method.getName()) == <span class="keyword">null</span>)</div><div class="line">        _methodMap.put(method.getName(), methodList[i]);</div><div class="line"></div><div class="line">      Class []param = method.getParameterTypes();</div><div class="line"></div><div class="line">      <span class="comment">// put 方法名 + 参数数量</span></div><div class="line">      String mangledName = method.getName() + <span class="string">"__"</span> + param.length;</div><div class="line">      _methodMap.put(mangledName, methodList[i]);</div><div class="line"></div><div class="line">      <span class="comment">// put 方法名 + 每个参数类型(不完整的类型名)</span></div><div class="line">      _methodMap.put(mangleName(method, <span class="keyword">false</span>), methodList[i]);</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">//...</span></div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">mangleName</span><span class="params">(Method method, <span class="keyword">boolean</span> isFull)</span></span></div><div class="line">  &#123;</div><div class="line">    StringBuffer sb = <span class="keyword">new</span> StringBuffer();</div><div class="line"></div><div class="line">    sb.append(method.getName());</div><div class="line"></div><div class="line">    <span class="comment">// 获取方法的参数列表</span></div><div class="line">    Class []params = method.getParameterTypes();</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; params.length; i++) &#123;</div><div class="line">      sb.append(<span class="string">'_'</span>);</div><div class="line"></div><div class="line">      <span class="comment">// 参数的类型</span></div><div class="line">      sb.append(mangleClass(params[i], isFull));</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> sb.toString();</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>在上面这段程序中，我们可以知道hessian按以下三种方式作为key存了方法</p>
+<ul>
+<li>方法名</li>
+<li>方法名 + 参数数量</li>
+<li>方法名 + 每个参数类型(不完整的类型名)</li>
+</ul>
+<h4 id="获取方法"><a href="#获取方法" class="headerlink" title="获取方法"></a>获取方法</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// com.caucho.hessian.server.HessianSkeleton extends AbstractSkeleton</span></div><div class="line"></div><div class="line">  <span class="comment">// ...</span></div><div class="line">  <span class="comment">// Line 247,254</span></div><div class="line">    Method method;</div><div class="line">    <span class="comment">// 通过方法名 + 参数数量 获取</span></div><div class="line">    method = getMethod(methodName + <span class="string">"__"</span> + argLength);</div><div class="line"></div><div class="line">    <span class="comment">// 通过方法名获取</span></div><div class="line">    <span class="keyword">if</span> (method == <span class="keyword">null</span>)</div><div class="line">      method = getMethod(methodName);</div></pre></td></tr></table></figure>
+<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><p>当有以下一个接口时</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">TestService</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">(User user)</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">(<span class="keyword">int</span> uid)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>将产生以下方法</p>
+<ul>
+<li>getName</li>
+<li>getName__1</li>
+<li>getName_User</li>
+<li>getName_int</li>
+</ul>
+<p>如果我们在客户端中调用时</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;?php</span></div><div class="line"></div><div class="line">getUser(<span class="number">1</span>);</div><div class="line"></div><div class="line"><span class="comment">// 假设 $user 是一个对象</span></div><div class="line">getUser($user);</div></pre></td></tr></table></figure>
+<p>这样调用，java端会选择同一个方法，getName__1，可能是<code>getName(User user)</code>或者
+<code>getName(int uid)</code>，很有可能就报<code>unsafeDeserialize</code>异常了。</p>
+<p>在使用这样参数数量相同的重载方法时，按照java端的获取规则，我们可以这么调用</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;?php</span></div><div class="line"></div><div class="line">getUser_int(<span class="number">1</span>);</div><div class="line"></div><div class="line"><span class="comment">// 直接跟上参数类型</span></div><div class="line">getUser_User($user);</div><div class="line"></div><div class="line"><span class="comment">// 如果多个继续在后面加尾缀，类型大小写和java一致</span></div><div class="line"><span class="comment">// getUser_User_int_String($user);</span></div></pre></td></tr></table></figure>
+<p>这样就可以完美调用重载的方法了。</p>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> Hessian 方法重载 unsafeDeserialize </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Hessian-2.0序列化协议规范]]></title>
+      <url>https://cytle.github.io/2016/09/22/Hessian-2-0%E5%BA%8F%E5%88%97%E5%8C%96%E5%8D%8F%E8%AE%AE%E8%A7%84%E8%8C%83/</url>
+      <content type="html"><![CDATA[<p>翻译: Edison peng</p>
+<p><a href="/uploads/hessian协议中文版.docx">word版下载</a></p>
+<h2 id="1-概述"><a href="#1-概述" class="headerlink" title="1.概述"></a>1.概述</h2><p><code>Hessian</code>是一个轻量级的,自定义描述的二进制RPC协议。<code>Hessian</code>主要用作面向对象的消息通信。</p>
+<h2 id="2-设计目标"><a href="#2-设计目标" class="headerlink" title="2.设计目标"></a>2.设计目标</h2><p><code>Hessian</code>的初衷是支持动态类型，格式紧凑，跨语言.</p>
+<p><code>Hessian</code>协议的设计目标如下:</p>
+<ul>
+<li>可序列化类型必须是可以自描述的, i.e. 不需要额外的模式(schema)或接口定义.</li>
+<li>必须是语言独立的, 包括对脚本语言的支持.</li>
+<li>It must be readable or writable in a single pass.</li>
+<li>必须设计紧凑.</li>
+<li>必须足够简单，以便测试和实现.</li>
+<li>高效率.</li>
+<li>必须支持Unicode字符集.</li>
+<li>支持8-bit二进制数据，without escaping or using attachments.</li>
+<li>必须支持加密, 压缩, 签名 and transaction context envelopes.</li>
+</ul>
+<h2 id="3-Hessian语法"><a href="#3-Hessian语法" class="headerlink" title="3. Hessian语法"></a>3. <code>Hessian</code>语法</h2><p>序列化语法
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div></pre></td><td class="code"><pre><div class="line">        #starting production</div><div class="line">top     ::=value</div><div class="line"></div><div class="line">        #分割成64k每chunk的8-bit二进制数据</div><div class="line">binary  ::= &apos;b&apos; b1 b0 &lt;binary-data&gt; binary  #不是最后一个chunk</div><div class="line">        ::= &apos;B&apos; b1 b0 &lt;binary-data&gt;         #最后一个chunk</div><div class="line">        ::= [x20-x2f] &lt;binary-data&gt;         #长度范围为 0-15</div><div class="line"></div><div class="line">        #boolean true/false</div><div class="line">boolean ::= &apos;T&apos;</div><div class="line">        ::= &apos;F&apos;</div><div class="line"></div><div class="line">        #对象的定义(compact map)</div><div class="line">class-def ::= &apos;O&apos; type int string*</div><div class="line"></div><div class="line">        #time in UTC encoded as 64-bit long milliseconds since epoch</div><div class="line">date    ::= &apos;d&apos; b7 b6 b5 b4 b3 b2 b1 b0</div><div class="line"></div><div class="line">        #64-bit IEEE double</div><div class="line">double  ::= &apos;D&apos; b7 b6 b5 b4 b3 b2 b1 b0</div><div class="line">        ::= x67                         #0.0</div><div class="line">        ::= x68                         #1.0</div><div class="line">        ::= x69 b0                      #byte表示的double(-128.0 to 127.0)</div><div class="line">        ::= x6a b1 b0                   #short表示的double</div><div class="line">        ::= x6b b3 b2 b1 b0             #32-bit float表示的double</div><div class="line"></div><div class="line">        #32-bit 有符号整型</div><div class="line">int     ::= &apos;I&apos; b3 b2 b1 b0</div><div class="line">        ::= [x80-xbf]                   #-x10 to x3f</div><div class="line">        ::= [xc0-xcf] b0                #-x800 to x7ff</div><div class="line">        ::= [xd0-xd7] b1 b0             #-x40000 to x3ffff</div><div class="line"></div><div class="line">        # list/vector length</div><div class="line">length  ::= &apos;l&apos; b3 b2 b1 b0</div><div class="line">        ::= x6e int</div><div class="line"></div><div class="line">        # list/vector</div><div class="line">list    ::= &apos;V&apos; type? length? value* &apos;z&apos;</div><div class="line">        ::= &apos;v&apos; int int value*          #第一个int表示类型引用, 第二个int表示长度</div><div class="line"></div><div class="line">        #64-bit有符号long</div><div class="line">long    ::= &apos;L&apos; b7 b6 b5 b4 b3 b2 b1 0</div><div class="line">        ::= [xd8-xef]                   #-x08 to x0f</div><div class="line">        ::= [xf0-xff] b0                #-x800 to x7ff</div><div class="line">        ::= [x38-x3f] b1 b0             #-x40000 to x3ffff</div><div class="line">        ::= x77 b3 b2 b1 b0             #32-bit 整型表示的long</div><div class="line"></div><div class="line">        #map/object</div><div class="line">map     ::= &apos;M&apos; type? (value value)* &apos;z&apos;    #key, value map pairs</div><div class="line"></div><div class="line">        # null value</div><div class="line">null    ::= &apos;N&apos;</div><div class="line"></div><div class="line">        #对象实例</div><div class="line">object  ::= &apos;o&apos; int value*</div><div class="line"></div><div class="line">        #值引用</div><div class="line">ref     ::= &apos;R&apos; b3 b2 b1 b0 # 对流中第n个map/list/object的引用</div><div class="line"></div><div class="line">        ::= x4a b0          # 对map/list/object的引用，范围为1-255th</div><div class="line">        ::= x4b b1 b0       # 对map/list/object 的引用，范围为1-65535th</div><div class="line"></div><div class="line">        #UTF-8 编码的字符串，分割成64k大小的chunks</div><div class="line">string  ::= &apos;s&apos; b1 b0 &lt;utf8-data&gt; string    #非末尾chunk</div><div class="line">        ::= &apos;S&apos; b1 b0 &lt;utf8-data&gt;           #长度范围为(0-65535)的字符串</div><div class="line">        ::=[x00-x1f] &lt;utf8-data&gt;            #长度范围为(0-31) 的字符串</div><div class="line"></div><div class="line">        #map/list 的类型（针对面向对象语言)</div><div class="line">type    ::= &apos;t&apos; b1 b0 &lt;type-string&gt;     #类型名称</div><div class="line">        ::= x75 int                     #类型引用值（用整数表示）</div><div class="line"></div><div class="line">        #main production</div><div class="line">value   ::=null</div><div class="line">        ::= binary</div><div class="line">        ::= boolean</div><div class="line">        ::= date</div><div class="line">        ::= double</div><div class="line">        ::= int</div><div class="line">        ::= list</div><div class="line">        ::= long</div><div class="line">        ::= map</div><div class="line">        ::= class-def value</div><div class="line">        ::= ref</div><div class="line">        ::= string</div></pre></td></tr></table></figure></p>
+<h2 id="4-序列化"><a href="#4-序列化" class="headerlink" title="4. 序列化"></a>4. 序列化</h2><p><code>Hessian</code>的对象序列化机制包含8种基本类型:</p>
+<ol>
+<li>原始二进制数据</li>
+<li>boolean</li>
+<li>64-bit date</li>
+<li>64-bit double</li>
+<li>32-bit int</li>
+<li>64-bit long</li>
+<li>null</li>
+<li>UTF8编码的string</li>
+</ol>
+<p>另外包括3种递归类型：</p>
+<ol>
+<li>list for lists and arrays</li>
+<li>map for maps and dictionaries</li>
+<li>object for objects</li>
+</ol>
+<p>最后，它还包含一个特殊的类型：</p>
+<ol>
+<li>ref 用来表示对共享对象的引用.</li>
+</ol>
+<p><code>Hessian</code> 2.0有3个内部的引用表:</p>
+<ol>
+<li>一个object/list 引用表.</li>
+<li>一个类型定义(class definition)引用表.</li>
+<li>一个type(class name)引用表.</li>
+</ol>
+<h3 id="4-1-二进制数据"><a href="#4-1-二进制数据" class="headerlink" title="4.1. 二进制数据"></a>4.1. 二进制数据</h3><p>二进制数据语法
+binary  ::= b b1 b0 <binary-data> binary
+        ::= B b1 b0 <binary-data>
+        ::= [x20-x2f] <binary-data></binary-data></binary-data></binary-data></p>
+<p>二进制数据被分割成chunk. 十六进制数x42(‘B’)标识最后一个chunk,x62(‘b’)标识普通的chunk.
+每个chunk有一个16-bit的长度值.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">len = <span class="number">256</span>*b1 + b0</div></pre></td></tr></table></figure>
+<h4 id="4-1-1-压缩格式：短二进制"><a href="#4-1-1-压缩格式：短二进制" class="headerlink" title="4.1.1. 压缩格式：短二进制"></a>4.1.1. 压缩格式：短二进制</h4><p>长度小于15的二进制数据只需要用单个十六进制数字来表示[x20-x2f].</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">len = code - <span class="number">0x20</span></div></pre></td></tr></table></figure>
+<h4 id="4-1-2-Binary实例"><a href="#4-1-2-Binary实例" class="headerlink" title="4.1.2. Binary实例"></a>4.1.2. Binary实例</h4><p>x20             #零长度的二进制数据
+x23 x01 x02 x03     #长度为3的数据
+B x10 x00 ….      #4k大小的final chunk
+b x04 x00 ….      #1k大小的non-final chunk</p>
+<h3 id="4-2-boolean"><a href="#4-2-boolean" class="headerlink" title="4.2. boolean"></a>4.2. boolean</h3><p>Boolean语法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">boolean  ::= T</div><div class="line">         ::= F</div></pre></td></tr></table></figure>
+<p>用16进制’F’来表示false,用’T’表示true.</p>
+<h4 id="4-2-1-Boolean实例"><a href="#4-2-1-Boolean实例" class="headerlink" title="4.2.1. Boolean实例"></a>4.2.1. Boolean实例</h4><p>T # true
+F # false</p>
+<h3 id="4-3-date"><a href="#4-3-date" class="headerlink" title="4.3.    date"></a>4.3.    date</h3><p>date ::=d b7 b6 b5 b4 b3 b2 b1 b0</p>
+<p>Date采用64-bit来表示距1970 00:00H, UTC以来经过的milliseconds.</p>
+<h4 id="4-3-1-Date实例"><a href="#4-3-1-Date实例" class="headerlink" title="4.3.1. Date实例"></a>4.3.1. Date实例</h4><p>D x00 x00 xd0 x4b x92 x84 xb8   #2:51:31 May 8, 1998 UTC</p>
+<h3 id="4-4-double"><a href="#4-4-double" class="headerlink" title="4.4. double"></a>4.4. double</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">double  ::= D b7 b6 b5 b4 b3 b2 b1 b0</div><div class="line">        ::= x67</div><div class="line">        ::= x68</div><div class="line">        ::= x69 b0</div><div class="line">        ::= x6a b1 b0</div><div class="line">        ::= x6b b3 b2 b1 b0</div></pre></td></tr></table></figure>
+<p>符合IEEE标准的 64-bit浮点数.</p>
+<h4 id="4-4-1-压缩格式：double表示的0"><a href="#4-4-1-压缩格式：double表示的0" class="headerlink" title="4.4.1. 压缩格式：double表示的0"></a>4.4.1. 压缩格式：double表示的0</h4><p>0.0用十六进制x67来表示  （对应ascii中字符g的ascii值）</p>
+<h4 id="4-4-2-压缩格式：double-表示的1"><a href="#4-4-2-压缩格式：double-表示的1" class="headerlink" title="4.4.2. 压缩格式：double 表示的1"></a>4.4.2. 压缩格式：double 表示的1</h4><p>1.0用十六进制x68来表示</p>
+<h4 id="4-4-3-压缩格式：单字节double"><a href="#4-4-3-压缩格式：单字节double" class="headerlink" title="4.4.3. 压缩格式：单字节double"></a>4.4.3. 压缩格式：单字节double</h4><p>介于-128.0和127.0之间的无小数位的double型可以用两个十六进制来表示(如x3b表示的),也即相当于一个byte值转换成double:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">value = (<span class="keyword">double</span>)b0</div></pre></td></tr></table></figure>
+<h4 id="4-4-4-压缩格式：short型double"><a href="#4-4-4-压缩格式：short型double" class="headerlink" title="4.4.4. 压缩格式：short型double"></a>4.4.4. 压缩格式：short型double</h4><p>介于-32768.0和32767.0之间的无小数位的double型可以用3个十六进制数来表示，也即相当于一个short值转换成double:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">value=(<span class="keyword">double</span>)(<span class="number">256</span>*b1 + b0)</div></pre></td></tr></table></figure>
+<h4 id="4-4-5-float型double"><a href="#4-4-5-float型double" class="headerlink" title="4.4.5. float型double"></a>4.4.5. float型double</h4><p>和32-bit float型等价的double能够用4个十六进制的 float来表示.</p>
+<h4 id="4-4-6-Double实例"><a href="#4-4-6-Double实例" class="headerlink" title="4.4.6. Double实例"></a>4.4.6. Double实例</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">x67             # 0.0</div><div class="line">x68             # 1.0</div><div class="line"></div><div class="line">x69 x00         # 0.0</div><div class="line">x69 x80         # -128.0</div><div class="line">x69 xff         # 127.0</div><div class="line"></div><div class="line">x70 x00 x00     # 0.0</div><div class="line">x70 x80 x00     # -32768.0</div><div class="line">x70 xff xff         # 32767.0</div><div class="line"></div><div class="line">D x40 x28 x80 x00 x00 x00 x00 x00       # 12.25</div></pre></td></tr></table></figure>
+<h3 id="4-5-int"><a href="#4-5-int" class="headerlink" title="4.5. int"></a>4.5. int</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">int ::= ’I’ b3 b2 b1 b0</div><div class="line">    ::= [x80-xbf]</div><div class="line">    ::= [xc0-xcf]   b0</div><div class="line">    ::= [xd0-xd7] b1 b0</div></pre></td></tr></table></figure>
+<p>32-bit的有符号整型. 一个整型由跟随在x49(‘I’)之后的4个大端序(big-endian)排位的十六进制数来表示。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">value = (b3&lt;&lt;<span class="number">24</span>) + (b2&lt;&lt;<span class="number">16</span>) + (b1&lt;&lt;<span class="number">8</span>)  + b0;</div></pre></td></tr></table></figure>
+<h4 id="4-5-1-单字节整型"><a href="#4-5-1-单字节整型" class="headerlink" title="4.5.1. 单字节整型"></a>4.5.1. 单字节整型</h4><p>介于-16和47之间的整型可以用单个字节来表示，用十六进制来表示范围为x80到xbf.</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">value = code – 0x90     # 这里是0x90, 如果code=x80，则value = x80 – x90 = -16.:-)</div></pre></td></tr></table></figure>
+<h4 id="4-5-2-双字节整型"><a href="#4-5-2-双字节整型" class="headerlink" title="4.5.2. 双字节整型"></a>4.5.2. 双字节整型</h4><p>介于-2048和2047之间的整型可以用两个字节来表示，头字节的范围从xc0到xcf.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">value = ((code – <span class="number">0xc8</span>)&lt;&lt;<span class="number">8</span>) + b0;</div></pre></td></tr></table></figure>
+<h4 id="4-5-3-三字节整型"><a href="#4-5-3-三字节整型" class="headerlink" title="4.5.3. 三字节整型"></a>4.5.3. 三字节整型</h4><p>介于- 262144和262143之间的整型可以用三个字节来表示，头字节的范围从xd0到xd7.</p>
+<h4 id="4-5-4-整型实例"><a href="#4-5-4-整型实例" class="headerlink" title="4.5.4. 整型实例"></a>4.5.4. 整型实例</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">x90                 # 0</div><div class="line">x80                 # -16</div><div class="line">xbf                 # 47</div><div class="line"></div><div class="line">xc8 x00             # 0</div><div class="line">xc0 x00             # -2048</div><div class="line">xc7 x00             # -256</div><div class="line">xcf xff             # 2047</div><div class="line"></div><div class="line">xd4 x00 x00         # 0</div><div class="line">xd0 x00 x00         # -262144</div><div class="line">xd7 xff xff         # 262143</div><div class="line"></div><div class="line">I x00 x00 x00 x00   # 0</div><div class="line">I x00 x00 x01 x2c   # 300</div></pre></td></tr></table></figure>
+<h3 id="4-6-list"><a href="#4-6-list" class="headerlink" title="4.6. list"></a>4.6. list</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">list    ::= V type? length? value* z</div><div class="line">        ::= V int int value*</div></pre></td></tr></table></figure>
+<p>一个有序列表.每个list都包含一个type字符串，长度length和一个值列表，以十六进制x7a(‘z’)作为结尾。Type可以是任意的UTF-8编码的字符串。Length指定了list值列表的长度。</p>
+<p>list的每个值都被添加到一个引用列表中，这样，所有list中的相同条目都共享同一份引用以节省空间。</p>
+<blockquote>
+<p>Any parser expecting a list must also accept a null or a shared ref.</p>
+</blockquote>
+<p>Type的有效取值在文档中并没有详细指定，这依赖于特定的应用. 比如， 在一个由静态类型语言实现的server所暴露的<code>Hessian</code>接口可以使用类型信息来实例化特定的数组类型，反之，在一个由动态类型语言(e.g.: python)实现的server中，将会忽略类型信息。</p>
+<h4 id="4-6-1-压缩格式-repeated-list"><a href="#4-6-1-压缩格式-repeated-list" class="headerlink" title="4.6.1. 压缩格式: repeated list"></a>4.6.1. 压缩格式: repeated list</h4><p><code>Hessian</code>2.0 制定了一个格式紧凑的list，其中list元素类型type和元素个数length都用整型来编码，其中类型type是对先前定义的原始数据类型的引用。</p>
+<h4 id="4-6-2-List实例"><a href="#4-6-2-List实例" class="headerlink" title="4.6.2. List实例"></a>4.6.2. List实例</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">强类型int数组的序列化: int[] = &#123;0, 1&#125;</div><div class="line"></div><div class="line">V</div><div class="line">    t x00 x04 [int  # int[] 类型的编码</div><div class="line">    x6e x02         # length = 2</div><div class="line">    x90             # 整数 0</div><div class="line">    x91             # 整数 1</div><div class="line">    z</div><div class="line"></div><div class="line">匿名变长list = &#123;0, &quot;foobar&quot;&#125;</div><div class="line">V</div><div class="line">    t x00 x04 [int      # int[] 类型编码</div><div class="line">    x6e x02             # length = 2</div><div class="line">    x90                 # 整数0</div><div class="line">    x91                 # 整数1</div><div class="line">    z</div><div class="line"></div><div class="line">Repeated list类型</div><div class="line"></div><div class="line">V</div><div class="line">    t x00 x04 [int      # int[]类型编码</div><div class="line">    x63 x02             # length=2</div><div class="line">    x90                 # 整数 0</div><div class="line">    x91                 # 整数 1</div><div class="line">    z</div><div class="line"></div><div class="line">V</div><div class="line">    x91             # int[]的类型引用    (integer #1)</div><div class="line">    x92             # length = 2</div><div class="line">    x92             # 整数2</div><div class="line">    x93             # 整数3</div></pre></td></tr></table></figure>
+<h3 id="4-7-long"><a href="#4-7-long" class="headerlink" title="4.7. long"></a>4.7. long</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">long    ::= L b7 b6 b5 b4 b3 b2 b1 b0</div><div class="line">        ::= [xd8-xef]</div><div class="line">        ::= [xf0-xff] b0</div><div class="line">        ::= [x38-x3f] b1 b0</div><div class="line">        ::= x77 b3 b2 b1 b0</div></pre></td></tr></table></figure>
+<p>一个64-bit的有符号整数. 起头由十六进制x4c(‘L’)标识, 后面为8字节的大端（big-endian）序的整数。</p>
+<h4 id="4-7-1-压缩格式-单字节long"><a href="#4-7-1-压缩格式-单字节long" class="headerlink" title="4.7.1. 压缩格式: 单字节long"></a>4.7.1. 压缩格式: 单字节long</h4><p>介于-8和15之间的long由单个字节表示，范围为xd8到xef.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">value = (code – <span class="number">0xe0</span>)</div></pre></td></tr></table></figure>
+<h4 id="4-7-2-压缩格式-双字节long"><a href="#4-7-2-压缩格式-双字节long" class="headerlink" title="4.7.2. 压缩格式: 双字节long"></a>4.7.2. 压缩格式: 双字节long</h4><p>介于-2048和2047之间的long由两个字节标识, 起头字节的取值范围为xf0到xff.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">value = ((code – <span class="number">0xf8</span>)&lt;&lt;<span class="number">8</span>) + b0</div></pre></td></tr></table></figure>
+<h4 id="4-7-3-压缩格式-3字节long"><a href="#4-7-3-压缩格式-3字节long" class="headerlink" title="4.7.3. 压缩格式: 3字节long"></a>4.7.3. 压缩格式: 3字节long</h4><p>介于-262144和262143之间的long由3个字节编码，起头字节的取值范围为x38到x3f.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">value = ((code – <span class="number">0x3c</span>)&lt;&lt;<span class="number">16</span>) + (b1&lt;&lt;<span class="number">8</span>) + b0</div></pre></td></tr></table></figure>
+<h4 id="4-7-4-压缩格式-四字节long"><a href="#4-7-4-压缩格式-四字节long" class="headerlink" title="4.7.4. 压缩格式: 四字节long"></a>4.7.4. 压缩格式: 四字节long</h4><p>可以用32-bit的整数来标识的long在这里需要用5个字节作编码,起头字节由x77标识.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">value = (b3&lt;&lt;<span class="number">24</span>) + (b2&lt;&lt;<span class="number">16</span>) + (b1&lt;&lt;<span class="number">8</span>) + b0</div></pre></td></tr></table></figure>
+<h4 id="4-7-5-long实例"><a href="#4-7-5-long实例" class="headerlink" title="4.7.5. long实例"></a>4.7.5. long实例</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">xe0                                 # 0</div><div class="line">xd8                                 # -8</div><div class="line">xef                                 # 15</div><div class="line"></div><div class="line">xf8 x00                             # 0</div><div class="line">xf0 x00                             # -2048</div><div class="line">xf7 x00                             # -256</div><div class="line">xff xff                             # 2047</div><div class="line"></div><div class="line">x3c x00 x00                         # 0</div><div class="line">x38 x00 x00                         # -262144</div><div class="line">x3f xff xff                         # 262143</div><div class="line"></div><div class="line">x77 x00 x00 x00 x00                 # 0</div><div class="line">x77 x00 x00 x01 x2c                 # 300</div><div class="line"></div><div class="line">L x00 x00 x00 x00 x00 x00 x01 x2c   # 300</div></pre></td></tr></table></figure>
+<h3 id="4-8-map"><a href="#4-8-map" class="headerlink" title="4.8.    map"></a>4.8.    map</h3><p>map ::= M type? (value value)* z</p>
+<p>用来表示序列化map和对象. Type字段用来表示map类型，type可能为空（例如在length为0的情况下）。如果类型未指定，则由解析器来负责选择类型。对于对象而言,不识别的key将会被忽略.
+所有map元素也被存入一个引用列表. 在解析map时，可以同时支持空类型和引用类型。
+类型由服务具体来进行选择。</p>
+<h4 id="4-8-1-Map实例"><a href="#4-8-1-Map实例" class="headerlink" title="4.8.1. Map实例"></a>4.8.1. Map实例</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Map map = <span class="keyword">new</span> HashMap();</div><div class="line">map.put(<span class="keyword">new</span> Integer(<span class="number">1</span>), <span class="string">"fee"</span>);</div><div class="line">map.put(<span class="keyword">new</span> Integer(<span class="number">16</span>), <span class="string">"fie"</span>);</div><div class="line">map.put(<span class="keyword">new</span> Integer(<span class="number">256</span>), <span class="string">"foe"</span>);</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">M</div><div class="line">    x91         # 1</div><div class="line">    x03 fee     # &quot;fee&quot;</div><div class="line"></div><div class="line">    xa0         # 16</div><div class="line">    x03 fie     # &quot;fie&quot;</div><div class="line"></div><div class="line">    xb9 x00     # 256</div><div class="line">    x03 foe     # &quot;foe&quot;</div><div class="line">    z</div></pre></td></tr></table></figure>
+<p>由java对象表示的Map对象:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Public <span class="class"><span class="keyword">class</span> <span class="title">Car</span> <span class="keyword">implements</span> <span class="title">Serializable</span></span>&#123;</div><div class="line">    String color = <span class="string">"aquamarine"</span></div><div class="line">    String model = <span class="string">"Beetle"</span>;</div><div class="line">    Int mileage = <span class="number">65536</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">M</div><div class="line">    t x00 x13 com.caucho.test.Car   #type</div><div class="line">    x05 color                       # color field</div><div class="line">    x0a aquamarine</div><div class="line"></div><div class="line">    x05 model                   # model field</div><div class="line">    x06 Beetle</div><div class="line"></div><div class="line">    x07 mileage                 #mileage field</div><div class="line">    I x00 x01 x00 x00</div><div class="line">    z</div></pre></td></tr></table></figure>
+<h3 id="4-9-null"><a href="#4-9-null" class="headerlink" title="4.9. null"></a>4.9. null</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">null    ::= N</div></pre></td></tr></table></figure>
+<p>null表示一个空指针。字符’N’用来标识null值。</p>
+<h3 id="4-10-对象-object"><a href="#4-10-对象-object" class="headerlink" title="4.10. 对象(object)"></a>4.10. 对象(object)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">object      ::= ‘o’ int value*</div><div class="line">class-def   ::= ’O’ type int string*</div></pre></td></tr></table></figure>
+<h4 id="4-10-1-压缩格式-class定义"><a href="#4-10-1-压缩格式-class定义" class="headerlink" title="4.10.1. 压缩格式: class定义"></a>4.10.1. 压缩格式: class定义</h4><p><code>Hessian</code> 2.0制定了一个紧凑的对象格式，其中字段名只需要序列化一次。对于对象而言，仅需要按次序地序列化这些字段的取值.</p>
+<p>类定义包括类型字符串,字段个数,所有的字段名. 类定义被存放在一个对象定义表中,每个类定义由一个唯一整数作为key标识，之后被对象实例通过key来引用。</p>
+<h4 id="4-10-2-压缩格式-对象实例"><a href="#4-10-2-压缩格式-对象实例" class="headerlink" title="4.10.2. 压缩格式: 对象实例"></a>4.10.2. 压缩格式: 对象实例</h4><p>对象实例基于先前定义来创建一个新的对象实例. 类定义通过一个整型key在类定义表中进行查询。</p>
+<h4 id="4-10-3-对象实例"><a href="#4-10-3-对象实例" class="headerlink" title="4.10.3. 对象实例"></a>4.10.3. 对象实例</h4><p>对象序列化</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Class Car&#123;</div><div class="line">    String color;</div><div class="line">    String model;</div><div class="line">&#125;</div><div class="line">out.wirteObject(<span class="keyword">new</span> Car(<span class="string">"red"</span>, <span class="string">"corvette"</span>));</div><div class="line">out.writeObject(<span class="keyword">new</span> Car(<span class="string">"green"</span>, <span class="string">"civic"</span>));</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">O                           # 类型定义  (假定在类型表中对应key为 0)</div><div class="line">    t x00 x0b example.Car   # 类型为example.Car</div><div class="line">    x92                     # 两个字段</div><div class="line">    x05 color               # color字段名</div><div class="line">    x05 model               # model字段名</div><div class="line"></div><div class="line">o</div><div class="line">    x90                     # 对象定义 (类型引用key=0)</div><div class="line">    x03 red                 # color字段取值</div><div class="line">    x08 corvette            # model字段取值</div><div class="line"></div><div class="line">o</div><div class="line">    x90                     # 对象定义 (类型引用key=0)</div><div class="line">    x05 green               # color字段取值</div><div class="line">    x05 civic               # model字段取值</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">enum</span> Color&#123;</div><div class="line">    RED,</div><div class="line">    GREEN,</div><div class="line">    BLUE</div><div class="line">&#125;</div><div class="line">out.writeObject(Color.RED);</div><div class="line">out.writeObject(Color.GREEN);</div><div class="line">out.writeObject(Color.BLUE);</div><div class="line">out.writeObject(Color.GREEN);</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">O                               # 类型定义 (假定在类型表中对应key为 0)</div><div class="line">    t x00 x0b example.Color     # 类型为example.Color</div><div class="line">    x91                         # 一个字段</div><div class="line">    x04 name                    # 枚举字段为&quot;name&quot;</div><div class="line"></div><div class="line">o                               # 对象 #0</div><div class="line">    x90                         # 对象定义 (类型引用key=0)</div><div class="line">    x03 RED                     # RED</div><div class="line"></div><div class="line">o                               # 对象 #1</div><div class="line">    x90                         # 对象定义 (类型引用key=0)</div><div class="line">    x05 GREEN                   # GREEN</div><div class="line"></div><div class="line">o                               # 对象 #2</div><div class="line">    x90                         # 对象定义 (类型引用key=0)</div><div class="line">    x05 BLUE                    # BLUE</div><div class="line"></div><div class="line">x4a x01                         # 对象引用 #1</div></pre></td></tr></table></figure>
+<h3 id="4-11-引用-ref"><a href="#4-11-引用-ref" class="headerlink" title="4.11. 引用(ref)"></a>4.11. 引用(ref)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ref ::= R b3 b2 b1 b0</div><div class="line">    ::= x4a b0</div><div class="line">    ::= x4b b1 b0</div></pre></td></tr></table></figure>
+<p>以一个整数作为key,引用之前所定义的list, map或者对象实例. 对于从输入流中读取出来的每个list, map或对象, 都在流中按位置次序作为标识, i.e. 第一个list或者map为’0’, 下一个为’1’等等. 之后的引用能够使用先前的对象. Writers MAY生成引用. Parsers MUST 识别引用.</p>
+<blockquote>
+<p>ref can refer to incompletely-read items. For example, a circular linked-list will refer to the first link before the entire list has been read.</p>
+<p>A possible implementation would add each map, list, and object to an array as it is read. The ref will return the corresponding value from the array. To support circular structures, the implementation would store the map, list or object immediately, before filling in the contents.</p>
+<p>Each map or list is stored into an array as it is parsed. ref selects one of the stored objects. The first object is numbered ‘0’.</p>
+</blockquote>
+<h4 id="4-11-1-压缩格式-双字节引用"><a href="#4-11-1-压缩格式-双字节引用" class="headerlink" title="4.11.1. 压缩格式: 双字节引用"></a>4.11.1. 压缩格式: 双字节引用</h4><p>介于0和255之间的引用编号可以用两个字节来编码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">value = b0</div></pre></td></tr></table></figure>
+<h4 id="4-11-2-压缩格式-三字节引用"><a href="#4-11-2-压缩格式-三字节引用" class="headerlink" title="4.11.2. 压缩格式: 三字节引用"></a>4.11.2. 压缩格式: 三字节引用</h4><p>介于0和255之间的引用编号可以用三个字节来编码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">value = (b1&lt;&lt;<span class="number">8</span>) + b0</div></pre></td></tr></table></figure>
+<h4 id="4-11-3-引用实例"><a href="#4-11-3-引用实例" class="headerlink" title="4.11.3. 引用实例"></a>4.11.3. 引用实例</h4><p>循环链表</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">list = <span class="keyword">new</span> LinkedList();</div><div class="line">list.data = <span class="number">1</span>;</div><div class="line">list.tail = list;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">O</div><div class="line">    X9a LinkedList      # 类型定义 (假定在类型表中对应key为 0)</div><div class="line">    X92</div><div class="line">    X04 head</div><div class="line">    X04 tail</div><div class="line"></div><div class="line">o   x90             # 类引用 #0</div><div class="line">    x91             # data = 1</div><div class="line">    x4b x00         # 下一个条目引用到自身， ref #0</div></pre></td></tr></table></figure>
+<h3 id="4-12-string"><a href="#4-12-string" class="headerlink" title="4.12. string"></a>4.12. string</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">string  ::= s b1 b0 &lt;utf8-data&gt; string</div><div class="line">        ::= s b1 b0 &lt;utf8-data&gt;</div><div class="line">        ::= [x00-x1f] &lt;utf8-data&gt;</div></pre></td></tr></table></figure>
+<p>16-bit字符，UTF-8编码的字符串。字符串分块(chunk)编码. x53(‘S’)起头来标识最后一个chunk, x73(‘s’)起头标识非最终chunk. 每个chunk有一个16-bit的长度值字段。
+length用来标识字符串的长度，而非字节数量.
+String chunks may not split surrogate pairs.</p>
+<h4 id="4-12-1-压缩格式-短字符串"><a href="#4-12-1-压缩格式-短字符串" class="headerlink" title="4.12.1. 压缩格式: 短字符串"></a>4.12.1. 压缩格式: 短字符串</h4><p>长度小于32的字符串可以用单字节长的length来标识，范围为[x00-x1f].</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">value = code</div></pre></td></tr></table></figure>
+<h4 id="4-12-2-字符串实例"><a href="#4-12-2-字符串实例" class="headerlink" title="4.12.2. 字符串实例"></a>4.12.2. 字符串实例</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">x00                 # &quot;&quot;, 空字符串</div><div class="line">x05 hello           # &quot;hello&quot;</div><div class="line">x01 xc3 x83         # &quot;\u00c3&quot;</div><div class="line"></div><div class="line">S   x00 x05 hello   # 长字符串格式的&quot;hello&quot;</div><div class="line">s   x00 x07 hello,  # &quot;hello, world&quot;被分割成两个chunk</div><div class="line">    X05 world</div></pre></td></tr></table></figure>
+<h3 id="4-13-类型-type"><a href="#4-13-类型-type" class="headerlink" title="4.13. 类型(type)"></a>4.13. 类型(type)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">type    ::= ‘t’ b1 b0 &lt;type-string&gt;</div><div class="line">        ::= x4a b0</div></pre></td></tr></table></figure>
+<p>在面向对象语言中，一个map或list可能包含一个type属性以标识map或list的类型名称。
+每个type都被加入到类型表(type map)中，以供将来被引用。</p>
+<h3 id="4-14-压缩格式-类型引用"><a href="#4-14-压缩格式-类型引用" class="headerlink" title="4.14. 压缩格式: 类型引用"></a>4.14. 压缩格式: 类型引用</h3><p>Repeated type strings MAY use the type map (type reference) to refer to a previously used type. The type reference is zero-based over all the types encountered during parsing.</p>
+<h2 id="5-引用表-Reference-Map"><a href="#5-引用表-Reference-Map" class="headerlink" title="5. 引用表(Reference Map)"></a>5. 引用表(Reference Map)</h2><p><code>Hessian</code> 2.0包含3个内建的引用表：</p>
+<ol>
+<li>一个map/object/list引用表.</li>
+<li>一个类型定义表(class definition map).</li>
+<li>一个type(class name)表</li>
+</ol>
+<p>值引用表使得<code>Hessian</code>支持arbitrary graphs，还有递归和循环数据结构。
+class和type表通过消除重复字符串而提高了<code>Hessian</code>的效率。</p>
+<h3 id="5-1-值引用"><a href="#5-1-值引用" class="headerlink" title="5.1. 值引用"></a>5.1. 值引用</h3><blockquote>
+<p><code>Hessian</code> supports arbitrary graphs by adding list (list), object (object), and map (map) as it encounters them in the bytecode stream。</p>
+</blockquote>
+<p>解析器必须在引用表中存储每个list, 对象和map。</p>
+<p>被存储的对象能够被引用。</p>
+<h3 id="5-2-class引用"><a href="#5-2-class引用" class="headerlink" title="5.2. class引用"></a>5.2. class引用</h3><p>每个类型定义被自动添加到类型表(class-map)中。解析器必须在初次使用一个类型时把它添加到类型表中，之后对象实例将通过引用来追踪自身的类型。</p>
+<h3 id="5-3-type引用"><a href="#5-3-type引用" class="headerlink" title="5.3. type引用"></a>5.3. type引用</h3><p>map和list的值类型字符串被存储在type map中。解析器必须在初次碰到一个type字符串时把它加入到type map中。</p>
+<h2 id="6-字节码映射表-Bytecode-map"><a href="#6-字节码映射表-Bytecode-map" class="headerlink" title="6. 字节码映射表(Bytecode map)"></a>6. 字节码映射表(Bytecode map)</h2><p><code>Hessian</code>被制定成一个字节码协议。<code>Hessian</code>解析器本质上是一段针对头字节的选择分支语句.</p>
+<p>字节编码</p>
+<table>
+<thead>
+<tr>
+<th>值范围</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>x00 - x1f</td>
+<td>utf-8字符串，长度范围 0-32</td>
+</tr>
+<tr>
+<td>x20 - x2f</td>
+<td>二进制数据，长度范围 0-16</td>
+</tr>
+<tr>
+<td>x30 - x37</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>x38 - x3f</td>
+<td>长整型long 范围从-x40000 到 x3ffff</td>
+</tr>
+<tr>
+<td>x40 - x41</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>x42</td>
+<td>8-bit 二进制数据，表示末尾chunk(‘B’)</td>
+</tr>
+<tr>
+<td>x43</td>
+<td>保留(‘C’ streaming call)</td>
+</tr>
+<tr>
+<td>x44</td>
+<td>64-bit IEEE 规范编码的双精度浮点double (‘D’)</td>
+</tr>
+<tr>
+<td>x45</td>
+<td>保留(‘E’ envelope)</td>
+</tr>
+<tr>
+<td>x46</td>
+<td>boolean false (‘F’)</td>
+</tr>
+<tr>
+<td>x47</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>x48</td>
+<td>保留 (‘H’ header)</td>
+</tr>
+<tr>
+<td>x49</td>
+<td>32-bit有符号整型signed integer (‘I’)</td>
+</tr>
+<tr>
+<td>x4a</td>
+<td>引用(ref)，范围为1-256th</td>
+</tr>
+<tr>
+<td>x4b</td>
+<td>引用(ref)，范围为1-65536th</td>
+</tr>
+<tr>
+<td>x4c</td>
+<td>64-bit有符号长整型long integer (‘L’)</td>
+</tr>
+<tr>
+<td>x4d</td>
+<td>具有可选类型的map (‘M’)</td>
+</tr>
+<tr>
+<td>x4e</td>
+<td>null (‘N’)</td>
+</tr>
+<tr>
+<td>x4f</td>
+<td>类型定义(‘O’)</td>
+</tr>
+<tr>
+<td>x50</td>
+<td>保留(‘P’ streaming message/post)</td>
+</tr>
+<tr>
+<td>x51</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>x52</td>
+<td>引用(ref)，取值范围对应于整型int (‘R’)</td>
+</tr>
+<tr>
+<td>x53</td>
+<td>utf-8字符串，末尾chunk (‘S’)</td>
+</tr>
+<tr>
+<td>x54</td>
+<td>boolean true (‘T’)</td>
+</tr>
+<tr>
+<td>x55</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>x56</td>
+<td>list/vector (‘V’)</td>
+</tr>
+<tr>
+<td>x57 - x62</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>x62</td>
+<td>8-bit二进制数据，非末尾chunk (‘b’)</td>
+</tr>
+<tr>
+<td>x63</td>
+<td>保留 (‘c’ call for RPC)</td>
+</tr>
+<tr>
+<td>x64</td>
+<td>UTC time encoded as 64-bit long milliseconds since epoch (‘d’)</td>
+</tr>
+<tr>
+<td>x65</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>x66</td>
+<td>保留(‘f’ for fault for RPC)</td>
+</tr>
+<tr>
+<td>x67</td>
+<td>double 0.0</td>
+</tr>
+<tr>
+<td>x68</td>
+<td>double 1.0</td>
+</tr>
+<tr>
+<td>x69</td>
+<td>double represented as byte (-128.0 to 127.0)</td>
+</tr>
+<tr>
+<td>x6a</td>
+<td>double represented as short (-32768.0 to 327676.0)</td>
+</tr>
+<tr>
+<td>x6b</td>
+<td>double represented as float</td>
+</tr>
+<tr>
+<td>x6c</td>
+<td>list/vector length (‘l’)</td>
+</tr>
+<tr>
+<td>x6d</td>
+<td>保留 (‘m’ method for RPC call)</td>
+</tr>
+<tr>
+<td>x6e</td>
+<td>list/vector compact length</td>
+</tr>
+<tr>
+<td>x6f</td>
+<td>对象实例(‘o’)</td>
+</tr>
+<tr>
+<td>x70</td>
+<td>保留 (‘p’ - message/post)</td>
+</tr>
+<tr>
+<td>x71</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>x72</td>
+<td>保留(‘r’ reply for message/RPC)</td>
+</tr>
+<tr>
+<td>x73</td>
+<td>utf-8字符串，非末尾chunk (‘s’)</td>
+</tr>
+<tr>
+<td>x74</td>
+<td>map/list type (‘t’)</td>
+</tr>
+<tr>
+<td>x75</td>
+<td>type-ref</td>
+</tr>
+<tr>
+<td>x76</td>
+<td>压缩格式的vector (‘v’)</td>
+</tr>
+<tr>
+<td>x77</td>
+<td>以32-bit整型编码的long</td>
+</tr>
+<tr>
+<td>x78 - x79</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>x7a</td>
+<td>list/map 终止符(‘z’)</td>
+</tr>
+<tr>
+<td>x7b - x7f</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>x80 - xbf</td>
+<td>单字节压缩格式的整型int(-x10 to x3f, x90 is 0)</td>
+</tr>
+<tr>
+<td>xc0 - xcf</td>
+<td>双字节压缩格式的整型int(-x800 to x3ff)</td>
+</tr>
+<tr>
+<td>xd0 - xd7</td>
+<td>三字节压缩格式的整型int(-x40000 to x3ffff)</td>
+</tr>
+<tr>
+<td>xd8 - xef</td>
+<td>单字节压缩格式的长整型long(-x8 to x10, xe0 is 0)</td>
+</tr>
+<tr>
+<td>xf0 - xff</td>
+<td>双字节压缩格式的长整型long (-x800 to x3ff, xf8 is 0)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2>]]></content>
+      
+        
+        <tags>
+            
+            <tag> Hessian </tag>
+            
+        </tags>
+        
+    </entry>
+    
+  
+  
+</search>
