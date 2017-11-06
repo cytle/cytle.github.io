@@ -266,6 +266,66 @@
     </entry>
     
     <entry>
+      <title><![CDATA[不熟sublime快捷键备忘]]></title>
+      <url>https://cytle.github.io/2016/11/16/%E4%B8%8D%E7%86%9Fsublime%E5%BF%AB%E6%8D%B7%E9%94%AE%E5%A4%87%E5%BF%98/</url>
+      <content type="html"><![CDATA[<p>查找模式下</p>
+<p><code>Alt+R</code>:正则模式</p>
+<p><code>Alt+C</code>:严格大小写</p>
+<p><code>Alt+W</code>:一个单词</p>
+<p><code>F3</code>:查找下一个</p>
+<p><code>Shift+F3</code>:查找上一个</p>
+<p><code>Alt+Enter</code>:查找所有</p>
+<p><code>Ctrl+Alt+Enter</code>:替换所有</p>
+<p><code>Ctrl+Shift+H</code>:替换</p>
+<p><code>Ctrl+Shift+V</code>：粘贴并格式化</p>
+<p><code>Ctrl+Shift+Enter</code>：在当前行前插入新行</p>
+<p><code>Ctrl+M</code>：跳转到对应括号</p>
+<p><code>Ctrl+U</code>：软撤销，撤销光标位置</p>
+<p><code>Ctrl+J</code>：选择标签内容</p>
+<p><code>Ctrl+K+B</code>：开关侧栏</p>
+<p><code>Ctrl+Shift+M</code>：选中当前括号内容，重复可选着括号本身</p>
+<p><code>Ctrl+F2</code>：设置/删除标记</p>
+<p><code>Ctrl+Alt+/</code>：块注释，并Focus到首行，写注释说明用的</p>
+<p><code>Ctrl+Shift+A</code>：选择当前标签前后，修改标签用的</p>
+<p><code>Alt+F3</code>：选择所有相同的词</p>
+<p><code>Alt+.</code>：闭合标签</p>
+<p><code>Shift+右键拖动</code>：光标多不，用来更改或插入列内容</p>
+<p>??鼠标的前进后退键可切换Tab文件</p>
+<p><code>Alt+F3</code>：选中文本按下快捷键，即可一次性选择全部的相同文本进行同时编辑。举个栗子：快速选中并更改所有相同的变量名、函数名等。</p>
+<p><code>Ctrl+Shift+L</code>：先选中多行，再按下快捷键，会在每行行尾插入光标，即可同时编辑这些行。</p>
+<p><code>Ctrl+Shift+M</code>：选择括号内的内容（继续选择父括号）。举个栗子：快速选中删除函数中的代码，重写函数体代码或重写括号内里的内容。</p>
+<p><code>Ctrl+M</code>：光标移动至括号内结束或开始的位置。</p>
+<p><code>Ctrl+Enter</code>：在下一行插入新行。举个栗子：即使光标不在行尾，也能快速向下插入一行。</p>
+<p><code>Ctrl+Shift+Enter</code>：在上一行插入新行。举个栗子：即使光标不在行首，也能快速向上插入一行。</p>
+<p><code>Ctrl+Shift+[</code>：选中代码，按下快捷键，折叠代码。</p>
+<p><code>Ctrl+Shift+]</code>：选中代码，按下快捷键，展开代码。</p>
+<p><code>Ctrl+K+0</code>：展开所有折叠代码。</p>
+<p><code>Ctrl+Alt+↑</code>：向上添加多行光标，可同时编辑多行。</p>
+<p><code>Ctrl+Alt+↓</code>：向下添加多行光标，可同时编辑多行。</p>
+<p><code>Ctrl+J</code>：合并选中的多行代码为一行。举个栗子：将多行格式的CSS属性合并为一行。</p>
+<p><code>Ctrl+Shift+D</code>：复制光标所在整行，插入到下一行。</p>
+<p><code>Ctrl+K+K</code>：从光标处开始删除代码至行尾。</p>
+<p><code>Ctrl+Shift+K</code>：删除整行。</p>
+<p><code>Ctrl+U</code>：软撤销，感觉和<code>Gtrl+Z</code>一样。</p>
+<p><code>Ctrl+F2</code>：设置书签</p>
+<p><code>Ctrl+T</code>：左右字母互换。</p>
+<p><code>F6</code>：单词检测拼写</p>
+<p><code>Ctrl+：</code>：打开搜索框，自动带#，输入关键字，查找文件中的变量名、属性名等。</p>
+<p><code>Ctrl+k+2</code>：折叠注释和方法</p>
+<p><code>Ctrl+k+3</code>：折叠if</p>
+<p><code>Ctrl+k+4</code>：折叠switch</p>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> sublime </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[sublime快捷键备忘]]></title>
       <url>https://cytle.github.io/2016/11/16/sublime%E5%BF%AB%E6%8D%B7%E9%94%AE%E5%A4%87%E5%BF%98/</url>
       <content type="html"><![CDATA[<p><code>Ctrl+Shift+P</code>：打开命令面板</p>
@@ -373,66 +433,6 @@
 <p><code>F11</code> 全屏模式</p>
 <p><code>Shift+F11</code>：免打扰模式</p>
 <p>update</p>
-<p><code>Ctrl+k+2</code>：折叠注释和方法</p>
-<p><code>Ctrl+k+3</code>：折叠if</p>
-<p><code>Ctrl+k+4</code>：折叠switch</p>
-]]></content>
-      
-        
-        <tags>
-            
-            <tag> sublime </tag>
-            
-        </tags>
-        
-    </entry>
-    
-    <entry>
-      <title><![CDATA[不熟sublime快捷键备忘]]></title>
-      <url>https://cytle.github.io/2016/11/16/%E4%B8%8D%E7%86%9Fsublime%E5%BF%AB%E6%8D%B7%E9%94%AE%E5%A4%87%E5%BF%98/</url>
-      <content type="html"><![CDATA[<p>查找模式下</p>
-<p><code>Alt+R</code>:正则模式</p>
-<p><code>Alt+C</code>:严格大小写</p>
-<p><code>Alt+W</code>:一个单词</p>
-<p><code>F3</code>:查找下一个</p>
-<p><code>Shift+F3</code>:查找上一个</p>
-<p><code>Alt+Enter</code>:查找所有</p>
-<p><code>Ctrl+Alt+Enter</code>:替换所有</p>
-<p><code>Ctrl+Shift+H</code>:替换</p>
-<p><code>Ctrl+Shift+V</code>：粘贴并格式化</p>
-<p><code>Ctrl+Shift+Enter</code>：在当前行前插入新行</p>
-<p><code>Ctrl+M</code>：跳转到对应括号</p>
-<p><code>Ctrl+U</code>：软撤销，撤销光标位置</p>
-<p><code>Ctrl+J</code>：选择标签内容</p>
-<p><code>Ctrl+K+B</code>：开关侧栏</p>
-<p><code>Ctrl+Shift+M</code>：选中当前括号内容，重复可选着括号本身</p>
-<p><code>Ctrl+F2</code>：设置/删除标记</p>
-<p><code>Ctrl+Alt+/</code>：块注释，并Focus到首行，写注释说明用的</p>
-<p><code>Ctrl+Shift+A</code>：选择当前标签前后，修改标签用的</p>
-<p><code>Alt+F3</code>：选择所有相同的词</p>
-<p><code>Alt+.</code>：闭合标签</p>
-<p><code>Shift+右键拖动</code>：光标多不，用来更改或插入列内容</p>
-<p>??鼠标的前进后退键可切换Tab文件</p>
-<p><code>Alt+F3</code>：选中文本按下快捷键，即可一次性选择全部的相同文本进行同时编辑。举个栗子：快速选中并更改所有相同的变量名、函数名等。</p>
-<p><code>Ctrl+Shift+L</code>：先选中多行，再按下快捷键，会在每行行尾插入光标，即可同时编辑这些行。</p>
-<p><code>Ctrl+Shift+M</code>：选择括号内的内容（继续选择父括号）。举个栗子：快速选中删除函数中的代码，重写函数体代码或重写括号内里的内容。</p>
-<p><code>Ctrl+M</code>：光标移动至括号内结束或开始的位置。</p>
-<p><code>Ctrl+Enter</code>：在下一行插入新行。举个栗子：即使光标不在行尾，也能快速向下插入一行。</p>
-<p><code>Ctrl+Shift+Enter</code>：在上一行插入新行。举个栗子：即使光标不在行首，也能快速向上插入一行。</p>
-<p><code>Ctrl+Shift+[</code>：选中代码，按下快捷键，折叠代码。</p>
-<p><code>Ctrl+Shift+]</code>：选中代码，按下快捷键，展开代码。</p>
-<p><code>Ctrl+K+0</code>：展开所有折叠代码。</p>
-<p><code>Ctrl+Alt+↑</code>：向上添加多行光标，可同时编辑多行。</p>
-<p><code>Ctrl+Alt+↓</code>：向下添加多行光标，可同时编辑多行。</p>
-<p><code>Ctrl+J</code>：合并选中的多行代码为一行。举个栗子：将多行格式的CSS属性合并为一行。</p>
-<p><code>Ctrl+Shift+D</code>：复制光标所在整行，插入到下一行。</p>
-<p><code>Ctrl+K+K</code>：从光标处开始删除代码至行尾。</p>
-<p><code>Ctrl+Shift+K</code>：删除整行。</p>
-<p><code>Ctrl+U</code>：软撤销，感觉和<code>Gtrl+Z</code>一样。</p>
-<p><code>Ctrl+F2</code>：设置书签</p>
-<p><code>Ctrl+T</code>：左右字母互换。</p>
-<p><code>F6</code>：单词检测拼写</p>
-<p><code>Ctrl+：</code>：打开搜索框，自动带#，输入关键字，查找文件中的变量名、属性名等。</p>
 <p><code>Ctrl+k+2</code>：折叠注释和方法</p>
 <p><code>Ctrl+k+3</code>：折叠if</p>
 <p><code>Ctrl+k+4</code>：折叠switch</p>
