@@ -2,12 +2,13 @@
 <html lang="zh-cmn-Hans">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0,viewport-fit=cover">
     <title>WeUI</title>
     <link rel="stylesheet" href="../style/weui.css"/>
     <link rel="stylesheet" href="./example.css"/>
+    <!-- <script src="http://g.tbcdn.cn/mtb/lib-flexible/0.3.2/??flexible_css.js,flexible.js" charset="utf-8"></script> -->
 </head>
-<body ontouchstart class="weui-page">
+<body ontouchstart class="weui-page" style="font-size: 16px;">
     <div class="weui-toptips weui-toptips_warn js_tooltips">错误提示</div>
 
     <div class="container" id="container"></div>
@@ -151,9 +152,15 @@
                             </div>
                             <div class="weui-cell__ft"></div>
                         </a>
-                        <a class="weui-cell weui-cell_access js_item" data-id="dialog" href="javascript:;">
+                        <a class="weui-cell weui-cell_access js_item" data-id="modal" href="javascript:;">
                             <div class="weui-cell__bd">
-                                <p>Dialog</p>
+                                <p>Modal</p>
+                            </div>
+                            <div class="weui-cell__ft"></div>
+                        </a>
+                        <a class="weui-cell weui-cell_access js_item" data-id="message" href="javascript:;">
+                            <div class="weui-cell__bd">
+                                <p>Message</p>
                             </div>
                             <div class="weui-cell__ft"></div>
                         </a>
@@ -271,6 +278,7 @@
         });
     });
 </script>
+
 </script>
     <script type="text/html" id="tpl_button">
 <div class="page">
@@ -279,16 +287,17 @@
         <p class="page__desc">按钮</p>
     </div>
     <div class="page__bd page__bd_spacing">
-        <a href="javascript:;" class="weui-btn weui-btn_primary">页面主操作 Normal</a>
+			<a href="javascript:;" class="weui-btn weui-btn_primary">页面主操作 Normal</a>
 		<a href="javascript:;" class="weui-btn weui-btn_primary weui-btn_loading"><i class="weui-loading"></i>页面主操作 Loading</a>
         <a href="javascript:;" class="weui-btn weui-btn_disabled weui-btn_primary">页面主操作 Disabled</a>
-        <a href="javascript:;" class="weui-btn weui-btn_default">页面次要操作 Normal</a>
+				<a href="javascript:;" class="weui-btn weui-btn_default">页面次要操作 Normal</a>
+				<button class="weui-btn weui-btn_default">页面次要操作 Normal button</button>
 		<a href="javascript:;" class="weui-btn weui-btn_default weui-btn_loading"><i class="weui-loading"></i>页面次操作 Loading</a>
         <a href="javascript:;" class="weui-btn weui-btn_disabled weui-btn_default">页面次要操作 Disabled</a>
         <a href="javascript:;" class="weui-btn weui-btn_warn">警告类操作 Normal</a>
 		<a href="javascript:;" class="weui-btn weui-btn_warn weui-btn_loading"><i class="weui-loading"></i>警告类操作 Loading</a>
         <a href="javascript:;" class="weui-btn weui-btn_disabled weui-btn_warn">警告类操作 Disabled</a>
-        
+
         <div class="button-sp-area">
             <a href="javascript:;" class="weui-btn weui-btn_plain-default">按钮</a>
             <a href="javascript:;" class="weui-btn weui-btn_plain-default weui-btn_plain-disabled">按钮</a>
@@ -479,7 +488,7 @@
             </div>
             <div class="weui-cell weui-cell_vcode">
                 <div class="weui-cell__hd">
-                    <label class="weui-label">手机号</label>
+                    <label class="weui-label">手机号号号</label>
                 </div>
                 <div class="weui-cell__bd">
                     <input class="weui-input" type="tel" placeholder="请输入手机号"/>
@@ -570,6 +579,24 @@
             <div class="weui-cell weui-cell_select weui-cell_select-before">
                 <div class="weui-cell__hd">
                     <select class="weui-select" name="select2">
+                        <option value="1">+8886</option>
+                        <option value="2">+80</option>
+                        <option value="3">+84</option>
+                        <option value="4">+87</option>
+                    </select>
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="number" pattern="[0-9]*" placeholder="请输入号码"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="weui-cells__title">选择</div>
+        <div class="weui-cells">
+
+            <div class="weui-cell weui-cell_select weui-cell_select-before">
+                <div class="weui-cell__hd">
+                    <select class="weui-select" name="select2">
                         <option value="1">+86</option>
                         <option value="2">+80</option>
                         <option value="3">+84</option>
@@ -638,6 +665,7 @@
         });
     });
 </script>
+
 </script>
     <script type="text/html" id="tpl_toast">
 <div class="page">
@@ -657,8 +685,10 @@
     <div id="toast" style="display: none;">
         <div class="weui-mask_transparent"></div>
         <div class="weui-toast">
-            <i class="weui-icon-success-no-circle weui-icon_toast"></i>
-            <p class="weui-toast__content">已完成</p>
+            <img class="weui-toast__icon" src="./images/feed-back/icon_success.png" />
+            <div class="weui-toast__content">
+                已完成
+            </div>
         </div>
     </div>
     <!--end toast-->
@@ -667,8 +697,10 @@
     <div id="loadingToast" style="display:none;">
         <div class="weui-mask_transparent"></div>
         <div class="weui-toast">
-            <i class="weui-loading weui-icon_toast"></i>
-            <p class="weui-toast__content">数据加载中</p>
+            <img class="weui-toast__icon" src="./images/feed-back/mihuan_loading.gif" />
+            <div class="weui-toast__content">
+                数据加载中
+            </div>
         </div>
     </div>
 </div>
@@ -700,104 +732,6 @@
     });
 </script>
 
-</script>
-    <script type="text/html" id="tpl_dialog">
-<div class="page">
-    <div class="page__hd">
-        <h1 class="page__title">Dialog</h1>
-        <p class="page__desc">对话框</p>
-    </div>
-    <div class="page__bd page__bd_spacing">
-        <a href="javascript:;" class="weui-btn weui-btn_default" id="showIOSDialog1">iOS Dialog样式一</a>
-        <a href="javascript:;" class="weui-btn weui-btn_default" id="showIOSDialog2">iOS Dialog样式二</a>
-        <a href="javascript:;" class="weui-btn weui-btn_default" id="showAndroidDialog1">Android Dialog样式一</a>
-        <a href="javascript:;" class="weui-btn weui-btn_default" id="showAndroidDialog2">Android Dialog样式二</a>
-    </div>
-    <div class="page__ft">
-        <a href="javascript:home()"><img src="./images/icon_footer_link.png" /></a>
-    </div>
-
-    <div id="dialogs">
-        <!--BEGIN dialog1-->
-        <div class="js_dialog" id="iosDialog1" style="display: none;">
-            <div class="weui-mask"></div>
-            <div class="weui-dialog">
-                <div class="weui-dialog__hd"><strong class="weui-dialog__title">弹窗标题</strong></div>
-                <div class="weui-dialog__bd">弹窗内容，告知当前状态、信息和解决方法，描述文字尽量控制在三行内</div>
-                <div class="weui-dialog__ft">
-                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default">辅助操作</a>
-                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary">主操作</a>
-                </div>
-            </div>
-        </div>
-        <!--END dialog1-->
-        <!--BEGIN dialog2-->
-        <div class="js_dialog" id="iosDialog2" style="display: none;">
-            <div class="weui-mask"></div>
-            <div class="weui-dialog">
-                <div class="weui-dialog__bd">弹窗内容，告知当前状态、信息和解决方法，描述文字尽量控制在三行内</div>
-                <div class="weui-dialog__ft">
-                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary">知道了</a>
-                </div>
-            </div>
-        </div>
-        <!--END dialog2-->
-        <!--BEGIN dialog3-->
-        <div class="js_dialog" id="androidDialog1" style="display: none;">
-            <div class="weui-mask"></div>
-            <div class="weui-dialog weui-skin_android">
-                <div class="weui-dialog__hd"><strong class="weui-dialog__title">弹窗标题</strong></div>
-                <div class="weui-dialog__bd">
-                    弹窗内容，告知当前状态、信息和解决方法，描述文字尽量控制在三行内
-                </div>
-                <div class="weui-dialog__ft">
-                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default">辅助操作</a>
-                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary">主操作</a>
-                </div>
-            </div>
-        </div>
-        <!--END dialog3-->
-        <!--BEGIN dialog4-->
-        <div class="js_dialog" id="androidDialog2" style="display: none;">
-            <div class="weui-mask"></div>
-            <div class="weui-dialog weui-skin_android">
-                <div class="weui-dialog__bd">
-                    弹窗内容，告知当前状态、信息和解决方法，描述文字尽量控制在三行内
-                </div>
-                <div class="weui-dialog__ft">
-                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default">辅助操作</a>
-                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary">主操作</a>
-                </div>
-            </div>
-        </div>
-        <!--END dialog4-->
-    </div>
-</div>
-<script type="text/javascript">
-    $(function(){
-        var $iosDialog1 = $('#iosDialog1'),
-            $iosDialog2 = $('#iosDialog2'),
-            $androidDialog1 = $('#androidDialog1'),
-            $androidDialog2 = $('#androidDialog2');
-
-        $('#dialogs').on('click', '.weui-dialog__btn', function(){
-            $(this).parents('.js_dialog').fadeOut(200);
-        });
-
-        $('#showIOSDialog1').on('click', function(){
-            $iosDialog1.fadeIn(200);
-        });
-        $('#showIOSDialog2').on('click', function(){
-            $iosDialog2.fadeIn(200);
-        });
-        $('#showAndroidDialog1').on('click', function(){
-            $androidDialog1.fadeIn(200);
-        });
-        $('#showAndroidDialog2').on('click', function(){
-            $androidDialog2.fadeIn(200);
-        });
-    });
-</script>
 </script>
     <script type="text/html" id="tpl_progress">
 <div class="page">
@@ -1920,7 +1854,7 @@
     </div>
 </div>
 </script>
-    <script type="text/html" id="tpl_slider">
+		<script type="text/html" id="tpl_slider">
 <div class="page">
     <div class="page__hd">
         <h1 class="page__title">Slider</h1>
@@ -1977,6 +1911,137 @@
         ;
     });
 </script>
+</script>
+		<script type="text/html" id="tpl_message">
+<div class="page">
+    <div class="page__hd">
+        <h1 class="page__title">Message</h1>
+        <p class="page__desc">提示信息</p>
+    </div>
+    <div class="page__bd page__bd_spacing">
+        <a href="javascript:;" class="weui-btn weui-btn_default" id="showIOSMessage1">Message样式一</a>
+        <a href="javascript:;" class="weui-btn weui-btn_default" id="showIOSMessage2">Message样式二(没有Mask)</a>
+    </div>
+    <div class="page__ft">
+        <a href="javascript:home()"><img src="./images/icon_footer_link.png" /></a>
+    </div>
+
+    <div id="messages">
+        <!--BEGIN message1-->
+        <div class="js_message" id="iosMessage1" style="display: none;">
+            <div class="weui-mask"></div>
+            <view class="weui-message">
+                内容详情，不允许换行
+            </view>
+        </div>
+        <!--END message1-->
+        <!--BEGIN message2-->
+        <div class="js_message" id="iosMessage2" style="display: none;">
+            <view class="weui-message">
+                内容详情，不允许换行，3秒后关闭
+            </view>
+        </div>
+        <!--END message2-->
+    </div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        var $iosMessage1 = $('#iosMessage1'),
+            $iosMessage2 = $('#iosMessage2');
+
+        $iosMessage1.on('click', '.weui-mask', function(){
+            $(this).parents('.js_message').fadeOut(200);
+        });
+
+        $('#showIOSMessage1').on('click', function(){
+            $iosMessage1.fadeIn(200);
+        });
+
+        $('#showIOSMessage2').on('click', function(){
+            $iosMessage2.fadeIn(200);
+            setTimeout(() => {
+              $iosMessage2.fadeOut(200);
+            }, 3000)
+        });
+    });
+</script>
+
+</script>
+		<script type="text/html" id="tpl_modal">
+<div class="page">
+    <div class="page__hd">
+        <h1 class="page__title">Modal</h1>
+        <p class="page__desc">对话框</p>
+    </div>
+    <div class="page__bd page__bd_spacing">
+        <a href="javascript:;" class="weui-btn weui-btn_default" id="showIOSModal1">Modal样式一</a>
+        <a href="javascript:;" class="weui-btn weui-btn_default" id="showIOSModal2">Modal样式二</a>
+    </div>
+    <div class="page__ft">
+        <a href="javascript:home()"><img src="./images/icon_footer_link.png" /></a>
+    </div>
+
+    <div id="dialogs">
+        <!--BEGIN dialog1-->
+        <div class="js_dialog" id="iosModal1" style="display: none;">
+            <div class="weui-mask"></div>
+		        <div class="weui-modal">
+		            <div class="weui-modal__hd">
+		                <image class="weui-modal__icon" src="./images/feed-back/mihuan_success.png"></image>
+		                <div class="weui-modal__title">
+		                    弹窗标题
+		                </div>
+		            </div>
+		            <div class="weui-modal__bd">弹窗内容，告知当前状态、信息和解决方法，描述文字尽量控制在三行内</div>
+		            <div class="weui-modal__ft">
+		                <button
+		                    class="weui-modal__btn weui-btn weui-btn_default weui-btn_mini weui-btn_default-reverse"
+		                >
+		                    辅助操作
+		                </button>
+		                <button
+		                    class="weui-modal__btn weui-btn weui-btn_primary weui-btn_mini"
+		                >
+		                    主操作
+		                </button>
+		            </div>
+		        </div>
+        </div>
+        <!--END dialog1-->
+        <!--BEGIN dialog2-->
+        <div class="js_dialog" id="iosModal2" style="display: none;">
+						<div class="weui-mask"></div>
+						<div class="weui-modal">
+								<div class="weui-modal__bd">弹窗内容，告知当前状态、信息和解决方法，描述文字尽量控制在三行内</div>
+								<div class="weui-modal__ft">
+										<button
+												class="weui-modal__btn weui-btn weui-btn_primary weui-btn_mini"
+										>
+												主操作
+										</button>
+								</div>
+						</div>
+        </div>
+        <!--END dialog2-->
+    </div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        var $iosModal1 = $('#iosModal1'),
+            $iosModal2 = $('#iosModal2');
+
+        $('#dialogs').on('click', '.weui-modal__btn', function(){
+            $(this).parents('.js_dialog').fadeOut(200);
+        });
+        $('#showIOSModal1').on('click', function(){
+            $iosModal1.fadeIn(200);
+        });
+        $('#showIOSModal2').on('click', function(){
+            $iosModal2.fadeIn(200);
+        });
+    });
+</script>
+
 </script>
     <script src="./zepto.min.js"></script>
     <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
