@@ -2044,7 +2044,7 @@ a.weui-media-box:active {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  background-color: rgba(236,49,61,.8);
+  background-color: rgba(51,51,51,.008);
   padding: 0 0.533333rem;
   font-size: 0.373333rem;
   line-height: 0.746667rem;
