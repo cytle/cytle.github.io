@@ -214,7 +214,6 @@ a {
   margin-right: auto;
   padding-left: 0.373333rem;
   padding-right: 0.373333rem;
-  box-sizing: border-box;
   font-size: 0.373333rem;
   text-align: center;
   text-decoration: none;
@@ -222,6 +221,7 @@ a {
   line-height: 2.85714286;
   border-radius: 0.133333rem;
   border-width: 0;
+  box-sizing: border-box;
   -webkit-tap-highlight-color: rgba(0,0,0,0);
   overflow: hidden;
 }
@@ -264,6 +264,10 @@ a {
 .weui-btn_default-reverse {
   color: #333;
   border: 0.026667rem solid #d6d6d6;
+}
+
+.weui-btn_default-reverse:after {
+  border-width: 0;
 }
 
 .weui-btn_default-reverse:not(.weui-btn_disabled):visited {
@@ -309,6 +313,10 @@ a {
 .weui-btn_disabled.weui-btn_default {
   color: hsla(0,0%,100%,.6);
   background-color: transparent;
+}
+
+.weui-btn_disabled.weui-btn_default-reverse {
+  color: hsla(0,0%,8%,.6);
 }
 
 .weui-btn_disabled.weui-btn_primary {
@@ -399,7 +407,7 @@ input.weui-btn_plain-primary {
 .weui-btn_medium {
   padding: 0 1.32em;
   line-height: 0.96rem;
-  font-size: 2.5;
+  font-size: 0.373333rem;
 }
 
 .weui-btn_mini {

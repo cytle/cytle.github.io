@@ -302,6 +302,7 @@
 				<button class="weui-btn weui-btn_default">页面次要操作 Normal button</button>
 		<a href="javascript:;" class="weui-btn weui-btn_default weui-btn_loading"><i class="weui-loading"></i>页面次操作 Loading</a>
         <a href="javascript:;" class="weui-btn weui-btn_disabled weui-btn_default">页面次要操作 Disabled</a>
+
         <a href="javascript:;" class="weui-btn weui-btn_warn">警告类操作 Normal</a>
 		<a href="javascript:;" class="weui-btn weui-btn_warn weui-btn_loading"><i class="weui-loading"></i>警告类操作 Loading</a>
         <a href="javascript:;" class="weui-btn weui-btn_disabled weui-btn_warn">警告类操作 Disabled</a>
@@ -322,7 +323,15 @@
             <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_warn">按钮</a>
         </div>
     </div>
-    <div class="page__ft">
+
+
+		<div class="page__bd page__bd_spacing" style="padding-top: 30px; padding-bottom: 30px; background-color: #FFF;">
+			<a href="javascript:;" class="weui-btn weui-btn_default-reverse">页面次要操作 Reverse</a>
+			<a href="javascript:;" class="weui-btn weui-btn_disabled weui-btn_default-reverse">页面次要操作 Reverse Disabled</a>
+		</div>
+
+
+	  <div class="page__ft">
         <a href="javascript:home()"><img src="./images/icon_footer_link.png" /></a>
     </div>
 </div>
@@ -2009,12 +2018,12 @@
                 <div class="weui-modal__bd">弹窗内容，告知当前状态、信息和解决方法，描述文字尽量控制在三行内</div>
                 <div class="weui-modal__ft  weui-btn-area_inline">
                     <button
-                        class="weui-btn weui-btn_default weui-btn_mini weui-btn_default-reverse"
+                        class="weui-btn weui-btn_default weui-btn_medium weui-btn_default-reverse"
                     >
                         辅助操作
                     </button>
                     <button
-                        class="weui-btn weui-btn_primary weui-btn_mini"
+                        class="weui-btn weui-btn_primary weui-btn_medium"
                     >
                         主操作
                     </button>
@@ -2029,7 +2038,7 @@
                 <div class="weui-modal__bd">弹窗内容，告知当前状态、信息和解决方法，描述文字尽量控制在三行内</div>
                 <div class="weui-modal__ft">
                     <button
-                        class="weui-btn weui-btn_primary weui-btn_mini"
+                        class="weui-btn weui-btn_primary weui-btn_medium"
                     >
                         主操作
                     </button>
@@ -2044,7 +2053,7 @@
         var $iosModal1 = $('#iosModal1'),
             $iosModal2 = $('#iosModal2');
 
-        $('#dialogs').on('click', '.weui-modal__btn', function(){
+        $('#dialogs').on('click', '.weui-btn', function(){
             $(this).parents('.js_dialog').fadeOut(200);
         });
         $('#showIOSModal1').on('click', function(){
