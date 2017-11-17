@@ -396,6 +396,12 @@ input.weui-btn_plain-primary {
   background-color: transparent;
 }
 
+.weui-btn_medium {
+  padding: 0 1.32em;
+  line-height: 0.96rem;
+  font-size: 2.5;
+}
+
 .weui-btn_mini {
   display: inline-block;
   padding: 0 1.32em;
@@ -421,7 +427,7 @@ input.weui-btn_plain-primary {
 }
 
 .weui-btn-area {
-  margin: 1.42857143em 0.266667rem .3em;
+  margin: 0.266667rem 0.266667rem .3em;
 }
 
 .weui-btn-area_inline {
@@ -444,7 +450,7 @@ input.weui-btn_plain-primary {
 }
 
 .weui-cells {
-  margin-top: 1.42857143em;
+  margin-top: 0.266667rem;
   margin-left: 0.266667rem;
   margin-right: 0.266667rem;
   background-color: #2b2b2b;
@@ -490,8 +496,8 @@ input.weui-btn_plain-primary {
   margin-bottom: .3em;
   padding-left: 0.4rem;
   padding-right: 0.4rem;
-  color: #b2b2b2;
-  font-size: 0.373333rem;
+  color: #999;
+  font-size: 0.32rem;
 }
 
 .weui-cells_after-title {
@@ -500,10 +506,14 @@ input.weui-btn_plain-primary {
 
 .weui-cells__tips {
   margin-top: .3em;
-  color: #b2b2b2;
+  color: #999;
   padding-left: 0.4rem;
   padding-right: 0.4rem;
-  font-size: 0.373333rem;
+  font-size: 0.32rem;
+}
+
+.weui-cells__tips_right {
+  text-align: right;
 }
 
 .weui-cell {
@@ -557,7 +567,7 @@ input.weui-btn_plain-primary {
 
 .weui-cell__ft {
   text-align: right;
-  color: #b2b2b2;
+  color: #999;
 }
 
 .weui-cell_swiped {
@@ -723,7 +733,7 @@ input.weui-btn_plain-primary {
 }
 
 .weui-textarea-counter {
-  color: #b2b2b2;
+  color: #999;
   text-align: right;
 }
 
@@ -840,7 +850,7 @@ input.weui-btn_plain-primary {
   padding: 0.186667rem 0.4rem;
   font-size: .9em;
   text-align: right;
-  color: #b2b2b2;
+  color: #999;
   line-height: 2;
 }
 
@@ -875,7 +885,7 @@ input.weui-btn_plain-primary {
   float: left;
   margin-right: 1em;
   min-width: 4em;
-  color: #b2b2b2;
+  color: #999;
   text-align: justify;
   text-align-last: justify;
 }
@@ -934,7 +944,7 @@ button.weui-form-preview__btn {
 }
 
 .weui-form-preview__btn_default {
-  color: #b2b2b2;
+  color: #999;
 }
 
 .weui-form-preview__btn_primary {
@@ -1100,7 +1110,7 @@ button.weui-vcode-btn {
 
 .dui-vcode-btn_disabled {
   min-width: 2.133333rem;
-  color: #b2b2b2;
+  color: #999;
 }
 
 .weui-gallery {
@@ -1240,7 +1250,7 @@ button.weui-vcode-btn {
 }
 
 .weui-uploader__info {
-  color: #b2b2b2;
+  color: #999;
 }
 
 .weui-uploader__bd {
@@ -1379,7 +1389,7 @@ button.weui-vcode-btn {
 
 .weui-msg__desc {
   font-size: 0.373333rem;
-  color: #b2b2b2;
+  color: #999;
 }
 
 .weui-msg__opr-area {
@@ -1389,7 +1399,7 @@ button.weui-vcode-btn {
 .weui-msg__extra-area {
   margin-bottom: 0.4rem;
   font-size: 0.373333rem;
-  color: #b2b2b2;
+  color: #999;
 }
 
 .weui-msg__extra-area a {
@@ -1478,7 +1488,7 @@ button.weui-vcode-btn {
   flex: 1;
   padding: 0.133333rem 0 0;
   font-size: 0;
-  color: #b2b2b2;
+  color: #999;
   text-align: center;
   -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
@@ -1498,7 +1508,7 @@ button.weui-vcode-btn {
 .weui-tabbar__icon>i,
 i.weui-tabbar__icon {
   font-size: 0.64rem;
-  color: #b2b2b2;
+  color: #999;
 }
 
 .weui-tabbar__icon img {
@@ -1508,7 +1518,7 @@ i.weui-tabbar__icon {
 
 .weui-tabbar__label {
   text-align: center;
-  color: #b2b2b2;
+  color: #999;
   font-size: 0.266667rem;
   line-height: 1.8;
 }
@@ -1661,7 +1671,7 @@ i.weui-tabbar__icon {
 
 .weui-panel__hd {
   padding: 0.373333rem 0.4rem 0.266667rem;
-  color: #b2b2b2;
+  color: #999;
   font-size: 0.346667rem;
   position: relative;
 }
@@ -1730,7 +1740,7 @@ a.weui-media-box:active {
 }
 
 .weui-media-box__desc {
-  color: #b2b2b2;
+  color: #999;
   font-size: 0.346667rem;
   line-height: 1.2;
   overflow: hidden;
@@ -1910,7 +1920,7 @@ a.weui-media-box:active {
 }
 
 .weui-footer {
-  color: #b2b2b2;
+  color: #999;
 }
 
 .weui-footer a {
@@ -2066,11 +2076,10 @@ a.weui-media-box:active {
 
 .weui-message {
   z-index: 7000;
-  max-width: 90%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  background-color: rgba(51,51,51,.8);
+  max-width: 80%;
+  word-break: keep-all;
+  word-wrap: break-word;
+  background-color: rgba(0,0,0,.6);
   padding: 0 0.533333rem;
   font-size: 0.373333rem;
   line-height: 0.746667rem;
@@ -2084,6 +2093,7 @@ a.weui-media-box:active {
   left: 50%;
   -webkit-transform: translate(-50%,-50%);
   transform: translate(-50%,-50%);
+  text-align: center;
   border-radius: 0.213333rem;
 }
 
@@ -2092,7 +2102,6 @@ a.weui-media-box:active {
   width: 3.466667rem;
   background: rgba(51,51,51,.8);
   padding-top: 0.8rem;
-  text-align: center;
 }
 
 .weui-toast__icon {
@@ -2297,7 +2306,7 @@ a.weui-media-box:active {
   top: -.9em;
   padding: 0 .55em;
   background-color: #414040;
-  color: #b2b2b2;
+  color: #999;
 }
 
 .weui-loadmore_dot .weui-loadmore__tips {
@@ -2645,7 +2654,7 @@ input[type=search]::-webkit-search-results-decoration {
 }
 
 .weui-picker__item_disabled {
-  color: #b2b2b2;
+  color: #999;
 }
 
 @-webkit-keyframes a {
@@ -2767,7 +2776,7 @@ input[type=search]::-webkit-search-results-decoration {
 }
 
 .weui-agree__text {
-  color: #b2b2b2;
+  color: #999;
 }
 
 .weui-agree__checkbox {
