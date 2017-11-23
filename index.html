@@ -183,6 +183,693 @@
     <header class="post-header">
       <h1 class="post-title">
         
+          <a class="post-link" href="/2017/11/23/canvas-图片粒子效果/">canvas-图片粒子效果</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-11-23
+        </span>
+        
+        
+        <div class="post-visits"
+             data-url="/2017/11/23/canvas-图片粒子效果/"
+             data-title="canvas-图片粒子效果">
+            阅读次数
+          </div>
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+
+        
+          <canvas id="myCanvas" style="width: 100%; height: 600px; background-color: #0c1328; cursor: pointer;"></canvas>
+
+<h2 id="废话少说"><a href="#废话少说" class="headerlink" title="废话少说"></a>废话少说</h2><p>实现以上效果需要4步</p>
+<ol>
+<li>读取图片</li>
+<li>对图片像素处理（偏移, 模糊…）</li>
+<li>画到画布上</li>
+<li>动画</li>
+</ol>
+<h2 id="1-读取图片"><a href="#1-读取图片" class="headerlink" title="1. 读取图片"></a>1. 读取图片</h2><p><img src="/uploads/canvas-图片粒子效果/rocket.png" alt="rocket"></p>
+<hr>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 新建一个image对象</span></span><br><span class="line"><span class="keyword">const</span> imgObj = <span class="keyword">new</span> Image();</span><br><span class="line">imgObj.onload = <span class="function"><span class="params">()</span> =&gt;</span> cb(imgObj);</span><br><span class="line">imgObj.src = <span class="string">'rocket.png'</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="2-获取信息"><a href="#2-获取信息" class="headerlink" title="2. 获取信息"></a>2. 获取信息</h2><p><code>canvas</code>提供<a href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage" target="_blank" rel="noopener"><code>drawImage</code></a>接口能把图片或是另一画布画在当前画布上，同时还有<a href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/getImageData" target="_blank" rel="noopener"><code>getImageData</code></a>能从画布上获取某一块画布的信息。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">ctx.drawImage(imgObj, image.x, image.y, image.width, image.height); <span class="comment">// 画到画布上</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 从画布中获取颜色值</span></span><br><span class="line"><span class="comment"> * &#123; width: 100, height: 100, data: Uint8ClampedArray[40000] &#125;</span></span><br><span class="line"><span class="comment"> * .data [r1, g1, b1, a1, r2, g2, b2, a2]</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">const</span> imageData = ctx.getImageData(image.x, image.y, image.width, image.height);</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * calculateParticles</span></span><br><span class="line"><span class="comment"> * 偏移</span></span><br><span class="line"><span class="comment"> * [&#123; x, y, fillStyle, offsetX, offsetY, time &#125;]</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">const</span> particles = calculateParticles(imageData.data, <span class="function"><span class="keyword">function</span> <span class="title">generateStart</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    x: canvas.width / <span class="number">2</span>,</span><br><span class="line">    y: canvas.height</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="3-画到画布上"><a href="#3-画到画布上" class="headerlink" title="3. 画到画布上"></a>3. 画到画布上</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">draw</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 画每个点</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; particles.length; i++) &#123;</span><br><span class="line">    <span class="keyword">const</span> particle = particles[i];</span><br><span class="line">    <span class="comment">// 时间</span></span><br><span class="line">    particle.time++;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置填充颜色</span></span><br><span class="line">    ctx.fillStyle = particle.fillStyle;</span><br><span class="line">    <span class="comment">// 绘粒子到画布上</span></span><br><span class="line">    ctx.fillRect(</span><br><span class="line">      particle.x,</span><br><span class="line">      particle.y,</span><br><span class="line">      <span class="number">2</span>, <span class="number">2</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="4-动画"><a href="#4-动画" class="headerlink" title="4. 动画"></a>4. 动画</h2><h3 id="缓动函数"><a href="#缓动函数" class="headerlink" title="缓动函数"></a>缓动函数</h3><blockquote>
+<p>指定动画效果在执行时的速度，使其看起来更加真实</p>
+</blockquote>
+<p><a href="http://easings.net/zh-cn" target="_blank" rel="noopener"><img src="/uploads/canvas-图片粒子效果/ease.png" alt="ease.png"></a></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">easeInOutExpo</span>(<span class="params">t, b, c, d</span>) </span>&#123;</span><br><span class="line">  t /= d / <span class="number">2</span>;</span><br><span class="line">  <span class="keyword">if</span> (t &lt; <span class="number">1</span>) <span class="keyword">return</span> c / <span class="number">2</span> * <span class="built_in">Math</span>.pow(<span class="number">2</span>, <span class="number">10</span> * (t - <span class="number">1</span>)) + b;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> c / <span class="number">2</span> * ( -<span class="built_in">Math</span>.pow(<span class="number">2</span>, <span class="number">-10</span> * (t - <span class="number">1</span>)) + <span class="number">2</span>) + b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">draw</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 画布刷新</span></span><br><span class="line">  ctx.fillStyle = backgroundColor;</span><br><span class="line">  ctx.fillRect(<span class="number">0</span>, <span class="number">0</span>, width, height);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 画每个点</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; particles.length; i++) &#123;</span><br><span class="line">    <span class="keyword">const</span> particle = particles[i];</span><br><span class="line">    <span class="comment">// 时间</span></span><br><span class="line">    particle.time++;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置填充颜色</span></span><br><span class="line">    ctx.fillStyle = particle.fillStyle;</span><br><span class="line">    <span class="comment">// 绘粒子到画布上</span></span><br><span class="line">    ctx.fillRect(</span><br><span class="line">      easeInOutExpo(particle.time, particle.x, particle.offsetX, totalTime), <span class="comment">// 使用 easeInOutExpo</span></span><br><span class="line">      easeInOutExpo(particle.time, particle.y, particle.offsetY, totalTime),</span><br><span class="line">      <span class="number">2</span>, <span class="number">2</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 浏览器下一帧时，再绘画</span></span><br><span class="line">  requestAnimationFrame(<span class="keyword">this</span>.draw);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><a href="https://github.com/cytle/rocket" target="_blank" rel="noopener">源码地址</a></p>
+<h3 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h3><p>效果上</p>
+<ul>
+<li>粒子出发时间随机延迟</li>
+<li>粒子最终随机偏移</li>
+<li>加上拖影</li>
+</ul>
+<p>性能上</p>
+<ul>
+<li>避免不必要的Canvas绘制状态频繁切换</li>
+<li>避免使用浮点数坐标</li>
+</ul>
+<h3 id="另一个随机效果"><a href="#另一个随机效果" class="headerlink" title="另一个随机效果"></a>另一个随机效果</h3><canvas id="fullCanvas" style="width: 100%; height: 600px; background-color: #0c1328; cursor: pointer;"></canvas>
+
+
+<script type="text/javascript">
+  var Rocket = (function () {
+  'use strict';
+
+  var babelHelpers = {};
+  var asyncGenerator = function () {
+    function AwaitValue(value) {
+      this.value = value;
+    }
+
+    function AsyncGenerator(gen) {
+      var front, back;
+
+      function send(key, arg) {
+        return new Promise(function (resolve, reject) {
+          var request = {
+            key: key,
+            arg: arg,
+            resolve: resolve,
+            reject: reject,
+            next: null
+          };
+
+          if (back) {
+            back = back.next = request;
+          } else {
+            front = back = request;
+            resume(key, arg);
+          }
+        });
+      }
+
+      function resume(key, arg) {
+        try {
+          var result = gen[key](arg);
+          var value = result.value;
+
+          if (value instanceof AwaitValue) {
+            Promise.resolve(value.value).then(function (arg) {
+              resume("next", arg);
+            }, function (arg) {
+              resume("throw", arg);
+            });
+          } else {
+            settle(result.done ? "return" : "normal", result.value);
+          }
+        } catch (err) {
+          settle("throw", err);
+        }
+      }
+
+      function settle(type, value) {
+        switch (type) {
+          case "return":
+            front.resolve({
+              value: value,
+              done: true
+            });
+            break;
+
+          case "throw":
+            front.reject(value);
+            break;
+
+          default:
+            front.resolve({
+              value: value,
+              done: false
+            });
+            break;
+        }
+
+        front = front.next;
+
+        if (front) {
+          resume(front.key, front.arg);
+        } else {
+          back = null;
+        }
+      }
+
+      this._invoke = send;
+
+      if (typeof gen.return !== "function") {
+        this.return = undefined;
+      }
+    }
+
+    if (typeof Symbol === "function" && Symbol.asyncIterator) {
+      AsyncGenerator.prototype[Symbol.asyncIterator] = function () {
+        return this;
+      };
+    }
+
+    AsyncGenerator.prototype.next = function (arg) {
+      return this._invoke("next", arg);
+    };
+
+    AsyncGenerator.prototype.throw = function (arg) {
+      return this._invoke("throw", arg);
+    };
+
+    AsyncGenerator.prototype.return = function (arg) {
+      return this._invoke("return", arg);
+    };
+
+    return {
+      wrap: function (fn) {
+        return function () {
+          return new AsyncGenerator(fn.apply(this, arguments));
+        };
+      },
+      await: function (value) {
+        return new AwaitValue(value);
+      }
+    };
+  }();
+
+  var classCallCheck = function (instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  };
+
+  var createClass = function () {
+    function defineProperties(target, props) {
+      for (var i = 0; i < props.length; i++) {
+        var descriptor = props[i];
+        descriptor.enumerable = descriptor.enumerable || false;
+        descriptor.configurable = true;
+        if ("value" in descriptor) descriptor.writable = true;
+        Object.defineProperty(target, descriptor.key, descriptor);
+      }
+    }
+
+    return function (Constructor, protoProps, staticProps) {
+      if (protoProps) defineProperties(Constructor.prototype, protoProps);
+      if (staticProps) defineProperties(Constructor, staticProps);
+      return Constructor;
+    };
+  }();
+
+
+  var objectWithoutProperties = function (obj, keys) {
+    var target = {};
+
+    for (var i in obj) {
+      if (keys.indexOf(i) >= 0) continue;
+      if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;
+      target[i] = obj[i];
+    }
+
+    return target;
+  };
+
+  babelHelpers;
+
+  var Particle = function () {
+    function Particle(_ref) {
+      var x = _ref.x,
+          y = _ref.y,
+          fillStyle = _ref.fillStyle,
+          size = _ref.size,
+          start = _ref.start,
+          _ref$delay = _ref.delay,
+          delay = _ref$delay === undefined ? 240 : _ref$delay,
+          _ref$offset = _ref.offset,
+          offset = _ref$offset === undefined ? 10 : _ref$offset;
+      classCallCheck(this, Particle);
+
+      this.x = start.x;
+      this.y = start.y;
+      this.fillStyle = fillStyle;
+      this.size = size;
+      this.timeGap = 1;
+      this.targetX = x;
+      this.targetY = y;
+      if (offset) {
+        this.targetX += (Math.random() - 0.5) * offset;
+        this.targetY += (Math.random() - 0.5) * offset;
+      }
+
+      this.offsetX = this.targetX - this.x;
+      this.offsetY = this.targetY - this.y;
+
+      this.initialTime = delay ? -1 * Math.random() * delay >> 0 : 0;
+
+      this.time = this.initialTime;
+      this.status = 0;
+    }
+
+    createClass(Particle, [{
+      key: "reverse",
+      value: function reverse() {
+        this.timeGap *= -1;
+      }
+    }, {
+      key: "nextPoint",
+      value: function nextPoint(animation, totalTime) {
+        this.time += this.timeGap;
+
+        // time 小于0表示还没有画布中
+        if (this.time < 0) {
+          this.status = -1;
+          return null;
+        }
+
+        var time = this.time,
+            x = this.x,
+            y = this.y,
+            offsetX = this.offsetX,
+            offsetY = this.offsetY;
+
+        if (time < totalTime) {
+          this.status = 0;
+        } else {
+          this.status = 1;
+        }
+
+        return [animation({
+          now: x,
+          total: offsetX,
+          time: time,
+          totalTime: totalTime
+        }), animation({
+          now: y,
+          total: offsetY,
+          time: time,
+          totalTime: totalTime
+        })];
+      }
+    }, {
+      key: "isFinished",
+      get: function get$$1() {
+        return this.status === this.timeGap;
+      }
+    }]);
+    return Particle;
+  }();
+
+  function easeInOutExpo(_ref) {
+    var time = _ref.time,
+        now = _ref.now,
+        total = _ref.total,
+        totalTime = _ref.totalTime;
+
+    time /= totalTime / 2;
+    return time < 1 ? total / 2 * Math.pow(2, 10 * (time - 1)) + now : total / 2 * (-Math.pow(2, -10 * (time - 1)) + 2) + now;
+  }
+
+  var Canvas = function () {
+    function Canvas(_ref) {
+      var totalTime = _ref.totalTime,
+          el = _ref.el,
+          _ref$globalAlpha = _ref.globalAlpha,
+          globalAlpha = _ref$globalAlpha === undefined ? 0.8 : _ref$globalAlpha,
+          width = _ref.width,
+          height = _ref.height,
+          _ref$backgroundColor = _ref.backgroundColor,
+          backgroundColor = _ref$backgroundColor === undefined ? '#000' : _ref$backgroundColor;
+      classCallCheck(this, Canvas);
+
+      if (!el.getContext) {
+        throw new Error('canvas.getContext 不支持');
+      }
+      this.ctx = el.getContext('2d');
+      this.width = width || el.width;
+      this.height = height || el.height;
+      this.globalAlpha = globalAlpha;
+
+      el.width = width;
+      el.height = height;
+
+      this.totalTime = totalTime;
+      this.backgroundColor = backgroundColor;
+    }
+
+    createClass(Canvas, [{
+      key: 'readImageData',
+      value: function readImageData(_ref2, imgObj) {
+        var x = _ref2.x,
+            y = _ref2.y,
+            width = _ref2.width,
+            height = _ref2.height;
+        var ctx = this.ctx;
+        // 把图像绘制到画布坐标为(100,100)的地方
+
+        ctx.drawImage(imgObj, x, y, width, height);
+        // imgObj = null;
+        var imageData = ctx.getImageData(x, y, width, height);
+        // ctx.clearRect(0, 0, this.width, this.height); // 清除画布
+
+        return imageData.data;
+      }
+    }, {
+      key: 'clear',
+      value: function clear() {
+        var ctx = this.ctx,
+            width = this.width,
+            height = this.height,
+            backgroundColor = this.backgroundColor;
+
+        ctx.fillStyle = backgroundColor;
+        ctx.fillRect(0, 0, width, height);
+      }
+
+      // 清空画布
+
+    }, {
+      key: 'beforeDraw',
+      value: function beforeDraw() {
+        var ctx = this.ctx,
+            width = this.width,
+            height = this.height,
+            backgroundColor = this.backgroundColor,
+            globalAlpha = this.globalAlpha;
+
+        ctx.save();
+        ctx.globalAlpha = globalAlpha;
+        ctx.fillStyle = backgroundColor;
+        ctx.fillRect(0, 0, width, height);
+        ctx.restore();
+      }
+    }, {
+      key: 'drawParticles',
+      value: function drawParticles(particles) {
+        var totalTime = this.totalTime,
+            ctx = this.ctx;
+
+
+        this.beforeDraw();
+        for (var i = 0; i < particles.length; i++) {
+          var particle = particles[i];
+          var point = particle.nextPoint(easeInOutExpo, totalTime);
+          if (point !== null) {
+            ctx.fillStyle = particle.fillStyle;
+            ctx.fillRect(point[0], point[1], particle.size, particle.size);
+          }
+        }
+      }
+    }]);
+    return Canvas;
+  }();
+
+  function loadImage(src, cb) {
+    // 新建一个image对象
+    var imgObj = new Image();
+    imgObj.onload = function () {
+      return cb(imgObj);
+    };
+    // 设置image的source
+    imgObj.src = src;
+  }
+
+  var Rocket = function () {
+    function Rocket(_ref) {
+      var _ref$totalTime = _ref.totalTime,
+          totalTime = _ref$totalTime === undefined ? 120 : _ref$totalTime,
+          el = _ref.el,
+          _ref$width = _ref.width,
+          width = _ref$width === undefined ? 800 : _ref$width,
+          _ref$height = _ref.height,
+          height = _ref$height === undefined ? 400 : _ref$height,
+          globalAlpha = _ref.globalAlpha,
+          backgroundColor = _ref.backgroundColor,
+          options = objectWithoutProperties(_ref, ['totalTime', 'el', 'width', 'height', 'globalAlpha', 'backgroundColor']);
+      classCallCheck(this, Rocket);
+
+      this.draw = this.draw.bind(this);
+      // 获取canvas元素
+      this.canvas = new Canvas({
+        totalTime: totalTime,
+        el: el,
+        width: width,
+        height: height,
+        globalAlpha: globalAlpha,
+        backgroundColor: backgroundColor
+      });
+      this.setOptions(options);
+    }
+
+    createClass(Rocket, [{
+      key: 'setOptions',
+      value: function setOptions(_ref2) {
+        var _ref2$maxCols = _ref2.maxCols,
+            maxCols = _ref2$maxCols === undefined ? 100 : _ref2$maxCols,
+            _ref2$maxRows = _ref2.maxRows,
+            maxRows = _ref2$maxRows === undefined ? 50 : _ref2$maxRows,
+            _ref2$particleDelay = _ref2.particleDelay,
+            particleDelay = _ref2$particleDelay === undefined ? 0 : _ref2$particleDelay,
+            _ref2$particleOffset = _ref2.particleOffset,
+            particleOffset = _ref2$particleOffset === undefined ? 0 : _ref2$particleOffset,
+            _ref2$particleSize = _ref2.particleSize,
+            particleSize = _ref2$particleSize === undefined ? 2 : _ref2$particleSize,
+            _ref2$repeat = _ref2.repeat,
+            repeat = _ref2$repeat === undefined ? false : _ref2$repeat,
+            _ref2$startFrom = _ref2.startFrom,
+            startFrom = _ref2$startFrom === undefined ? 'full' : _ref2$startFrom;
+
+        this.maxCols = maxCols;
+        this.maxRows = maxRows;
+        this.particleDelay = particleDelay;
+        this.particleOffset = particleOffset;
+        this.particleSize = particleSize;
+        this.repeat = repeat;
+        this.startFrom = startFrom;
+      }
+    }, {
+      key: 'drawImage',
+      value: function drawImage(src, options) {
+        var _this = this;
+
+        // this.setOptions(options);
+        this.startFrom = options.startFrom;
+
+        loadImage(src, function (imgObj) {
+          var canvas = _this.canvas;
+          _this.image = {
+            width: imgObj.width,
+            height: imgObj.height,
+            x: (canvas.width - imgObj.width) / 2,
+            y: (canvas.height - imgObj.height) / 2
+          };
+          var imageData = canvas.readImageData(_this.image, imgObj);
+          var generateStart = _this.startFrom === 'full' ? _this.fullParticlesStart() : _this.onePointParticlesStart();
+
+          _this.particles = _this.calculateParticles(imageData, {
+            generateStart: generateStart
+          });
+
+          canvas.clear();
+          _this.stop();
+
+          _this.draw();
+        });
+      }
+    }, {
+      key: 'stop',
+      value: function stop() {
+        cancelAnimationFrame(this.requestID);
+      }
+    }, {
+      key: 'fullParticlesStart',
+      value: function fullParticlesStart() {
+        var _canvas = this.canvas,
+            width = _canvas.width,
+            height = _canvas.height;
+
+        return function () {
+          return {
+            x: Math.random() * width,
+            y: Math.random() * height
+          };
+        };
+      }
+    }, {
+      key: 'onePointParticlesStart',
+      value: function onePointParticlesStart() {
+        var canvas = this.canvas;
+        var image = this.image;
+        var start = {
+          x: canvas.width / 2,
+          y: Math.min(canvas.height, image.y + image.height + 300)
+        };
+        return function () {
+          return start;
+        };
+      }
+    }, {
+      key: 'calculateParticles',
+      value: function calculateParticles(imageData, _ref3) {
+        var generateStart = _ref3.generateStart;
+
+        var particles = [];
+        var _image = this.image,
+            imageX = _image.x,
+            imageY = _image.y,
+            imageW = _image.width,
+            imageH = _image.height;
+
+        var cols = this.maxCols;
+        var rows = this.maxRows;
+        var cellWidth = imageW / cols;
+        var cellHeight = imageH / rows;
+        var round = Math.round;
+        for (var i = 0; i < cols; i++) {
+          for (var j = 0; j < rows; j++) {
+            var x = round(i * cellWidth);
+            var y = round(j * cellHeight);
+
+            // 计算(i,j)在数组中的R的坐标值
+            var pos = (y * imageW + x) * 4;
+
+            // 判断像素透明度值是否符合要求
+            if (imageData[pos + 3] <= 100) {
+              continue;
+            }
+
+            // 符合要求的粒子保存到数组里
+            particles.push(new Particle({
+              x: imageX + x,
+              y: imageY + y,
+              fillStyle: 'rgb(' + imageData[pos] + ', ' + imageData[pos + 1] + ', ' + imageData[pos + 2] + ')',
+              start: generateStart(),
+              size: this.particleSize,
+              delay: this.particleDelay,
+              offset: this.particleOffset
+            }));
+          }
+        }
+        return particles;
+      }
+    }, {
+      key: 'draw',
+      value: function draw() {
+        var particles = this.particles;
+        if (particles.every(function (p) {
+          return p.isFinished;
+        })) {
+          if (!this.repeat) {
+            console.info('finish');
+            return;
+          }
+          for (var i = 0; i < particles.length; i++) {
+            particles[i].reverse();
+          }
+        }
+
+        this.canvas.drawParticles(particles);
+
+        // 下一帧绘画
+        this.requestID = requestAnimationFrame(this.draw);
+      }
+    }]);
+    return Rocket;
+  }();
+
+  return Rocket;
+
+  }());
+</script>
+
+<script type="text/javascript">
+  (function () {
+    var rocket;
+    var canvas = document.getElementById('myCanvas');
+
+    function rocketToggle () {
+      if (rocket) {
+        rocket.stop();
+      } else {
+        rocket = new Rocket({
+          el: canvas,
+          width: canvas.parentElement.clientWidth,
+          height: 600,
+          maxCols: 100,
+          maxRows: 100,
+          backgroundColor: '#0c1328',
+          particleDelay: 240,
+          particleOffset: 10,
+          particleSize: 2,
+          globalAlpha: 0.6,
+          repeat: false,
+        });
+      }
+      rocket.drawImage('/uploads/canvas-图片粒子效果/rocket.png', {
+        startFrom: 'onePoint'
+      });
+      isStarted = true;
+    }
+    canvas.addEventListener('click', rocketToggle);
+  }())
+</script>
+
+
+<script type="text/javascript">
+  (function () {
+    var rocket;
+    var canvas = document.getElementById('fullCanvas');
+
+    function rocketToggle () {
+      if (rocket) {
+        rocket.stop();
+      } else {
+        rocket = new Rocket({
+          el: canvas,
+          width: canvas.parentElement.clientWidth,
+          height: 600,
+          maxCols: 100,
+          maxRows: 100,
+          backgroundColor: '#0c1328',
+          particleDelay: 240,
+          particleOffset: 10,
+          particleSize: 2,
+          globalAlpha: 0.6,
+          repeat: false,
+        });
+      }
+      rocket.drawImage('/uploads/canvas-图片粒子效果/rocket.png', {
+        startFrom: 'full'
+      });
+      isStarted = true;
+    }
+    canvas.addEventListener('click', rocketToggle);
+  }())
+</script>
+
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
           <a class="post-link" href="/2017/06/18/记一次微信开发者工具debug/">记一次微信开发者工具debug</a>
         
       </h1>
@@ -655,6 +1342,97 @@
     <header class="post-header">
       <h1 class="post-title">
         
+          <a class="post-link" href="/2016/11/16/不熟sublime快捷键备忘/">不熟sublime快捷键备忘</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2016-11-16
+        </span>
+        
+        
+        <div class="post-visits"
+             data-url="/2016/11/16/不熟sublime快捷键备忘/"
+             data-title="不熟sublime快捷键备忘">
+            阅读次数
+          </div>
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+
+        
+          <p>查找模式下</p>
+<p><code>Alt+R</code>:正则模式</p>
+<p><code>Alt+C</code>:严格大小写</p>
+<p><code>Alt+W</code>:一个单词</p>
+<p><code>F3</code>:查找下一个</p>
+<p><code>Shift+F3</code>:查找上一个</p>
+<p><code>Alt+Enter</code>:查找所有</p>
+<p><code>Ctrl+Alt+Enter</code>:替换所有</p>
+<p><code>Ctrl+Shift+H</code>:替换</p>
+<p><code>Ctrl+Shift+V</code>：粘贴并格式化</p>
+<p><code>Ctrl+Shift+Enter</code>：在当前行前插入新行</p>
+<p><code>Ctrl+M</code>：跳转到对应括号</p>
+<p><code>Ctrl+U</code>：软撤销，撤销光标位置</p>
+<p><code>Ctrl+J</code>：选择标签内容</p>
+<p><code>Ctrl+K+B</code>：开关侧栏</p>
+<p><code>Ctrl+Shift+M</code>：选中当前括号内容，重复可选着括号本身</p>
+<p><code>Ctrl+F2</code>：设置/删除标记</p>
+<p><code>Ctrl+Alt+/</code>：块注释，并Focus到首行，写注释说明用的</p>
+<p><code>Ctrl+Shift+A</code>：选择当前标签前后，修改标签用的</p>
+<p><code>Alt+F3</code>：选择所有相同的词</p>
+<p><code>Alt+.</code>：闭合标签</p>
+<p><code>Shift+右键拖动</code>：光标多不，用来更改或插入列内容</p>
+<p>??鼠标的前进后退键可切换Tab文件</p>
+<p><code>Alt+F3</code>：选中文本按下快捷键，即可一次性选择全部的相同文本进行同时编辑。举个栗子：快速选中并更改所有相同的变量名、函数名等。</p>
+<p><code>Ctrl+Shift+L</code>：先选中多行，再按下快捷键，会在每行行尾插入光标，即可同时编辑这些行。</p>
+<p><code>Ctrl+Shift+M</code>：选择括号内的内容（继续选择父括号）。举个栗子：快速选中删除函数中的代码，重写函数体代码或重写括号内里的内容。</p>
+<p><code>Ctrl+M</code>：光标移动至括号内结束或开始的位置。</p>
+<p><code>Ctrl+Enter</code>：在下一行插入新行。举个栗子：即使光标不在行尾，也能快速向下插入一行。</p>
+<p><code>Ctrl+Shift+Enter</code>：在上一行插入新行。举个栗子：即使光标不在行首，也能快速向上插入一行。</p>
+<p><code>Ctrl+Shift+[</code>：选中代码，按下快捷键，折叠代码。</p>
+<p><code>Ctrl+Shift+]</code>：选中代码，按下快捷键，展开代码。</p>
+<p><code>Ctrl+K+0</code>：展开所有折叠代码。</p>
+<p><code>Ctrl+Alt+↑</code>：向上添加多行光标，可同时编辑多行。</p>
+<p><code>Ctrl+Alt+↓</code>：向下添加多行光标，可同时编辑多行。</p>
+<p><code>Ctrl+J</code>：合并选中的多行代码为一行。举个栗子：将多行格式的CSS属性合并为一行。</p>
+<p><code>Ctrl+Shift+D</code>：复制光标所在整行，插入到下一行。</p>
+<p><code>Ctrl+K+K</code>：从光标处开始删除代码至行尾。</p>
+<p><code>Ctrl+Shift+K</code>：删除整行。</p>
+<p><code>Ctrl+U</code>：软撤销，感觉和<code>Gtrl+Z</code>一样。</p>
+<p><code>Ctrl+F2</code>：设置书签</p>
+<p><code>Ctrl+T</code>：左右字母互换。</p>
+<p><code>F6</code>：单词检测拼写</p>
+<p><code>Ctrl+：</code>：打开搜索框，自动带#，输入关键字，查找文件中的变量名、属性名等。</p>
+<p><code>Ctrl+k+2</code>：折叠注释和方法</p>
+<p><code>Ctrl+k+3</code>：折叠if</p>
+<p><code>Ctrl+k+4</code>：折叠switch</p>
+
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
           <a class="post-link" href="/2016/11/16/sublime快捷键备忘/">sublime快捷键备忘</a>
         
       </h1>
@@ -808,97 +1586,6 @@
     <header class="post-header">
       <h1 class="post-title">
         
-          <a class="post-link" href="/2016/11/16/不熟sublime快捷键备忘/">不熟sublime快捷键备忘</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2016-11-16
-        </span>
-        
-        
-        <div class="post-visits"
-             data-url="/2016/11/16/不熟sublime快捷键备忘/"
-             data-title="不熟sublime快捷键备忘">
-            阅读次数
-          </div>
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-
-        
-          <p>查找模式下</p>
-<p><code>Alt+R</code>:正则模式</p>
-<p><code>Alt+C</code>:严格大小写</p>
-<p><code>Alt+W</code>:一个单词</p>
-<p><code>F3</code>:查找下一个</p>
-<p><code>Shift+F3</code>:查找上一个</p>
-<p><code>Alt+Enter</code>:查找所有</p>
-<p><code>Ctrl+Alt+Enter</code>:替换所有</p>
-<p><code>Ctrl+Shift+H</code>:替换</p>
-<p><code>Ctrl+Shift+V</code>：粘贴并格式化</p>
-<p><code>Ctrl+Shift+Enter</code>：在当前行前插入新行</p>
-<p><code>Ctrl+M</code>：跳转到对应括号</p>
-<p><code>Ctrl+U</code>：软撤销，撤销光标位置</p>
-<p><code>Ctrl+J</code>：选择标签内容</p>
-<p><code>Ctrl+K+B</code>：开关侧栏</p>
-<p><code>Ctrl+Shift+M</code>：选中当前括号内容，重复可选着括号本身</p>
-<p><code>Ctrl+F2</code>：设置/删除标记</p>
-<p><code>Ctrl+Alt+/</code>：块注释，并Focus到首行，写注释说明用的</p>
-<p><code>Ctrl+Shift+A</code>：选择当前标签前后，修改标签用的</p>
-<p><code>Alt+F3</code>：选择所有相同的词</p>
-<p><code>Alt+.</code>：闭合标签</p>
-<p><code>Shift+右键拖动</code>：光标多不，用来更改或插入列内容</p>
-<p>??鼠标的前进后退键可切换Tab文件</p>
-<p><code>Alt+F3</code>：选中文本按下快捷键，即可一次性选择全部的相同文本进行同时编辑。举个栗子：快速选中并更改所有相同的变量名、函数名等。</p>
-<p><code>Ctrl+Shift+L</code>：先选中多行，再按下快捷键，会在每行行尾插入光标，即可同时编辑这些行。</p>
-<p><code>Ctrl+Shift+M</code>：选择括号内的内容（继续选择父括号）。举个栗子：快速选中删除函数中的代码，重写函数体代码或重写括号内里的内容。</p>
-<p><code>Ctrl+M</code>：光标移动至括号内结束或开始的位置。</p>
-<p><code>Ctrl+Enter</code>：在下一行插入新行。举个栗子：即使光标不在行尾，也能快速向下插入一行。</p>
-<p><code>Ctrl+Shift+Enter</code>：在上一行插入新行。举个栗子：即使光标不在行首，也能快速向上插入一行。</p>
-<p><code>Ctrl+Shift+[</code>：选中代码，按下快捷键，折叠代码。</p>
-<p><code>Ctrl+Shift+]</code>：选中代码，按下快捷键，展开代码。</p>
-<p><code>Ctrl+K+0</code>：展开所有折叠代码。</p>
-<p><code>Ctrl+Alt+↑</code>：向上添加多行光标，可同时编辑多行。</p>
-<p><code>Ctrl+Alt+↓</code>：向下添加多行光标，可同时编辑多行。</p>
-<p><code>Ctrl+J</code>：合并选中的多行代码为一行。举个栗子：将多行格式的CSS属性合并为一行。</p>
-<p><code>Ctrl+Shift+D</code>：复制光标所在整行，插入到下一行。</p>
-<p><code>Ctrl+K+K</code>：从光标处开始删除代码至行尾。</p>
-<p><code>Ctrl+Shift+K</code>：删除整行。</p>
-<p><code>Ctrl+U</code>：软撤销，感觉和<code>Gtrl+Z</code>一样。</p>
-<p><code>Ctrl+F2</code>：设置书签</p>
-<p><code>Ctrl+T</code>：左右字母互换。</p>
-<p><code>F6</code>：单词检测拼写</p>
-<p><code>Ctrl+：</code>：打开搜索框，自动带#，输入关键字，查找文件中的变量名、属性名等。</p>
-<p><code>Ctrl+k+2</code>：折叠注释和方法</p>
-<p><code>Ctrl+k+3</code>：折叠if</p>
-<p><code>Ctrl+k+4</code>：折叠switch</p>
-
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
           <a class="post-link" href="/2016/11/14/ubuntu美化/">ubuntu美化</a>
         
       </h1>
@@ -931,63 +1618,6 @@
 <li>NUMIX</li>
 <li>docky</li>
 </ul>
-
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2016/10/19/ngrok-使用/">ngrok-使用</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2016-10-19
-        </span>
-        
-        
-        <div class="post-visits"
-             data-url="/2016/10/19/ngrok-使用/"
-             data-title="ngrok-使用">
-            阅读次数
-          </div>
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-
-        
-          <h3 id="安装ngrok客户端"><a href="#安装ngrok客户端" class="headerlink" title="安装ngrok客户端"></a>安装ngrok客户端</h3><p>mac下使用brew安装(来自cask)</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> brew cask install ngork</span><br></pre></td></tr></table></figure>
-<h3 id="得到一个服务器"><a href="#得到一个服务器" class="headerlink" title="得到一个服务器"></a>得到一个服务器</h3><h4 id="直接使用ngrok-com"><a href="#直接使用ngrok-com" class="headerlink" title="直接使用ngrok.com"></a>直接使用ngrok.com</h4><p>比较坑，需要翻墙。代理的域名也要翻墙访问。。</p>
-<p><a href="https://dashboard.ngrok.com/user/signup" target="_blank" rel="noopener">ngrok.com注册</a></p>
-<p>ngrok.com会提供一个<code>authtoken</code></p>
-<h4 id="这里应该有配置自己的服务器"><a href="#这里应该有配置自己的服务器" class="headerlink" title="这里应该有配置自己的服务器"></a>这里应该有配置自己的服务器</h4><p>挖一个坑</p>
-<h3 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h3><p>在客户端终端执行
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> ngrok authtoken xxxxxxxxxxxxxxxxxxxxxxxxxxxx</span><br></pre></td></tr></table></figure></p>
-<p>绑定本地端口，并且启动
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> ngrok http 80</span><br></pre></td></tr></table></figure></p>
-<p>访问<a href="http://127.0.0.1:4040/可以看到ngrok运行状态" target="_blank" rel="noopener">http://127.0.0.1:4040/可以看到ngrok运行状态</a></p>
-<p><img src="/uploads/ngrok-使用/界面截图.png" alt="界面截图"></p>
 
         
       
