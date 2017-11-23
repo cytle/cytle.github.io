@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="iterm+zsh+tmux"/>
+
+
+
+
+  <meta name="keywords" content="zsh tmux unix vim, xsp" />
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="xsp">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="https://cytle.github.io/2016/09/25/iterm-zsh-tmux/"/>
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.1.1/av-min.js"></script>
+  <script id="leancloud">
+    AV.init({
+      appId: "XX5UNu0LFrK6VkLgVS7GygfL-gzGzoHsz",
+      appKey: "pBlnYAs9URL4nuKQqCu6q4Jp"
+    });
+  </script>
+
+
+
+
+
+    <title> iterm+zsh+tmux - xsp </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">xsp</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            首页
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            归档
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            标签
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">xsp</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          iterm+zsh+tmux
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2016-09-25
+        </span>
+        
+        
+        <div class="post-visits"
+             data-url="/2016/09/25/iterm-zsh-tmux/"
+             data-title="iterm+zsh+tmux">
+            阅读次数
+          </div>
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#tmux"><span class="toc-text">tmux</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#YADR"><span class="toc-text">YADR</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#tmux-powerline"><span class="toc-text">tmux-powerline</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#配置城市"><span class="toc-text">配置城市</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-text">参考</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <p><img src="/uploads/iterm-zsh-tmux/效果.png" alt="效果"></p>
+<h2 id="tmux"><a href="#tmux" class="headerlink" title="tmux"></a>tmux</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-get install tmux</div></pre></td></tr></table></figure>
+<h2 id="YADR"><a href="#YADR" class="headerlink" title="YADR"></a>YADR</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">sudo apt-get install rake</div><div class="line"><span class="meta"></span></div><div class="line"># install YADR</div><div class="line"><span class="meta">#</span> http://www.agileventures.org/articles/setting-up-yadr-on-ubuntu</div><div class="line">sh -c "`curl -fsSL https://raw.githubusercontent.com/skwp/dotfiles/master/install.sh`"</div><div class="line"></div><div class="line">nautilus ~/.yadr/fonts/</div></pre></td></tr></table></figure>
+<p>终端配色方案修改为<code>solarized</code></p>
+<p>编辑 &gt; 编辑配置文件 &gt; 颜色</p>
+<p><img src="/uploads/iterm-zsh-tmux/终端配置.png" alt="终端配置"></p>
+<h2 id="tmux-powerline"><a href="#tmux-powerline" class="headerlink" title="tmux-powerline"></a>tmux-powerline</h2><p><a href="https://github.com/erikw/tmux-powerline" target="_blank" rel="external">tmux-powerline</a></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">TMUX_POWERLINE_PATH=~/.tmux-powerline</div><div class="line">git clone https://github.com/erikw/tmux-powerline.git $TMUX_POWERLINE_PATH</div></pre></td></tr></table></figure>
+<p>编辑<code>.tmux.conf</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">set-option -g status on</div><div class="line">set-option -g status-interval 2</div><div class="line">set-option -g status-justify "centre"</div><div class="line">set-option -g status-left-length 60</div><div class="line">set-option -g status-right-length 90</div><div class="line">set-option -g status-left "#(~/path/to/tmux-powerline/powerline.sh left)"</div><div class="line">set-option -g status-right "#(~/path/to/tmux-powerline/powerline.sh right)"</div><div class="line"></div><div class="line">set-window-option -g window-status-current-format "#[fg=colour235, bg=colour27]⮀#[fg=colour255, bg=colour27] #I ⮁ #W #[fg=colour27, bg=colour235]⮀"</div><div class="line"><span class="meta"></span></div><div class="line"># You can toggle the visibility of the statusbars</div><div class="line">bind C-[ run '~/path/to/tmux-powerline/mute_powerline.sh left'      # Mute left statusbar.</div><div class="line">bind C-] run '~/path/to/tmux-powerline/mute_powerline.sh right'     # Mute right statusbar.</div></pre></td></tr></table></figure>
+<h3 id="配置城市"><a href="#配置城市" class="headerlink" title="配置城市"></a>配置城市</h3><p>…</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://www.drbunsen.org/the-text-triumvirate/" target="_blank" rel="external">The Text Triumvirate</a></p>
+<p><a href="https://github.com/skwp/dotfiles" target="_blank" rel="external">YADR</a></p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="https://cytle.github.io">炒饭</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="https://cytle.github.io/2016/09/25/iterm-zsh-tmux/">https://cytle.github.io/2016/09/25/iterm-zsh-tmux/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/zsh-tmux-unix-vim/">zsh tmux unix vim</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2016/10/11/nginx-location匹配命令/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">nginx-location匹配命令</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    
+    
+      <a class="next" href="/2016/09/24/hessian-调用java重载方法/">
+        <span class="next-text nav-default">hessian-调用java重载方法</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:canyoutle@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/cytle" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2015 - 
+    
+    2017
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">炒饭</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+
+  </body>
+</html>

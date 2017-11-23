@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="xsp">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="https://cytle.github.io/page/2/"/>
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.1.1/av-min.js"></script>
+  <script id="leancloud">
+    AV.init({
+      appId: "XX5UNu0LFrK6VkLgVS7GygfL-gzGzoHsz",
+      appKey: "pBlnYAs9URL4nuKQqCu6q4Jp"
+    });
+  </script>
+
+
+
+
+
+    <title> xsp </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">xsp</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            首页
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            归档
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            标签
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">xsp</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  <section id="posts" class="posts">
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2016/10/17/Laravel-group-使用/">Laravel-group-使用</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2016-10-17
+        </span>
+        
+        
+        <div class="post-visits"
+             data-url="/2016/10/17/Laravel-group-使用/"
+             data-title="Laravel-group-使用">
+            阅读次数
+          </div>
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+
+        
+          <p>group接受这几个属性，namespace、prefix、where、as。同时group可以嵌套使用。</p>
+<p>以下两段代码功能相同</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;?php</span></div><div class="line">    Route::group([<span class="string">'prefix'</span> =&gt; <span class="string">'users'</span>, <span class="string">'namespace'</span> =&gt; <span class="string">'User'</span>], <span class="function"><span class="keyword">function</span><span class="params">()</span></span></div><div class="line">    &#123;</div><div class="line">        Route::post(<span class="string">''</span>, [</div><div class="line">            <span class="string">'as'</span> =&gt; <span class="string">'新增用户'</span>,</div><div class="line">            <span class="string">'uses'</span> =&gt; <span class="string">'UserController@store'</span></div><div class="line">            ]);</div><div class="line"></div><div class="line">        Route::get(<span class="string">'&#123;id&#125;'</span>, [</div><div class="line">            <span class="string">'as'</span> =&gt; <span class="string">'用户详情'</span>,</div><div class="line">            <span class="string">'uses'</span> =&gt; <span class="string">'UserController@show'</span></div><div class="line">            ])-&gt;where([<span class="string">'id'</span> =&gt; <span class="string">'\\d+'</span>]);</div><div class="line">    &#125;);</div><div class="line"><span class="meta">?&gt;</span></div></pre></td></tr></table></figure>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;?php</span></div><div class="line">    Route::post(<span class="string">'users'</span>, [</div><div class="line">        <span class="string">'as'</span> =&gt; <span class="string">'新增用户'</span>,</div><div class="line">        <span class="string">'uses'</span> =&gt; <span class="string">'User\UserController@store'</span></div><div class="line">        ]);</div><div class="line"></div><div class="line">    Route::get(<span class="string">'users\&#123;id&#125;'</span>, [</div><div class="line">        <span class="string">'as'</span> =&gt; <span class="string">'用户详情'</span>,</div><div class="line">        <span class="string">'uses'</span> =&gt; <span class="string">'User\UserController@show'</span></div><div class="line">        ])-&gt;where([<span class="string">'id'</span> =&gt; <span class="string">'\\d+'</span>]);</div><div class="line"><span class="meta">?&gt;</span></div></pre></td></tr></table></figure>
+
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2016/10/13/HessianJava从U+10000到U+10FFFF的码位传输错误/">HessianJava从U+10000到U+10FFFF的码位传输错误</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2016-10-13
+        </span>
+        
+        
+        <div class="post-visits"
+             data-url="/2016/10/13/HessianJava从U+10000到U+10FFFF的码位传输错误/"
+             data-title="HessianJava从U+10000到U+10FFFF的码位传输错误">
+            阅读次数
+          </div>
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+
+        
+          <blockquote>
+<p>这段时间使用Hessian传递数据，发现有很多大坑。年久失修的Hessian的PHP实现库在64位下传递数字错误连连。
+之前还发现了传递emoji表情出现了问题，这几天终于追踪到问题所在。</p>
+</blockquote>
+<h2 id="现象说明"><a href="#现象说明" class="headerlink" title="现象说明"></a>现象说明</h2><p>使用PHP作为client调用Java开发的Server，返回的字符串中含有不能被json编码的字符，表现为实际的字符
+串为「你好🌍，abc！」，经过HessianJava和HessianPHP后，结果输出为「你好������，abc！」，
+除了这个「🌍」emoji表情外其它的字符都能正确输出。比较奇怪的是Java到Java没有问题。</p>
+<p>我先在数据库中写了一堆emoji表情，然后在hessian2parse解析字符串的地方拦截其收到内容，打印它们的字节</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">表情</th>
+<th style="text-align:left">Unicode</th>
+<th style="text-align:left">UTF-16</th>
+<th style="text-align:left">UTF-8 bytes</th>
+<th style="text-align:left">服务器收到bytes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">🌍</td>
+<td style="text-align:left">1 F3 0D</td>
+<td style="text-align:left">D8 3C DF 0D</td>
+<td style="text-align:left">F0 9F 8C 8D</td>
+<td style="text-align:left">ED A0 BC ED BC 8D</td>
+</tr>
+<tr>
+<td style="text-align:left">🐁</td>
+<td style="text-align:left">1 F4 01</td>
+<td style="text-align:left">D8 3D DC 01</td>
+<td style="text-align:left">F0 9F 90 81</td>
+<td style="text-align:left">ED A0 BD ED B0 81</td>
+</tr>
+</tbody>
+</table>
+<p>这里选择部分打印出来</p>
+<p>Hessian协议在传递数据时用的字符编码是UTF-8，可变长度，有效的压缩了数据长度，从上面的表格可以发现应
+该是4字节的UTF-8，结果变成6字节，而HessianPHP这边对utf8字符串几乎没有什么处理，这么搞，字符串肯
+定是乱码的。</p>
+<h2 id="找问题"><a href="#找问题" class="headerlink" title="找问题"></a>找问题</h2><p><code>HessianPHP</code>这边对字符几乎的0处理，当然如果当前环境是别的字符集，会将字符串转码。但发现
+<code>HessianPHP</code>读字符串时，只对1-3字节的UTF-8字符有识别，对4字节的UTF-8没有处理。如果把PHP这边同
+时作为服务和客户端测试时，也出现bug，长度读取不对。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;?php</span></div><div class="line">  <span class="comment">// 修改后</span></div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">readUTF8Bytes</span><span class="params">($len)</span></span>&#123;</div><div class="line">        $string = <span class="keyword">$this</span>-&gt;read($len);</div><div class="line">        $pos = <span class="number">0</span>;</div><div class="line">        $pass = <span class="number">1</span>;</div><div class="line"></div><div class="line">        <span class="keyword">while</span>($pass &lt;= $len)&#123;</div><div class="line">            $charCode = ord($string[$pos]);</div><div class="line">            <span class="keyword">if</span>($charCode &lt; <span class="number">0x80</span>)&#123;</div><div class="line">                $pos++;</div><div class="line">            &#125; <span class="keyword">elseif</span>(($charCode &amp; <span class="number">0xe0</span>) == <span class="number">0xc0</span>)&#123;</div><div class="line">                $pos += <span class="number">2</span>;</div><div class="line">                $string .= <span class="keyword">$this</span>-&gt;read(<span class="number">1</span>);</div><div class="line">            &#125; <span class="keyword">elseif</span> (($charCode &amp; <span class="number">0xf0</span>) == <span class="number">0xe0</span>) &#123;</div><div class="line">                $pos += <span class="number">3</span>;</div><div class="line">                $string .= <span class="keyword">$this</span>-&gt;read(<span class="number">2</span>);</div><div class="line">            &#125; <span class="keyword">else</span></div><div class="line">            <span class="comment">// 在此加入4字节字符识别，参考UTF-8编码规则</span></div><div class="line">            <span class="keyword">if</span> (($charCode &amp; <span class="number">0xf8</span>) == <span class="number">0xf0</span>) &#123;</div><div class="line">                $pos += <span class="number">4</span>;</div><div class="line">                $string .= <span class="keyword">$this</span>-&gt;read(<span class="number">3</span>);</div><div class="line">            &#125;</div><div class="line">            $pass++;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span>(! HessianUtils::isInternalUTF8())&#123;</div><div class="line">            $string = utf8_decode($string);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">return</span> $string;</div><div class="line">    &#125;</div><div class="line"><span class="meta">?&gt;</span></div></pre></td></tr></table></figure>
+<p>这么修改后，php之间的传递就没有问题了。详细的UTF-8说明参考这，
+<a href="https://zh.wikipedia.org/wiki/UTF-8" target="_blank" rel="external">wiki:UTF-8</a></p>
+<p>再看Java部分前，有一个背景需要知道，从1.5版开始，Java储存字符使用<code>UTF-16</code>的方式，
+每个char长度为2Bytes。可以参考<a href="https://zh.wikipedia.org/wiki/UTF-16" target="_blank" rel="external">wiki:UTF-16</a>，
+了解其编码方式。</p>
+<blockquote>
+<p>在Unicode的零号平面(BMP)中，<strong>UTF-16数值等价于对应的码位</strong>。
+Unicode中除了BMP外，还有16个辅助平面，码位为U+10000到U+10FFFF。
+在UTF-16中被编码为一对16比特长的码元（即32bit,4Bytes）。</p>
+</blockquote>
+<p>简而言之，就是像ASCII字符、中文字符等这些在零号平面中的字符在Java中由一个char（2Bytes）表示，
+而emoji这样在辅助平面上的字符由2个char（4Bytes）表示，理论上能实现所有的Unicode字符编码了。</p>
+<p>看看Java这边的处理，以下是写入部分
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Prints a string to the stream, encoded as UTF-8</div><div class="line"> *</div><div class="line"> * <span class="doctag">@param</span> v the string to print.</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printString</span><span class="params">(String v, <span class="keyword">int</span> strOffset, <span class="keyword">int</span> length)</span></span></div><div class="line">  <span class="keyword">throws</span> IOException</div><div class="line">&#123;</div><div class="line">  <span class="keyword">int</span> offset = _offset;</div><div class="line">  <span class="keyword">byte</span> []buffer = _buffer;</div><div class="line"></div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; length; i++) &#123;</div><div class="line">    <span class="keyword">if</span> (SIZE &lt;= offset + <span class="number">16</span>) &#123;</div><div class="line">      _offset = offset;</div><div class="line">      flushBuffer();</div><div class="line">      offset = _offset;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">char</span> ch = v.charAt(i + strOffset);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (ch &lt; <span class="number">0x80</span>)</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (ch);</div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (ch &lt; <span class="number">0x800</span>) &#123;</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0xc0</span> + ((ch &gt;&gt; <span class="number">6</span>) &amp; <span class="number">0x1f</span>));</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0x80</span> + (ch &amp; <span class="number">0x3f</span>));</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">else</span> &#123;</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0xe0</span> + ((ch &gt;&gt; <span class="number">12</span>) &amp; <span class="number">0xf</span>));</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0x80</span> + ((ch &gt;&gt; <span class="number">6</span>) &amp; <span class="number">0x3f</span>));</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0x80</span> + (ch &amp; <span class="number">0x3f</span>));</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  _offset = offset;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这部分代码的目的是将字符串从Java下的字符串（UTF-16）转为UTF-8编码，但明显它只能满足在BMP上码位的转码，不能支持辅助平面。</p>
+<p>再来看看读的部分
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Parses a single UTF8 character.</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">parseUTF8Char</span><span class="params">()</span></span></div><div class="line">  <span class="keyword">throws</span> IOException</div><div class="line">&#123;</div><div class="line">  <span class="keyword">int</span> ch = _offset &lt; _length ? (_buffer[_offset++] &amp; <span class="number">0xff</span>) : read();</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (ch &lt; <span class="number">0x80</span>)</div><div class="line">    <span class="keyword">return</span> ch;</div><div class="line">  <span class="keyword">else</span> <span class="keyword">if</span> ((ch &amp; <span class="number">0xe0</span>) == <span class="number">0xc0</span>) &#123;</div><div class="line">    <span class="keyword">int</span> ch1 = read();</div><div class="line">    <span class="keyword">int</span> v = ((ch &amp; <span class="number">0x1f</span>) &lt;&lt; <span class="number">6</span>) + (ch1 &amp; <span class="number">0x3f</span>);</div><div class="line"></div><div class="line">    <span class="keyword">return</span> v;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">else</span> <span class="keyword">if</span> ((ch &amp; <span class="number">0xf0</span>) == <span class="number">0xe0</span>) &#123;</div><div class="line">    <span class="keyword">int</span> ch1 = read();</div><div class="line">    <span class="keyword">int</span> ch2 = read();</div><div class="line">    <span class="keyword">int</span> v = ((ch &amp; <span class="number">0x0f</span>) &lt;&lt; <span class="number">12</span>) + ((ch1 &amp; <span class="number">0x3f</span>) &lt;&lt; <span class="number">6</span>) + (ch2 &amp; <span class="number">0x3f</span>);</div><div class="line"></div><div class="line">    <span class="keyword">return</span> v;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">else</span></div><div class="line">    <span class="keyword">throw</span> error(<span class="string">"bad UTF-8 encoding at "</span> + codeName(ch));</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>Hessian是按UTF-8编码传输，在这个方法中应该是将UTF-8转为UTF-16，按照UTF-8编码方案这里没有处理4字节的字符。</p>
+<p>由于写入的函数只是将每一个字符单独转成UTF-8字符，可能由两个char表示一个字符的，也这样分别被转成两个
+UTF-8字符。读取部分，也是这么分别读，最后获取到的char没有问题，弄拙成巧，Java-Java部分就正常传输了。</p>
+<h2 id="解决-未完成方案"><a href="#解决-未完成方案" class="headerlink" title="解决(未完成方案)"></a>解决(未完成方案)</h2><p>需要java那边把读写的方法修改为支持U+10000到U+10FFFF的码位</p>
+<p>写入修复
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Prints a string to the stream, encoded as UTF-8</div><div class="line"> *</div><div class="line"> * <span class="doctag">@param</span> v the string to print.</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printString</span><span class="params">(String v, <span class="keyword">int</span> strOffset, <span class="keyword">int</span> length)</span></span></div><div class="line">  <span class="keyword">throws</span> IOException</div><div class="line">&#123;</div><div class="line">  <span class="keyword">int</span> offset = _offset;</div><div class="line">  <span class="keyword">byte</span> []buffer = _buffer;</div><div class="line"></div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; length; i++) &#123;</div><div class="line">    <span class="keyword">if</span> (SIZE &lt;= offset + <span class="number">16</span>) &#123;</div><div class="line">      _offset = offset;</div><div class="line">      flushBuffer();</div><div class="line">      offset = _offset;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">char</span> ch = v.charAt(i + strOffset);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (ch &lt; <span class="number">0x80</span>)</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (ch);</div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (ch &lt; <span class="number">0x800</span>) &#123;</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0xc0</span> + ((ch &gt;&gt; <span class="number">6</span>) &amp; <span class="number">0x1f</span>));</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0x80</span> + (ch &amp; <span class="number">0x3f</span>));</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">else</span></div><div class="line"></div><div class="line">    <span class="comment">// three Bytes, D800-DFFF do not allow the existence characters</span></div><div class="line">    <span class="keyword">if</span> (ch &lt; <span class="number">0xD800</span> || ch &gt;= <span class="number">0xE000</span>)) &#123;</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0xe0</span> + ((ch &gt;&gt; <span class="number">12</span>) &amp; <span class="number">0xf</span>));</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0x80</span> + ((ch &gt;&gt; <span class="number">6</span>) &amp; <span class="number">0x3f</span>));</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0x80</span> + (ch &amp; <span class="number">0x3f</span>));</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">else</span></div><div class="line">    &#123;</div><div class="line">      <span class="comment">// 0xD800 - 0xE000 Unicode characters, Supplementary Planes, need four bytes</span></div><div class="line"></div><div class="line">      <span class="comment">// take the next char</span></div><div class="line">      i++;</div><div class="line">      <span class="keyword">char</span> ch1 = v.charAt(i + strOffset);</div><div class="line"></div><div class="line">      <span class="comment">// get unicode code point from two chars</span></div><div class="line">      <span class="comment">// int code = ((ch - 0xD800) &lt;&lt; 10) + ch1 - 0xDC00 + 0x10000;</span></div><div class="line">      <span class="keyword">int</span> code = ((ch - <span class="number">0xD800</span>) &lt;&lt; <span class="number">10</span>) + ch1 + <span class="number">0x2400</span>;</div><div class="line"></div><div class="line">      <span class="comment">// unicode code to utf-8</span></div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0xf0</span> + ((code &gt;&gt; <span class="number">18</span>) &amp; <span class="number">0x7</span>));</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0x80</span> + ((code &gt;&gt; <span class="number">12</span>) &amp; <span class="number">0x3f</span>));</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0x80</span> + ((code &gt;&gt; <span class="number">6</span>) &amp; <span class="number">0x3f</span>));</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0x80</span> + (code &amp; <span class="number">0x3f</span>));</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">else</span> &#123;</div><div class="line">      <span class="comment">// throw</span></div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  _offset = offset;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>读取修复，有点蛋疼，在这不能修复，除了<code>parseUTF8Char</code>方法修复，调用此方法的也需要跟踪修复，在此只做了对<code>parseUTF8Char</code>方法的修复。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Parses a single UTF8 character.</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">parseUTF8Char</span><span class="params">()</span></span></div><div class="line">  <span class="keyword">throws</span> IOException</div><div class="line">&#123;</div><div class="line">  <span class="keyword">int</span> ch = _offset &lt; _length ? (_buffer[_offset++] &amp; <span class="number">0xff</span>) : read();</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (ch &lt; <span class="number">0x80</span>)</div><div class="line">    <span class="keyword">return</span> ch;</div><div class="line">  <span class="keyword">else</span> <span class="keyword">if</span> ((ch &amp; <span class="number">0xe0</span>) == <span class="number">0xc0</span>) &#123;</div><div class="line">    <span class="keyword">int</span> ch1 = read();</div><div class="line">    <span class="keyword">int</span> v = ((ch &amp; <span class="number">0x1f</span>) &lt;&lt; <span class="number">6</span>) + (ch1 &amp; <span class="number">0x3f</span>);</div><div class="line"></div><div class="line">    <span class="keyword">return</span> v;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">else</span> <span class="keyword">if</span> ((ch &amp; <span class="number">0xf0</span>) == <span class="number">0xe0</span>) &#123;</div><div class="line">    <span class="keyword">int</span> ch1 = read();</div><div class="line">    <span class="keyword">int</span> ch2 = read();</div><div class="line">    <span class="keyword">int</span> v = ((ch &amp; <span class="number">0x0f</span>) &lt;&lt; <span class="number">12</span>) + ((ch1 &amp; <span class="number">0x3f</span>) &lt;&lt; <span class="number">6</span>) + (ch2 &amp; <span class="number">0x3f</span>);</div><div class="line"></div><div class="line">    <span class="keyword">return</span> v;</div><div class="line">  &#125;</div><div class="line">  <span class="comment">// parse the size of 4 bytes utf-8 characters</span></div><div class="line">  <span class="keyword">else</span> <span class="keyword">if</span> ((ch &amp; <span class="number">0xf8</span>) == <span class="number">0xf0</span>) &#123;</div><div class="line">    <span class="keyword">int</span> ch1 = read();</div><div class="line">    <span class="keyword">int</span> ch2 = read();</div><div class="line">    <span class="keyword">int</span> ch3 = read();</div><div class="line">    <span class="keyword">int</span> v = ((ch &amp; <span class="number">0x7</span>) &lt;&lt; <span class="number">18</span>) + ((ch1 &amp; <span class="number">0x3f</span>) &lt;&lt; <span class="number">12</span>) + ((ch2 &amp; <span class="number">0x3f</span>) &lt;&lt; <span class="number">6</span>) + (ch3 &amp; <span class="number">0x3f</span>);</div><div class="line"></div><div class="line">    <span class="keyword">return</span> v;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">else</span></div><div class="line">    <span class="keyword">throw</span> error(<span class="string">"bad UTF-8 encoding at "</span> + codeName(ch));</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="最后的办法"><a href="#最后的办法" class="headerlink" title="最后的办法"></a>最后的办法</h2><p>java端不进行修改，php端修复根据问题规则修改解析。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;?php</span></div><div class="line"></div><div class="line">  <span class="comment">/**</span></div><div class="line">   * 从Java端返回错误的字符，进行解析</div><div class="line">   *</div><div class="line">   * <span class="doctag">@author</span> 炒饭</div><div class="line">   * 2016年10月14日17:18:54</div><div class="line">   */</div><div class="line">  <span class="function"><span class="keyword">function</span> <span class="title">readUTF8FromBadStr</span><span class="params">($bytes)</span></span></div><div class="line">  &#123;</div><div class="line">    <span class="keyword">if</span> (count($bytes) !== <span class="number">6</span>) &#123;</div><div class="line">      <span class="keyword">return</span> <span class="string">'?'</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">      $bytes = array_map(<span class="function"><span class="keyword">function</span> <span class="params">($v)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> ord($v);</div><div class="line">      &#125;, $bytes);</div><div class="line"></div><div class="line">      <span class="comment">// 获取第一个utf-8码</span></div><div class="line">      $v0 = (($bytes[<span class="number">0</span>] &amp; <span class="number">0xf</span>) &lt;&lt; <span class="number">12</span>) + (($bytes[<span class="number">1</span>] &amp; <span class="number">0x3f</span>) &lt;&lt; <span class="number">6</span>) + ($bytes[<span class="number">2</span>] &amp; <span class="number">0x3f</span>);</div><div class="line"></div><div class="line">      <span class="comment">// 获取第二个utf-8码</span></div><div class="line">      $v1 = (($bytes[<span class="number">3</span>] &amp; <span class="number">0xf</span>) &lt;&lt; <span class="number">12</span>) + (($bytes[<span class="number">4</span>] &amp; <span class="number">0x3f</span>) &lt;&lt; <span class="number">6</span>) + ($bytes[<span class="number">5</span>] &amp; <span class="number">0x3f</span>);</div><div class="line"></div><div class="line">      <span class="comment">// 合并为一个utf-16</span></div><div class="line">      $code = ($v0 &lt;&lt; <span class="number">16</span>) + $v1;</div><div class="line"></div><div class="line">      <span class="comment">// to hex</span></div><div class="line">      $code = base_convert($code, <span class="number">10</span>, <span class="number">16</span>);</div><div class="line"></div><div class="line">      $code = mb_convert_encoding(pack(<span class="string">'H*'</span>, $code), <span class="string">'UTF-8'</span>, <span class="string">'UTF-16BE'</span>);</div><div class="line"></div><div class="line">      <span class="keyword">return</span> $code;</div><div class="line"></div><div class="line">    &#125; <span class="keyword">catch</span> (<span class="keyword">Exception</span> $e) &#123;</div><div class="line">      <span class="keyword">return</span> <span class="string">'?'</span>;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line"></div><div class="line">  <span class="comment">/**</span></div><div class="line">   * 修复支持在错误java端下获取辅助平面字符，原本方法修改名称为readUTF8BytesQuick</div><div class="line">   *</div><div class="line">   * <span class="doctag">@author</span> 炒饭</div><div class="line">   * 2016年10月14日17:18:54</div><div class="line">   */</div><div class="line">  <span class="function"><span class="keyword">function</span> <span class="title">readUTF8Bytes</span><span class="params">($len)</span></span>&#123;</div><div class="line">    $string = <span class="string">''</span>;</div><div class="line"></div><div class="line">    <span class="keyword">for</span>($i = <span class="number">0</span>; $i &lt; $len; $i++)&#123;</div><div class="line">      $ch = <span class="keyword">$this</span>-&gt;read(<span class="number">1</span>);</div><div class="line">      $charCode = ord($ch);</div><div class="line"></div><div class="line">      <span class="keyword">if</span> ($charCode &lt; <span class="number">0x80</span>) &#123;</div><div class="line">        $string .= $ch;</div><div class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (($charCode &amp; <span class="number">0xe0</span>) === <span class="number">0xc0</span>) &#123;</div><div class="line">        $string .= $ch.<span class="keyword">$this</span>-&gt;read(<span class="number">1</span>);</div><div class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> ($charCode === <span class="number">0xed</span>) &#123;</div><div class="line">        <span class="comment">/*</span></div><div class="line">         * 以毒攻毒</div><div class="line">         * 0xD800..0xDBFF</div><div class="line">         * 解出的字符，在[0xD8, 0xDC)区间内，即为U+10000到U+10FFFF码位的字符</div><div class="line">         */</div><div class="line"></div><div class="line">        <span class="comment">// 读取第二个字节</span></div><div class="line">        $ch1 = <span class="keyword">$this</span>-&gt;read();</div><div class="line"></div><div class="line">        $charCode1 = ord($ch1);</div><div class="line"></div><div class="line">        <span class="comment">// 判断第二个4位是否为在[0x8, 0xC)区间内</span></div><div class="line">        $secondFourBit = ($charCode1 &amp; <span class="number">0x3c</span>) &gt;&gt; <span class="number">2</span>;</div><div class="line">        <span class="keyword">if</span> ($secondFourBit &gt;= <span class="number">0x8</span> &amp;&amp; $secondFourBit &lt; <span class="number">0xC</span>) &#123;</div><div class="line">          <span class="comment">// 字符串offset再后移一位</span></div><div class="line">          $i++;</div><div class="line"></div><div class="line">          $bytes = [</div><div class="line">            $ch,</div><div class="line">            $ch1,</div><div class="line">            <span class="keyword">$this</span>-&gt;read(<span class="number">1</span>),</div><div class="line">            <span class="keyword">$this</span>-&gt;read(<span class="number">1</span>),</div><div class="line">            <span class="keyword">$this</span>-&gt;read(<span class="number">1</span>),</div><div class="line">            <span class="keyword">$this</span>-&gt;read(<span class="number">1</span>),</div><div class="line">          ];</div><div class="line"></div><div class="line">          <span class="comment">// 读取问题字符</span></div><div class="line">          $string .= <span class="keyword">$this</span>-&gt;readUTF8FromBadStr($bytes);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">          <span class="comment">// 当做正常的3个字符串输出</span></div><div class="line">          $string .= $ch . $ch1 . <span class="keyword">$this</span>-&gt;read();</div><div class="line">        &#125;</div><div class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (($charCode &amp; <span class="number">0xf0</span>) === <span class="number">0xe0</span>) &#123;</div><div class="line">        <span class="comment">// 3字节字符识别</span></div><div class="line">        $string .= $ch . <span class="keyword">$this</span>-&gt;read(<span class="number">2</span>);</div><div class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (($charCode &amp; <span class="number">0xf8</span>) === <span class="number">0xf0</span>) &#123;</div><div class="line">        <span class="comment">// 4字节字符识别</span></div><div class="line">        $string .= $ch . <span class="keyword">$this</span>-&gt;read(<span class="number">3</span>);</div><div class="line">      &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> HessianParsingException(<span class="string">"Bad utf-8 encoding at pos "</span>.<span class="keyword">$this</span>-&gt;stream-&gt;pos);</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span>(HessianUtils::isInternalUTF8())</div><div class="line">      <span class="keyword">return</span> $string;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> utf8_decode($string);</div><div class="line">  &#125;</div><div class="line"><span class="meta">?&gt;</span></div></pre></td></tr></table></figure>
+<h2 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h2><p>本文使用的<code>HessianPHP</code>版本为<code>v2.0.3</code>，源码来源于此
+<a href="https://code.google.com/archive/p/hessianphp/downloads" target="_blank" rel="external">HessianPHP</a></p>
+<p><code>Java</code>的Hessian包版本为<code>4.0.37</code>，源码来源于此
+<a href="http://hessian.caucho.com/download/hessian-4.0.37-src.jar" target="_blank" rel="external">hessian-4.0.37-src.jar</a></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://www.ibm.com/developerworks/cn/java/j-unicode/" target="_blank" rel="external">使用 Java 语言进行 Unicode 代理编程</a></p>
+<p><a href="https://cytle.github.io/2016/10/12/Unicode、UTF-16、UTF-8相互转换/">Unicode、UTF-16、UTF-8相互转换</a></p>
+<p><a href="http://apps.timwhitlock.info/emoji/tables/unicode" target="_blank" rel="external">Emoji Unicode Tables</a></p>
+
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2016/10/12/unicode、utf-16、utf-8相互转换/">Unicode、UTF-16、UTF-8相互转换</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2016-10-12
+        </span>
+        
+        
+        <div class="post-visits"
+             data-url="/2016/10/12/unicode、utf-16、utf-8相互转换/"
+             data-title="Unicode、UTF-16、UTF-8相互转换">
+            阅读次数
+          </div>
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+
+        
+          <blockquote>
+<p>本文从wiki和其它博文中搬了一些定义</p>
+</blockquote>
+<h2 id="字符和字节的区别"><a href="#字符和字节的区别" class="headerlink" title="字符和字节的区别"></a>字符和字节的区别</h2><p>字节(Octet): 是一个八位的存储单元，也称为Byte</p>
+<p>字符(Character): 逻辑上的字，像「A」，「是」，「😝」都是一个字符</p>
+<h2 id="Unicode和UTF"><a href="#Unicode和UTF" class="headerlink" title="Unicode和UTF"></a>Unicode和UTF</h2><p>Unicode是为了解决传统的字符编码方案的局限而产生的。类似所有字符的集合，每一个字符在Unicode中都有唯一『编码』，这个值称为代码点（code point），通常会用“U+”然后紧接着一组十六进制的数字来表示这一个字符。在基本多文种平面（英文：Basic Multilingual Plane，简写BMP。又称为“零号平面”、plane 0）里的所有字符，要用四个数字（即两个char,16bit ,例如U+4AE0，共支持六万多个字符）；在零号平面以外的字符则需要使用五个或六个数字。</p>
+<p>一个字符的Unicode编码是确定的。但是在实际传输过程中，由于不同系统平台的设计不一定一致，以及出于节省空间的目的，对Unicode编码的实现方式有所不同。Unicode的实现方式称为Unicode转换格式（Unicode/UCS Translation Format，简称为UTF）。</p>
+<p>Unicode.org定义了百万个以上的字符，如果将所有的字符用大小表示，需要的是4个字节。“a“的Unicode表示就会变成0x00000061，而“一“的Unicode值是0x00004E00。实际上，这就是UTF32，Linux操作系统上所使用的Unicode方案。而Windows平台下默认的Unicode编码方式为Little Endian的UTF-16。</p>
+<p><img src="/uploads/unicode、utf-16、utf-8相互转换/字符-编码-编码方案关系.jpg" alt="字符-编码-编码方案关系.jpg"></p>
+<h3 id="utf-32编码规则"><a href="#utf-32编码规则" class="headerlink" title="utf-32编码规则"></a>utf-32编码规则</h3><p>UTF-32用四个字节表示代码点，这样就可以完全表示UCS-4的所有代码点，而无需像UTF-16那样使用复杂的算法。与UTF-16类似，UTF-32也包括UTF-32、UTF-32BE、UTF-32LE三种编码，UTF-32也同样需要BOM字符。仅用’ABC’举例：</p>
+<p><img src="/uploads/unicode、utf-16、utf-8相互转换/utf-32编码规则-ABC例子.png" alt="utf-32编码规则-ABC例子.png"></p>
+<p>但是，仔细分析可以发现，其实绝大部分字符只使用2个字节就可以表示了。英文的Unicode范围是0x0000-0x007F，中文的Unicode范围是0x4E00-0x9F**，真正需要扩展到4个字节来表示的字符少之又少，所以有些系统直接使用2个字节来表示Unicode。比如Windows系统上，Unicode就是两个字节的。对于那些需要4个字节才能表示的字符，使用一种代理的手法来扩展(其实就是在低两个字节上做一个标记，表示这是一个代理，需要连接上随后的两个字节，才能组成一个字符)。这样的好处是大量的节约了存取空间，也提高了处理的速度。这种Unicode表示方法就是UTF16。一般在Windows平台上，提到Unicode,那就是指UTF16了。</p>
+<h3 id="utf-16编码规则"><a href="#utf-16编码规则" class="headerlink" title="utf-16编码规则"></a>utf-16编码规则</h3><p>UTF-16由RFC2781规定，它使用两个字节来表示一个代码点。</p>
+<p>不难猜到，UTF-16是完全对应于UCS-2的，即把UCS-2规定的代码点通过Big Endian或Little Endian方式直接保存下来。UTF-16包括三种：UTF-16，UTF-16BE（Big Endian），UTF-16LE（Little Endian）。</p>
+<p>UTF-16BE和UTF-16LE不难理解，而UTF-16就需要通过在文件开头以名为BOM（Byte Order Mark）的字符来表明文件是Big Endian还是Little Endian。BOM为U+FEFF这个字符。</p>
+<p>其实BOM是个小聪明的想法。由于UCS-2没有定义U+FFFE，因此只要出现 FF FE 或者 FE FF 这样的字节序列，就可以认为它是U+FEFF，并且可以判断出是Big Endian还是Little Endian。</p>
+<p>举个例子。“ABC”这三个字符用各种方式编码后的结果如下：</p>
+<p><img src="/uploads/unicode、utf-16、utf-8相互转换/utf-16编码规则-ABC例子.png" alt="utf-16编码规则-ABC例子.png"></p>
+<p>Windows平台下默认的Unicode编码为Little Endian的UTF-16（即上述的 FF FE 41 00 42 00 43 00）。你可以打开记事本，写上ABC，然后保存，再用二进制编辑器看看它的编码结果。</p>
+<h3 id="utf-8编码规则"><a href="#utf-8编码规则" class="headerlink" title="utf-8编码规则"></a>utf-8编码规则</h3><p>UTF-16和UTF-32的一个缺点就是它们固定使用两个或四个字节，这样在表示纯ASCII文件时会有很多00字节，造成浪费。而RFC3629定义的 UTF-8则解决了这个问题。UTF-8用1～4个字节来表示代码点。表示方式如下：</p>
+<p><table style="font-size: 0.75em;">
+    <tbody>
+        <tr>
+            <th style="width: auto;">
+                代码范围<br>
+                十六进制
+            </th>
+            <th style="width: auto;">
+                标量值（scalar value）<br>
+                二进制
+            </th>
+            <th style="width: auto;">
+                UTF-8
+                <br>
+                十六进制
+            </th>
+            <th style="width: 25%;">注释</th>
+        </tr>
+        <tr>
+            <td rowspan="2">
+                000000 - 00007F
+                <br>
+                <small>128个代码</small>
+            </td>
+            <td>00000000 00000000 0zzzzzzz</td>
+            <td>0zzzzzzz（00-7F）</td>
+            <td rowspan="2">ASCII字符范围，字节由零开始</td>
+        </tr>
+        <tr>
+            <td><small>七个z</small></td>
+            <td><small>七个z</small></td>
+        </tr>
+        <tr>
+            <td rowspan="2">
+                000080 - 0007FF<br>
+                <small>1920个代码</small>
+            </td>
+            <td>00000000 00000yyy yyzzzzzz</td>
+            <td style="text-align: left;">110yyyyy（C0-DF) 10zzzzzz(80-BF）</td>
+            <td rowspan="2" align="top">第一个字节由110开始，接着的字节由10开始</td>
+        </tr>
+        <tr>
+            <td><small>三个y；二个y；六个z</small></td>
+            <td><small>五个y；六个z</small></td>
+        </tr>
+        <tr>
+            <td rowspan="2">
+                000800 - 00D7FF<br>
+                00E000 - 00FFFF<br>
+                <small>61440个代码 <b>注<sup>1</sup></b></small>
+            </td>
+            <td>00000000 xxxxyyyy yyzzzzzz</td>
+            <td style="text-align: left;">1110xxxx(E0-EF) 10yyyyyy 10zzzzzz</td>
+            <td rowspan="2" align="top">第一个字节由1110开始，接着的字节由10开始</td>
+        </tr>
+        <tr>
+            <td><small>四个x；四个y；二个y；六个z</small></td>
+            <td><small>四个x；六个y；六个z</small></td>
+        </tr>
+        <tr>
+            <td rowspan="2">
+                010000 - 10FFFF<br>
+                <small>1048576个代码</small>
+            </td>
+            <td>000wwwxx xxxxyyyy yyzzzzzz</td>
+            <td style="text-align: left;">11110www(F0-F7) 10xxxxxx 10yyyyyy 10zzzzzz</td>
+            <td rowspan="2">将由11110开始，接着的字节由10开始</td>
+        </tr>
+        <tr>
+            <td><small>三个w；二个x；四个x；四个y；二个y；六个z</small></td>
+            <td><small>三个w；六个x；六个y；六个z</small></td>
+        </tr>
+    </tbody>
+</table>
+<sub>
+    <b>注<sup>1</sup></b>：Unicode在范围D800-DFFF中不存在任何字符，基本多文种平面中约定了这个范围用于UTF-16扩展标识辅助平面（两个UTF-16表示一个辅助平面字符）。当然，任何编码都是可以被转换到这个范围，但在unicode中他们并不代表任何合法的值。
+</sub></p>
+<p>可见，ASCII字符（U+0000～U+007F）部分完全使用一个字节，避免了存储空间的浪费。而且UTF-8不再需要BOM字节。</p>
+<p>另外，从上表中可以看出，单字节编码的第一字节为[00-7F]，双字节编码的第一字节为[C2-DF]，三字节编码的第一字节为[E0-EF]。这样只要看到第一个字节的范围就可以知道编码的字节数。这样也可以大大简化算法。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://zh.wikipedia.org/wiki/Unicode" target="_blank" rel="external">wiki:Unicode</a></p>
+<p>[wiki:UTF-8]a</p>
+<p><a href="https://zh.wikipedia.org/wiki/UTF-16" target="_blank" rel="external">wiki:UTF-16</a></p>
+<p><a href="http://www.cnblogs.com/skyaspnet/archive/2011/02/18/1957770.html" target="_blank" rel="external">字符编码问题，UNICODE\UTF-8\UTF-16\UTF-32\UCS\ANSI\GBK\GB2312等乱七八糟的名词</a>
+ – 浅显易懂的说明字符编码，还有Big Endian和Little Endian的说明</p>
+<p><a href="http://www.sxt.cn/u/756/blog/2773" target="_blank" rel="external">深入图解字符集与字符集编码（二）——字符集及其编号</a></p>
+
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2016/10/11/nginx-location匹配命令/">nginx-location匹配命令</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2016-10-11
+        </span>
+        
+        
+        <div class="post-visits"
+             data-url="/2016/10/11/nginx-location匹配命令/"
+             data-title="nginx-location匹配命令">
+            阅读次数
+          </div>
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+
+        
+          <h2 id="location匹配命令"><a href="#location匹配命令" class="headerlink" title="location匹配命令"></a>location匹配命令</h2><table>
+<thead>
+<tr>
+<th style="text-align:center">符合</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">~</td>
+<td style="text-align:left">波浪线表示执行一个正则匹配，区分大小写</td>
+</tr>
+<tr>
+<td style="text-align:center">~*</td>
+<td style="text-align:left">表示执行一个正则匹配，不区分大小写</td>
+</tr>
+<tr>
+<td style="text-align:center">^~</td>
+<td style="text-align:left">^~表示普通字符匹配，如果该选项匹配，只匹配该选项，不匹配别的选项，一般用来匹配目录</td>
+</tr>
+<tr>
+<td style="text-align:center">=</td>
+<td style="text-align:left">进行普通字符精确匹配</td>
+</tr>
+<tr>
+<td style="text-align:center">@</td>
+<td style="text-align:left">“@” 定义一个命名的 location，使用在内部定向时，例如 error_page, try_files</td>
+</tr>
+</tbody>
+</table>
+<h3 id="location-匹配的优先级-与location在配置文件中的顺序无关"><a href="#location-匹配的优先级-与location在配置文件中的顺序无关" class="headerlink" title="location 匹配的优先级(与location在配置文件中的顺序无关)"></a>location 匹配的优先级(与location在配置文件中的顺序无关)</h3><p>= 精确匹配会第一个被处理。如果发现精确匹配，nginx停止搜索其他匹配。
+普通字符匹配，正则表达式规则和长的块规则将被优先和查询匹配，也就是说如果该项匹配还需去看有没有正则表达式匹配和更长的匹配。</p>
+<p>^~ 则只匹配该规则，nginx停止搜索其他匹配，否则nginx会继续处理其他location指令。
+最后匹配理带有”~”和”~*”的指令，如果找到相应的匹配，则nginx停止搜索其他匹配；当没有正则表达式或者没有正则表达式被匹配的情况下，那么匹配程度最高的逐字匹配指令会被使用。</p>
+<h4 id="location-优先级官方文档"><a href="#location-优先级官方文档" class="headerlink" title="location 优先级官方文档"></a>location 优先级官方文档</h4><p>Directives with the = prefix that match the query exactly. If found, searching stops.
+All remaining directives with conventional strings, longest match first. If this match used the ^~ prefix, searching stops.</p>
+<p>Regular expressions, in order of definition in the configuration file.
+If #3 yielded a match, that result is used. Else the match from #2 is used.</p>
+<p>=前缀的指令严格匹配这个查询。如果找到，停止搜索。</p>
+<p>所有剩下的常规字符串，最长的匹配。如果这个匹配使用^〜前缀，搜索停止。</p>
+<p>正则表达式，在配置文件中定义的顺序。</p>
+<p>如果第3条规则产生匹配的话，结果被使用。否则，如同从第2条规则被使用。</p>
+<p>例如</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">location</span>  = / &#123;</div><div class="line">  <span class="comment"># 只匹配"/".</span></div><div class="line">  <span class="comment"># [ configuration A ]</span></div><div class="line">&#125;</div><div class="line"><span class="attribute">location</span>  / &#123;</div><div class="line">  <span class="comment"># 匹配任何请求，因为所有请求都是以"/"开始</span></div><div class="line">  <span class="comment"># 但是更长字符匹配或者正则表达式匹配会优先匹配</span></div><div class="line">  <span class="comment"># [ configuration B ]</span></div><div class="line">&#125;</div><div class="line"><span class="attribute">location</span><span class="regexp"> ^~</span> /images/ &#123;</div><div class="line">  <span class="comment"># 匹配任何以 /images/ 开始的请求，并停止匹配 其它location</span></div><div class="line">  <span class="comment"># [ configuration C ]</span></div><div class="line">&#125;</div><div class="line"><span class="attribute">location</span> <span class="regexp">~* .(gif|jpg|jpeg)$</span> &#123;</div><div class="line">  <span class="comment"># 匹配以 gif, jpg, or jpeg结尾的请求.</span></div><div class="line">  <span class="comment"># 但是所有 /images/ 目录的请求将由 [Configuration C]处理.</span></div><div class="line">  <span class="comment"># [ configuration D ]</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>请求URI例子:</p>
+<p>/ -&gt; 符合configuration A</p>
+<p>/documents/document.html -&gt; 符合configuration B</p>
+<p>/images/1.gif -&gt; 符合configuration C</p>
+<p>/documents/1.jpg -&gt;符合 configuration D</p>
+<p>@location 例子
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">error_page 404 = @fetch;</div><div class="line"></div><div class="line">location @fetch(</div><div class="line">  proxy_pass http://fetch;</div><div class="line">)</div></pre></td></tr></table></figure></p>
+<p>转载请保留: <a href="http://www.nginx.cn/115.html" target="_blank" rel="external">http://www.nginx.cn/115.html</a></p>
+
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2016/09/25/iterm-zsh-tmux/">iterm+zsh+tmux</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2016-09-25
+        </span>
+        
+        
+        <div class="post-visits"
+             data-url="/2016/09/25/iterm-zsh-tmux/"
+             data-title="iterm+zsh+tmux">
+            阅读次数
+          </div>
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+
+        
+          <p><img src="/uploads/iterm-zsh-tmux/效果.png" alt="效果"></p>
+<h2 id="tmux"><a href="#tmux" class="headerlink" title="tmux"></a>tmux</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-get install tmux</div></pre></td></tr></table></figure>
+<h2 id="YADR"><a href="#YADR" class="headerlink" title="YADR"></a>YADR</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">sudo apt-get install rake</div><div class="line"><span class="meta"></span></div><div class="line"># install YADR</div><div class="line"><span class="meta">#</span> http://www.agileventures.org/articles/setting-up-yadr-on-ubuntu</div><div class="line">sh -c "`curl -fsSL https://raw.githubusercontent.com/skwp/dotfiles/master/install.sh`"</div><div class="line"></div><div class="line">nautilus ~/.yadr/fonts/</div></pre></td></tr></table></figure>
+<p>终端配色方案修改为<code>solarized</code></p>
+<p>编辑 &gt; 编辑配置文件 &gt; 颜色</p>
+<p><img src="/uploads/iterm-zsh-tmux/终端配置.png" alt="终端配置"></p>
+<h2 id="tmux-powerline"><a href="#tmux-powerline" class="headerlink" title="tmux-powerline"></a>tmux-powerline</h2><p><a href="https://github.com/erikw/tmux-powerline" target="_blank" rel="external">tmux-powerline</a></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">TMUX_POWERLINE_PATH=~/.tmux-powerline</div><div class="line">git clone https://github.com/erikw/tmux-powerline.git $TMUX_POWERLINE_PATH</div></pre></td></tr></table></figure>
+<p>编辑<code>.tmux.conf</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">set-option -g status on</div><div class="line">set-option -g status-interval 2</div><div class="line">set-option -g status-justify "centre"</div><div class="line">set-option -g status-left-length 60</div><div class="line">set-option -g status-right-length 90</div><div class="line">set-option -g status-left "#(~/path/to/tmux-powerline/powerline.sh left)"</div><div class="line">set-option -g status-right "#(~/path/to/tmux-powerline/powerline.sh right)"</div><div class="line"></div><div class="line">set-window-option -g window-status-current-format "#[fg=colour235, bg=colour27]⮀#[fg=colour255, bg=colour27] #I ⮁ #W #[fg=colour27, bg=colour235]⮀"</div><div class="line"><span class="meta"></span></div><div class="line"># You can toggle the visibility of the statusbars</div><div class="line">bind C-[ run '~/path/to/tmux-powerline/mute_powerline.sh left'      # Mute left statusbar.</div><div class="line">bind C-] run '~/path/to/tmux-powerline/mute_powerline.sh right'     # Mute right statusbar.</div></pre></td></tr></table></figure>
+<h3 id="配置城市"><a href="#配置城市" class="headerlink" title="配置城市"></a>配置城市</h3><p>…</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://www.drbunsen.org/the-text-triumvirate/" target="_blank" rel="external">The Text Triumvirate</a></p>
+<p><a href="https://github.com/skwp/dotfiles" target="_blank" rel="external">YADR</a></p>
+
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2016/09/24/hessian-调用java重载方法/">hessian-调用java重载方法</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2016-09-24
+        </span>
+        
+        
+        <div class="post-visits"
+             data-url="/2016/09/24/hessian-调用java重载方法/"
+             data-title="hessian-调用java重载方法">
+            阅读次数
+          </div>
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+
+        
+          <blockquote>
+<p>重载(overloading) 是在一个类里面，方法名字相同，而参数不同。返回类型可以相同也可以不同。每个重
+载的方法（或者构造函数）都有一个独一无二的参数类型列表。</p>
+</blockquote>
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p>Hessian的客户端（调用者，如PHP）不能也不会识别调用的参数类型，从而传递相应的参数列表。另一方面java
+端接受请求后，只通过方法名和参数数量来取得方法。</p>
+<p>在使用像php这样的弱类型语言通过<code>Hessian</code>调用java端服务时，重载方法的使用存在问题。</p>
+<h3 id="源码查看"><a href="#源码查看" class="headerlink" title="源码查看"></a>源码查看</h3><p>下面来看服务端的源码：</p>
+<h4 id="产生方法列表"><a href="#产生方法列表" class="headerlink" title="产生方法列表"></a>产生方法列表</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// com.caucho.services.server.AbstractSkeleton</span></div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">protected</span> <span class="title">AbstractSkeleton</span><span class="params">(Class apiClass)</span></span></div><div class="line">  &#123;</div><div class="line">    _apiClass = apiClass;</div><div class="line">    Method []methodList = apiClass.getMethods();</div><div class="line"></div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; methodList.length; i++) &#123;</div><div class="line">      Method method = methodList[i];</div><div class="line"></div><div class="line">      <span class="comment">// put 方法名</span></div><div class="line">      <span class="keyword">if</span> (_methodMap.get(method.getName()) == <span class="keyword">null</span>)</div><div class="line">        _methodMap.put(method.getName(), methodList[i]);</div><div class="line"></div><div class="line">      Class []param = method.getParameterTypes();</div><div class="line"></div><div class="line">      <span class="comment">// put 方法名 + 参数数量</span></div><div class="line">      String mangledName = method.getName() + <span class="string">"__"</span> + param.length;</div><div class="line">      _methodMap.put(mangledName, methodList[i]);</div><div class="line"></div><div class="line">      <span class="comment">// put 方法名 + 每个参数类型(不完整的类型名)</span></div><div class="line">      _methodMap.put(mangleName(method, <span class="keyword">false</span>), methodList[i]);</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">//...</span></div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">mangleName</span><span class="params">(Method method, <span class="keyword">boolean</span> isFull)</span></span></div><div class="line">  &#123;</div><div class="line">    StringBuffer sb = <span class="keyword">new</span> StringBuffer();</div><div class="line"></div><div class="line">    sb.append(method.getName());</div><div class="line"></div><div class="line">    <span class="comment">// 获取方法的参数列表</span></div><div class="line">    Class []params = method.getParameterTypes();</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; params.length; i++) &#123;</div><div class="line">      sb.append(<span class="string">'_'</span>);</div><div class="line"></div><div class="line">      <span class="comment">// 参数的类型</span></div><div class="line">      sb.append(mangleClass(params[i], isFull));</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> sb.toString();</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>在上面这段程序中，我们可以知道hessian按以下三种方式作为key存了方法</p>
+<ul>
+<li>方法名</li>
+<li>方法名 + 参数数量</li>
+<li>方法名 + 每个参数类型(不完整的类型名)</li>
+</ul>
+<h4 id="获取方法"><a href="#获取方法" class="headerlink" title="获取方法"></a>获取方法</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// com.caucho.hessian.server.HessianSkeleton extends AbstractSkeleton</span></div><div class="line"></div><div class="line">  <span class="comment">// ...</span></div><div class="line">  <span class="comment">// Line 247,254</span></div><div class="line">    Method method;</div><div class="line">    <span class="comment">// 通过方法名 + 参数数量 获取</span></div><div class="line">    method = getMethod(methodName + <span class="string">"__"</span> + argLength);</div><div class="line"></div><div class="line">    <span class="comment">// 通过方法名获取</span></div><div class="line">    <span class="keyword">if</span> (method == <span class="keyword">null</span>)</div><div class="line">      method = getMethod(methodName);</div></pre></td></tr></table></figure>
+<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><p>当有以下一个接口时</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">TestService</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">(User user)</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">(<span class="keyword">int</span> uid)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>将产生以下方法</p>
+<ul>
+<li>getName</li>
+<li>getName__1</li>
+<li>getName_User</li>
+<li>getName_int</li>
+</ul>
+<p>如果我们在客户端中调用时</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;?php</span></div><div class="line"></div><div class="line">getUser(<span class="number">1</span>);</div><div class="line"></div><div class="line"><span class="comment">// 假设 $user 是一个对象</span></div><div class="line">getUser($user);</div></pre></td></tr></table></figure>
+<p>这样调用，java端会选择同一个方法，getName__1，可能是<code>getName(User user)</code>或者
+<code>getName(int uid)</code>，很有可能就报<code>unsafeDeserialize</code>异常了。</p>
+<p>在使用这样参数数量相同的重载方法时，按照java端的获取规则，我们可以这么调用</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;?php</span></div><div class="line"></div><div class="line">getUser_int(<span class="number">1</span>);</div><div class="line"></div><div class="line"><span class="comment">// 直接跟上参数类型</span></div><div class="line">getUser_User($user);</div><div class="line"></div><div class="line"><span class="comment">// 如果多个继续在后面加尾缀，类型大小写和java一致</span></div><div class="line"><span class="comment">// getUser_User_int_String($user);</span></div></pre></td></tr></table></figure>
+<p>这样就可以完美调用重载的方法了。</p>
+
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2016/09/22/Hessian-2-0序列化协议规范/">Hessian-2.0序列化协议规范</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2016-09-22
+        </span>
+        
+        
+        <div class="post-visits"
+             data-url="/2016/09/22/Hessian-2-0序列化协议规范/"
+             data-title="Hessian-2.0序列化协议规范">
+            阅读次数
+          </div>
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+
+        
+          <p>翻译: Edison peng</p>
+<p><a href="/uploads/hessian协议中文版.docx">word版下载</a></p>
+<h2 id="1-概述"><a href="#1-概述" class="headerlink" title="1.概述"></a>1.概述</h2><p><code>Hessian</code>是一个轻量级的,自定义描述的二进制RPC协议。<code>Hessian</code>主要用作面向对象的消息通信。</p>
+<h2 id="2-设计目标"><a href="#2-设计目标" class="headerlink" title="2.设计目标"></a>2.设计目标</h2><p><code>Hessian</code>的初衷是支持动态类型，格式紧凑，跨语言.</p>
+<p><code>Hessian</code>协议的设计目标如下:</p>
+<ul>
+<li>可序列化类型必须是可以自描述的, i.e. 不需要额外的模式(schema)或接口定义.</li>
+<li>必须是语言独立的, 包括对脚本语言的支持.</li>
+<li>It must be readable or writable in a single pass.</li>
+<li>必须设计紧凑.</li>
+<li>必须足够简单，以便测试和实现.</li>
+<li>高效率.</li>
+<li>必须支持Unicode字符集.</li>
+<li>支持8-bit二进制数据，without escaping or using attachments.</li>
+<li>必须支持加密, 压缩, 签名 and transaction context envelopes.</li>
+</ul>
+<h2 id="3-Hessian语法"><a href="#3-Hessian语法" class="headerlink" title="3. Hessian语法"></a>3. <code>Hessian</code>语法</h2><p>序列化语法
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div></pre></td><td class="code"><pre><div class="line">        #starting production</div><div class="line">top     ::=value</div><div class="line"></div><div class="line">        #分割成64k每chunk的8-bit二进制数据</div><div class="line">binary  ::= &apos;b&apos; b1 b0 &lt;binary-data&gt; binary  #不是最后一个chunk</div><div class="line">        ::= &apos;B&apos; b1 b0 &lt;binary-data&gt;         #最后一个chunk</div><div class="line">        ::= [x20-x2f] &lt;binary-data&gt;         #长度范围为 0-15</div><div class="line"></div><div class="line">        #boolean true/false</div><div class="line">boolean ::= &apos;T&apos;</div><div class="line">        ::= &apos;F&apos;</div><div class="line"></div><div class="line">        #对象的定义(compact map)</div><div class="line">class-def ::= &apos;O&apos; type int string*</div><div class="line"></div><div class="line">        #time in UTC encoded as 64-bit long milliseconds since epoch</div><div class="line">date    ::= &apos;d&apos; b7 b6 b5 b4 b3 b2 b1 b0</div><div class="line"></div><div class="line">        #64-bit IEEE double</div><div class="line">double  ::= &apos;D&apos; b7 b6 b5 b4 b3 b2 b1 b0</div><div class="line">        ::= x67                         #0.0</div><div class="line">        ::= x68                         #1.0</div><div class="line">        ::= x69 b0                      #byte表示的double(-128.0 to 127.0)</div><div class="line">        ::= x6a b1 b0                   #short表示的double</div><div class="line">        ::= x6b b3 b2 b1 b0             #32-bit float表示的double</div><div class="line"></div><div class="line">        #32-bit 有符号整型</div><div class="line">int     ::= &apos;I&apos; b3 b2 b1 b0</div><div class="line">        ::= [x80-xbf]                   #-x10 to x3f</div><div class="line">        ::= [xc0-xcf] b0                #-x800 to x7ff</div><div class="line">        ::= [xd0-xd7] b1 b0             #-x40000 to x3ffff</div><div class="line"></div><div class="line">        # list/vector length</div><div class="line">length  ::= &apos;l&apos; b3 b2 b1 b0</div><div class="line">        ::= x6e int</div><div class="line"></div><div class="line">        # list/vector</div><div class="line">list    ::= &apos;V&apos; type? length? value* &apos;z&apos;</div><div class="line">        ::= &apos;v&apos; int int value*          #第一个int表示类型引用, 第二个int表示长度</div><div class="line"></div><div class="line">        #64-bit有符号long</div><div class="line">long    ::= &apos;L&apos; b7 b6 b5 b4 b3 b2 b1 0</div><div class="line">        ::= [xd8-xef]                   #-x08 to x0f</div><div class="line">        ::= [xf0-xff] b0                #-x800 to x7ff</div><div class="line">        ::= [x38-x3f] b1 b0             #-x40000 to x3ffff</div><div class="line">        ::= x77 b3 b2 b1 b0             #32-bit 整型表示的long</div><div class="line"></div><div class="line">        #map/object</div><div class="line">map     ::= &apos;M&apos; type? (value value)* &apos;z&apos;    #key, value map pairs</div><div class="line"></div><div class="line">        # null value</div><div class="line">null    ::= &apos;N&apos;</div><div class="line"></div><div class="line">        #对象实例</div><div class="line">object  ::= &apos;o&apos; int value*</div><div class="line"></div><div class="line">        #值引用</div><div class="line">ref     ::= &apos;R&apos; b3 b2 b1 b0 # 对流中第n个map/list/object的引用</div><div class="line"></div><div class="line">        ::= x4a b0          # 对map/list/object的引用，范围为1-255th</div><div class="line">        ::= x4b b1 b0       # 对map/list/object 的引用，范围为1-65535th</div><div class="line"></div><div class="line">        #UTF-8 编码的字符串，分割成64k大小的chunks</div><div class="line">string  ::= &apos;s&apos; b1 b0 &lt;utf8-data&gt; string    #非末尾chunk</div><div class="line">        ::= &apos;S&apos; b1 b0 &lt;utf8-data&gt;           #长度范围为(0-65535)的字符串</div><div class="line">        ::=[x00-x1f] &lt;utf8-data&gt;            #长度范围为(0-31) 的字符串</div><div class="line"></div><div class="line">        #map/list 的类型（针对面向对象语言)</div><div class="line">type    ::= &apos;t&apos; b1 b0 &lt;type-string&gt;     #类型名称</div><div class="line">        ::= x75 int                     #类型引用值（用整数表示）</div><div class="line"></div><div class="line">        #main production</div><div class="line">value   ::=null</div><div class="line">        ::= binary</div><div class="line">        ::= boolean</div><div class="line">        ::= date</div><div class="line">        ::= double</div><div class="line">        ::= int</div><div class="line">        ::= list</div><div class="line">        ::= long</div><div class="line">        ::= map</div><div class="line">        ::= class-def value</div><div class="line">        ::= ref</div><div class="line">        ::= string</div></pre></td></tr></table></figure></p>
+<h2 id="4-序列化"><a href="#4-序列化" class="headerlink" title="4. 序列化"></a>4. 序列化</h2><p><code>Hessian</code>的对象序列化机制包含8种基本类型:</p>
+<ol>
+<li>原始二进制数据</li>
+<li>boolean</li>
+<li>64-bit date</li>
+<li>64-bit double</li>
+<li>32-bit int</li>
+<li>64-bit long</li>
+<li>null</li>
+<li>UTF8编码的string</li>
+</ol>
+<p>另外包括3种递归类型：</p>
+<ol>
+<li>list for lists and arrays</li>
+<li>map for maps and dictionaries</li>
+<li>object for objects</li>
+</ol>
+<p>最后，它还包含一个特殊的类型：</p>
+<ol>
+<li>ref 用来表示对共享对象的引用.</li>
+</ol>
+<p><code>Hessian</code> 2.0有3个内部的引用表:</p>
+<ol>
+<li>一个object/list 引用表.</li>
+<li>一个类型定义(class definition)引用表.</li>
+<li>一个type(class name)引用表.</li>
+</ol>
+<h3 id="4-1-二进制数据"><a href="#4-1-二进制数据" class="headerlink" title="4.1. 二进制数据"></a>4.1. 二进制数据</h3><p>二进制数据语法
+binary  ::= b b1 b0 <binary-data> binary
+        ::= B b1 b0 <binary-data>
+        ::= [x20-x2f] <binary-data></binary-data></binary-data></binary-data></p>
+<p>二进制数据被分割成chunk. 十六进制数x42(‘B’)标识最后一个chunk,x62(‘b’)标识普通的chunk.
+每个chunk有一个16-bit的长度值.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">len = <span class="number">256</span>*b1 + b0</div></pre></td></tr></table></figure>
+<h4 id="4-1-1-压缩格式：短二进制"><a href="#4-1-1-压缩格式：短二进制" class="headerlink" title="4.1.1. 压缩格式：短二进制"></a>4.1.1. 压缩格式：短二进制</h4><p>长度小于15的二进制数据只需要用单个十六进制数字来表示[x20-x2f].</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">len = code - <span class="number">0x20</span></div></pre></td></tr></table></figure>
+<h4 id="4-1-2-Binary实例"><a href="#4-1-2-Binary实例" class="headerlink" title="4.1.2. Binary实例"></a>4.1.2. Binary实例</h4><p>x20             #零长度的二进制数据
+x23 x01 x02 x03     #长度为3的数据
+B x10 x00 ….      #4k大小的final chunk
+b x04 x00 ….      #1k大小的non-final chunk</p>
+<h3 id="4-2-boolean"><a href="#4-2-boolean" class="headerlink" title="4.2. boolean"></a>4.2. boolean</h3><p>Boolean语法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">boolean  ::= T</div><div class="line">         ::= F</div></pre></td></tr></table></figure>
+<p>用16进制’F’来表示false,用’T’表示true.</p>
+<h4 id="4-2-1-Boolean实例"><a href="#4-2-1-Boolean实例" class="headerlink" title="4.2.1. Boolean实例"></a>4.2.1. Boolean实例</h4><p>T # true
+F # false</p>
+<h3 id="4-3-date"><a href="#4-3-date" class="headerlink" title="4.3.    date"></a>4.3.    date</h3><p>date ::=d b7 b6 b5 b4 b3 b2 b1 b0</p>
+<p>Date采用64-bit来表示距1970 00:00H, UTC以来经过的milliseconds.</p>
+<h4 id="4-3-1-Date实例"><a href="#4-3-1-Date实例" class="headerlink" title="4.3.1. Date实例"></a>4.3.1. Date实例</h4><p>D x00 x00 xd0 x4b x92 x84 xb8   #2:51:31 May 8, 1998 UTC</p>
+<h3 id="4-4-double"><a href="#4-4-double" class="headerlink" title="4.4. double"></a>4.4. double</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">double  ::= D b7 b6 b5 b4 b3 b2 b1 b0</div><div class="line">        ::= x67</div><div class="line">        ::= x68</div><div class="line">        ::= x69 b0</div><div class="line">        ::= x6a b1 b0</div><div class="line">        ::= x6b b3 b2 b1 b0</div></pre></td></tr></table></figure>
+<p>符合IEEE标准的 64-bit浮点数.</p>
+<h4 id="4-4-1-压缩格式：double表示的0"><a href="#4-4-1-压缩格式：double表示的0" class="headerlink" title="4.4.1. 压缩格式：double表示的0"></a>4.4.1. 压缩格式：double表示的0</h4><p>0.0用十六进制x67来表示  （对应ascii中字符g的ascii值）</p>
+<h4 id="4-4-2-压缩格式：double-表示的1"><a href="#4-4-2-压缩格式：double-表示的1" class="headerlink" title="4.4.2. 压缩格式：double 表示的1"></a>4.4.2. 压缩格式：double 表示的1</h4><p>1.0用十六进制x68来表示</p>
+<h4 id="4-4-3-压缩格式：单字节double"><a href="#4-4-3-压缩格式：单字节double" class="headerlink" title="4.4.3. 压缩格式：单字节double"></a>4.4.3. 压缩格式：单字节double</h4><p>介于-128.0和127.0之间的无小数位的double型可以用两个十六进制来表示(如x3b表示的),也即相当于一个byte值转换成double:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">value = (<span class="keyword">double</span>)b0</div></pre></td></tr></table></figure>
+<h4 id="4-4-4-压缩格式：short型double"><a href="#4-4-4-压缩格式：short型double" class="headerlink" title="4.4.4. 压缩格式：short型double"></a>4.4.4. 压缩格式：short型double</h4><p>介于-32768.0和32767.0之间的无小数位的double型可以用3个十六进制数来表示，也即相当于一个short值转换成double:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">value=(<span class="keyword">double</span>)(<span class="number">256</span>*b1 + b0)</div></pre></td></tr></table></figure>
+<h4 id="4-4-5-float型double"><a href="#4-4-5-float型double" class="headerlink" title="4.4.5. float型double"></a>4.4.5. float型double</h4><p>和32-bit float型等价的double能够用4个十六进制的 float来表示.</p>
+<h4 id="4-4-6-Double实例"><a href="#4-4-6-Double实例" class="headerlink" title="4.4.6. Double实例"></a>4.4.6. Double实例</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">x67             # 0.0</div><div class="line">x68             # 1.0</div><div class="line"></div><div class="line">x69 x00         # 0.0</div><div class="line">x69 x80         # -128.0</div><div class="line">x69 xff         # 127.0</div><div class="line"></div><div class="line">x70 x00 x00     # 0.0</div><div class="line">x70 x80 x00     # -32768.0</div><div class="line">x70 xff xff         # 32767.0</div><div class="line"></div><div class="line">D x40 x28 x80 x00 x00 x00 x00 x00       # 12.25</div></pre></td></tr></table></figure>
+<h3 id="4-5-int"><a href="#4-5-int" class="headerlink" title="4.5. int"></a>4.5. int</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">int ::= ’I’ b3 b2 b1 b0</div><div class="line">    ::= [x80-xbf]</div><div class="line">    ::= [xc0-xcf]   b0</div><div class="line">    ::= [xd0-xd7] b1 b0</div></pre></td></tr></table></figure>
+<p>32-bit的有符号整型. 一个整型由跟随在x49(‘I’)之后的4个大端序(big-endian)排位的十六进制数来表示。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">value = (b3&lt;&lt;<span class="number">24</span>) + (b2&lt;&lt;<span class="number">16</span>) + (b1&lt;&lt;<span class="number">8</span>)  + b0;</div></pre></td></tr></table></figure>
+<h4 id="4-5-1-单字节整型"><a href="#4-5-1-单字节整型" class="headerlink" title="4.5.1. 单字节整型"></a>4.5.1. 单字节整型</h4><p>介于-16和47之间的整型可以用单个字节来表示，用十六进制来表示范围为x80到xbf.</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">value = code – 0x90     # 这里是0x90, 如果code=x80，则value = x80 – x90 = -16.:-)</div></pre></td></tr></table></figure>
+<h4 id="4-5-2-双字节整型"><a href="#4-5-2-双字节整型" class="headerlink" title="4.5.2. 双字节整型"></a>4.5.2. 双字节整型</h4><p>介于-2048和2047之间的整型可以用两个字节来表示，头字节的范围从xc0到xcf.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">value = ((code – <span class="number">0xc8</span>)&lt;&lt;<span class="number">8</span>) + b0;</div></pre></td></tr></table></figure>
+<h4 id="4-5-3-三字节整型"><a href="#4-5-3-三字节整型" class="headerlink" title="4.5.3. 三字节整型"></a>4.5.3. 三字节整型</h4><p>介于- 262144和262143之间的整型可以用三个字节来表示，头字节的范围从xd0到xd7.</p>
+<h4 id="4-5-4-整型实例"><a href="#4-5-4-整型实例" class="headerlink" title="4.5.4. 整型实例"></a>4.5.4. 整型实例</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">x90                 # 0</div><div class="line">x80                 # -16</div><div class="line">xbf                 # 47</div><div class="line"></div><div class="line">xc8 x00             # 0</div><div class="line">xc0 x00             # -2048</div><div class="line">xc7 x00             # -256</div><div class="line">xcf xff             # 2047</div><div class="line"></div><div class="line">xd4 x00 x00         # 0</div><div class="line">xd0 x00 x00         # -262144</div><div class="line">xd7 xff xff         # 262143</div><div class="line"></div><div class="line">I x00 x00 x00 x00   # 0</div><div class="line">I x00 x00 x01 x2c   # 300</div></pre></td></tr></table></figure>
+<h3 id="4-6-list"><a href="#4-6-list" class="headerlink" title="4.6. list"></a>4.6. list</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">list    ::= V type? length? value* z</div><div class="line">        ::= V int int value*</div></pre></td></tr></table></figure>
+<p>一个有序列表.每个list都包含一个type字符串，长度length和一个值列表，以十六进制x7a(‘z’)作为结尾。Type可以是任意的UTF-8编码的字符串。Length指定了list值列表的长度。</p>
+<p>list的每个值都被添加到一个引用列表中，这样，所有list中的相同条目都共享同一份引用以节省空间。</p>
+<blockquote>
+<p>Any parser expecting a list must also accept a null or a shared ref.</p>
+</blockquote>
+<p>Type的有效取值在文档中并没有详细指定，这依赖于特定的应用. 比如， 在一个由静态类型语言实现的server所暴露的<code>Hessian</code>接口可以使用类型信息来实例化特定的数组类型，反之，在一个由动态类型语言(e.g.: python)实现的server中，将会忽略类型信息。</p>
+<h4 id="4-6-1-压缩格式-repeated-list"><a href="#4-6-1-压缩格式-repeated-list" class="headerlink" title="4.6.1. 压缩格式: repeated list"></a>4.6.1. 压缩格式: repeated list</h4><p><code>Hessian</code>2.0 制定了一个格式紧凑的list，其中list元素类型type和元素个数length都用整型来编码，其中类型type是对先前定义的原始数据类型的引用。</p>
+<h4 id="4-6-2-List实例"><a href="#4-6-2-List实例" class="headerlink" title="4.6.2. List实例"></a>4.6.2. List实例</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">强类型int数组的序列化: int[] = &#123;0, 1&#125;</div><div class="line"></div><div class="line">V</div><div class="line">    t x00 x04 [int  # int[] 类型的编码</div><div class="line">    x6e x02         # length = 2</div><div class="line">    x90             # 整数 0</div><div class="line">    x91             # 整数 1</div><div class="line">    z</div><div class="line"></div><div class="line">匿名变长list = &#123;0, &quot;foobar&quot;&#125;</div><div class="line">V</div><div class="line">    t x00 x04 [int      # int[] 类型编码</div><div class="line">    x6e x02             # length = 2</div><div class="line">    x90                 # 整数0</div><div class="line">    x91                 # 整数1</div><div class="line">    z</div><div class="line"></div><div class="line">Repeated list类型</div><div class="line"></div><div class="line">V</div><div class="line">    t x00 x04 [int      # int[]类型编码</div><div class="line">    x63 x02             # length=2</div><div class="line">    x90                 # 整数 0</div><div class="line">    x91                 # 整数 1</div><div class="line">    z</div><div class="line"></div><div class="line">V</div><div class="line">    x91             # int[]的类型引用    (integer #1)</div><div class="line">    x92             # length = 2</div><div class="line">    x92             # 整数2</div><div class="line">    x93             # 整数3</div></pre></td></tr></table></figure>
+<h3 id="4-7-long"><a href="#4-7-long" class="headerlink" title="4.7. long"></a>4.7. long</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">long    ::= L b7 b6 b5 b4 b3 b2 b1 b0</div><div class="line">        ::= [xd8-xef]</div><div class="line">        ::= [xf0-xff] b0</div><div class="line">        ::= [x38-x3f] b1 b0</div><div class="line">        ::= x77 b3 b2 b1 b0</div></pre></td></tr></table></figure>
+<p>一个64-bit的有符号整数. 起头由十六进制x4c(‘L’)标识, 后面为8字节的大端（big-endian）序的整数。</p>
+<h4 id="4-7-1-压缩格式-单字节long"><a href="#4-7-1-压缩格式-单字节long" class="headerlink" title="4.7.1. 压缩格式: 单字节long"></a>4.7.1. 压缩格式: 单字节long</h4><p>介于-8和15之间的long由单个字节表示，范围为xd8到xef.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">value = (code – <span class="number">0xe0</span>)</div></pre></td></tr></table></figure>
+<h4 id="4-7-2-压缩格式-双字节long"><a href="#4-7-2-压缩格式-双字节long" class="headerlink" title="4.7.2. 压缩格式: 双字节long"></a>4.7.2. 压缩格式: 双字节long</h4><p>介于-2048和2047之间的long由两个字节标识, 起头字节的取值范围为xf0到xff.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">value = ((code – <span class="number">0xf8</span>)&lt;&lt;<span class="number">8</span>) + b0</div></pre></td></tr></table></figure>
+<h4 id="4-7-3-压缩格式-3字节long"><a href="#4-7-3-压缩格式-3字节long" class="headerlink" title="4.7.3. 压缩格式: 3字节long"></a>4.7.3. 压缩格式: 3字节long</h4><p>介于-262144和262143之间的long由3个字节编码，起头字节的取值范围为x38到x3f.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">value = ((code – <span class="number">0x3c</span>)&lt;&lt;<span class="number">16</span>) + (b1&lt;&lt;<span class="number">8</span>) + b0</div></pre></td></tr></table></figure>
+<h4 id="4-7-4-压缩格式-四字节long"><a href="#4-7-4-压缩格式-四字节long" class="headerlink" title="4.7.4. 压缩格式: 四字节long"></a>4.7.4. 压缩格式: 四字节long</h4><p>可以用32-bit的整数来标识的long在这里需要用5个字节作编码,起头字节由x77标识.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">value = (b3&lt;&lt;<span class="number">24</span>) + (b2&lt;&lt;<span class="number">16</span>) + (b1&lt;&lt;<span class="number">8</span>) + b0</div></pre></td></tr></table></figure>
+<h4 id="4-7-5-long实例"><a href="#4-7-5-long实例" class="headerlink" title="4.7.5. long实例"></a>4.7.5. long实例</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">xe0                                 # 0</div><div class="line">xd8                                 # -8</div><div class="line">xef                                 # 15</div><div class="line"></div><div class="line">xf8 x00                             # 0</div><div class="line">xf0 x00                             # -2048</div><div class="line">xf7 x00                             # -256</div><div class="line">xff xff                             # 2047</div><div class="line"></div><div class="line">x3c x00 x00                         # 0</div><div class="line">x38 x00 x00                         # -262144</div><div class="line">x3f xff xff                         # 262143</div><div class="line"></div><div class="line">x77 x00 x00 x00 x00                 # 0</div><div class="line">x77 x00 x00 x01 x2c                 # 300</div><div class="line"></div><div class="line">L x00 x00 x00 x00 x00 x00 x01 x2c   # 300</div></pre></td></tr></table></figure>
+<h3 id="4-8-map"><a href="#4-8-map" class="headerlink" title="4.8.    map"></a>4.8.    map</h3><p>map ::= M type? (value value)* z</p>
+<p>用来表示序列化map和对象. Type字段用来表示map类型，type可能为空（例如在length为0的情况下）。如果类型未指定，则由解析器来负责选择类型。对于对象而言,不识别的key将会被忽略.
+所有map元素也被存入一个引用列表. 在解析map时，可以同时支持空类型和引用类型。
+类型由服务具体来进行选择。</p>
+<h4 id="4-8-1-Map实例"><a href="#4-8-1-Map实例" class="headerlink" title="4.8.1. Map实例"></a>4.8.1. Map实例</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Map map = <span class="keyword">new</span> HashMap();</div><div class="line">map.put(<span class="keyword">new</span> Integer(<span class="number">1</span>), <span class="string">"fee"</span>);</div><div class="line">map.put(<span class="keyword">new</span> Integer(<span class="number">16</span>), <span class="string">"fie"</span>);</div><div class="line">map.put(<span class="keyword">new</span> Integer(<span class="number">256</span>), <span class="string">"foe"</span>);</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">M</div><div class="line">    x91         # 1</div><div class="line">    x03 fee     # &quot;fee&quot;</div><div class="line"></div><div class="line">    xa0         # 16</div><div class="line">    x03 fie     # &quot;fie&quot;</div><div class="line"></div><div class="line">    xb9 x00     # 256</div><div class="line">    x03 foe     # &quot;foe&quot;</div><div class="line">    z</div></pre></td></tr></table></figure>
+<p>由java对象表示的Map对象:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Public <span class="class"><span class="keyword">class</span> <span class="title">Car</span> <span class="keyword">implements</span> <span class="title">Serializable</span></span>&#123;</div><div class="line">    String color = <span class="string">"aquamarine"</span></div><div class="line">    String model = <span class="string">"Beetle"</span>;</div><div class="line">    Int mileage = <span class="number">65536</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">M</div><div class="line">    t x00 x13 com.caucho.test.Car   #type</div><div class="line">    x05 color                       # color field</div><div class="line">    x0a aquamarine</div><div class="line"></div><div class="line">    x05 model                   # model field</div><div class="line">    x06 Beetle</div><div class="line"></div><div class="line">    x07 mileage                 #mileage field</div><div class="line">    I x00 x01 x00 x00</div><div class="line">    z</div></pre></td></tr></table></figure>
+<h3 id="4-9-null"><a href="#4-9-null" class="headerlink" title="4.9. null"></a>4.9. null</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">null    ::= N</div></pre></td></tr></table></figure>
+<p>null表示一个空指针。字符’N’用来标识null值。</p>
+<h3 id="4-10-对象-object"><a href="#4-10-对象-object" class="headerlink" title="4.10. 对象(object)"></a>4.10. 对象(object)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">object      ::= ‘o’ int value*</div><div class="line">class-def   ::= ’O’ type int string*</div></pre></td></tr></table></figure>
+<h4 id="4-10-1-压缩格式-class定义"><a href="#4-10-1-压缩格式-class定义" class="headerlink" title="4.10.1. 压缩格式: class定义"></a>4.10.1. 压缩格式: class定义</h4><p><code>Hessian</code> 2.0制定了一个紧凑的对象格式，其中字段名只需要序列化一次。对于对象而言，仅需要按次序地序列化这些字段的取值.</p>
+<p>类定义包括类型字符串,字段个数,所有的字段名. 类定义被存放在一个对象定义表中,每个类定义由一个唯一整数作为key标识，之后被对象实例通过key来引用。</p>
+<h4 id="4-10-2-压缩格式-对象实例"><a href="#4-10-2-压缩格式-对象实例" class="headerlink" title="4.10.2. 压缩格式: 对象实例"></a>4.10.2. 压缩格式: 对象实例</h4><p>对象实例基于先前定义来创建一个新的对象实例. 类定义通过一个整型key在类定义表中进行查询。</p>
+<h4 id="4-10-3-对象实例"><a href="#4-10-3-对象实例" class="headerlink" title="4.10.3. 对象实例"></a>4.10.3. 对象实例</h4><p>对象序列化</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Class Car&#123;</div><div class="line">    String color;</div><div class="line">    String model;</div><div class="line">&#125;</div><div class="line">out.wirteObject(<span class="keyword">new</span> Car(<span class="string">"red"</span>, <span class="string">"corvette"</span>));</div><div class="line">out.writeObject(<span class="keyword">new</span> Car(<span class="string">"green"</span>, <span class="string">"civic"</span>));</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">O                           # 类型定义  (假定在类型表中对应key为 0)</div><div class="line">    t x00 x0b example.Car   # 类型为example.Car</div><div class="line">    x92                     # 两个字段</div><div class="line">    x05 color               # color字段名</div><div class="line">    x05 model               # model字段名</div><div class="line"></div><div class="line">o</div><div class="line">    x90                     # 对象定义 (类型引用key=0)</div><div class="line">    x03 red                 # color字段取值</div><div class="line">    x08 corvette            # model字段取值</div><div class="line"></div><div class="line">o</div><div class="line">    x90                     # 对象定义 (类型引用key=0)</div><div class="line">    x05 green               # color字段取值</div><div class="line">    x05 civic               # model字段取值</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">enum</span> Color&#123;</div><div class="line">    RED,</div><div class="line">    GREEN,</div><div class="line">    BLUE</div><div class="line">&#125;</div><div class="line">out.writeObject(Color.RED);</div><div class="line">out.writeObject(Color.GREEN);</div><div class="line">out.writeObject(Color.BLUE);</div><div class="line">out.writeObject(Color.GREEN);</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">O                               # 类型定义 (假定在类型表中对应key为 0)</div><div class="line">    t x00 x0b example.Color     # 类型为example.Color</div><div class="line">    x91                         # 一个字段</div><div class="line">    x04 name                    # 枚举字段为&quot;name&quot;</div><div class="line"></div><div class="line">o                               # 对象 #0</div><div class="line">    x90                         # 对象定义 (类型引用key=0)</div><div class="line">    x03 RED                     # RED</div><div class="line"></div><div class="line">o                               # 对象 #1</div><div class="line">    x90                         # 对象定义 (类型引用key=0)</div><div class="line">    x05 GREEN                   # GREEN</div><div class="line"></div><div class="line">o                               # 对象 #2</div><div class="line">    x90                         # 对象定义 (类型引用key=0)</div><div class="line">    x05 BLUE                    # BLUE</div><div class="line"></div><div class="line">x4a x01                         # 对象引用 #1</div></pre></td></tr></table></figure>
+<h3 id="4-11-引用-ref"><a href="#4-11-引用-ref" class="headerlink" title="4.11. 引用(ref)"></a>4.11. 引用(ref)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ref ::= R b3 b2 b1 b0</div><div class="line">    ::= x4a b0</div><div class="line">    ::= x4b b1 b0</div></pre></td></tr></table></figure>
+<p>以一个整数作为key,引用之前所定义的list, map或者对象实例. 对于从输入流中读取出来的每个list, map或对象, 都在流中按位置次序作为标识, i.e. 第一个list或者map为’0’, 下一个为’1’等等. 之后的引用能够使用先前的对象. Writers MAY生成引用. Parsers MUST 识别引用.</p>
+<blockquote>
+<p>ref can refer to incompletely-read items. For example, a circular linked-list will refer to the first link before the entire list has been read.</p>
+<p>A possible implementation would add each map, list, and object to an array as it is read. The ref will return the corresponding value from the array. To support circular structures, the implementation would store the map, list or object immediately, before filling in the contents.</p>
+<p>Each map or list is stored into an array as it is parsed. ref selects one of the stored objects. The first object is numbered ‘0’.</p>
+</blockquote>
+<h4 id="4-11-1-压缩格式-双字节引用"><a href="#4-11-1-压缩格式-双字节引用" class="headerlink" title="4.11.1. 压缩格式: 双字节引用"></a>4.11.1. 压缩格式: 双字节引用</h4><p>介于0和255之间的引用编号可以用两个字节来编码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">value = b0</div></pre></td></tr></table></figure>
+<h4 id="4-11-2-压缩格式-三字节引用"><a href="#4-11-2-压缩格式-三字节引用" class="headerlink" title="4.11.2. 压缩格式: 三字节引用"></a>4.11.2. 压缩格式: 三字节引用</h4><p>介于0和255之间的引用编号可以用三个字节来编码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">value = (b1&lt;&lt;<span class="number">8</span>) + b0</div></pre></td></tr></table></figure>
+<h4 id="4-11-3-引用实例"><a href="#4-11-3-引用实例" class="headerlink" title="4.11.3. 引用实例"></a>4.11.3. 引用实例</h4><p>循环链表</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">list = <span class="keyword">new</span> LinkedList();</div><div class="line">list.data = <span class="number">1</span>;</div><div class="line">list.tail = list;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">O</div><div class="line">    X9a LinkedList      # 类型定义 (假定在类型表中对应key为 0)</div><div class="line">    X92</div><div class="line">    X04 head</div><div class="line">    X04 tail</div><div class="line"></div><div class="line">o   x90             # 类引用 #0</div><div class="line">    x91             # data = 1</div><div class="line">    x4b x00         # 下一个条目引用到自身， ref #0</div></pre></td></tr></table></figure>
+<h3 id="4-12-string"><a href="#4-12-string" class="headerlink" title="4.12. string"></a>4.12. string</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">string  ::= s b1 b0 &lt;utf8-data&gt; string</div><div class="line">        ::= s b1 b0 &lt;utf8-data&gt;</div><div class="line">        ::= [x00-x1f] &lt;utf8-data&gt;</div></pre></td></tr></table></figure>
+<p>16-bit字符，UTF-8编码的字符串。字符串分块(chunk)编码. x53(‘S’)起头来标识最后一个chunk, x73(‘s’)起头标识非最终chunk. 每个chunk有一个16-bit的长度值字段。
+length用来标识字符串的长度，而非字节数量.
+String chunks may not split surrogate pairs.</p>
+<h4 id="4-12-1-压缩格式-短字符串"><a href="#4-12-1-压缩格式-短字符串" class="headerlink" title="4.12.1. 压缩格式: 短字符串"></a>4.12.1. 压缩格式: 短字符串</h4><p>长度小于32的字符串可以用单字节长的length来标识，范围为[x00-x1f].</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">value = code</div></pre></td></tr></table></figure>
+<h4 id="4-12-2-字符串实例"><a href="#4-12-2-字符串实例" class="headerlink" title="4.12.2. 字符串实例"></a>4.12.2. 字符串实例</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">x00                 # &quot;&quot;, 空字符串</div><div class="line">x05 hello           # &quot;hello&quot;</div><div class="line">x01 xc3 x83         # &quot;\u00c3&quot;</div><div class="line"></div><div class="line">S   x00 x05 hello   # 长字符串格式的&quot;hello&quot;</div><div class="line">s   x00 x07 hello,  # &quot;hello, world&quot;被分割成两个chunk</div><div class="line">    X05 world</div></pre></td></tr></table></figure>
+<h3 id="4-13-类型-type"><a href="#4-13-类型-type" class="headerlink" title="4.13. 类型(type)"></a>4.13. 类型(type)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">type    ::= ‘t’ b1 b0 &lt;type-string&gt;</div><div class="line">        ::= x4a b0</div></pre></td></tr></table></figure>
+<p>在面向对象语言中，一个map或list可能包含一个type属性以标识map或list的类型名称。
+每个type都被加入到类型表(type map)中，以供将来被引用。</p>
+<h3 id="4-14-压缩格式-类型引用"><a href="#4-14-压缩格式-类型引用" class="headerlink" title="4.14. 压缩格式: 类型引用"></a>4.14. 压缩格式: 类型引用</h3><p>Repeated type strings MAY use the type map (type reference) to refer to a previously used type. The type reference is zero-based over all the types encountered during parsing.</p>
+<h2 id="5-引用表-Reference-Map"><a href="#5-引用表-Reference-Map" class="headerlink" title="5. 引用表(Reference Map)"></a>5. 引用表(Reference Map)</h2><p><code>Hessian</code> 2.0包含3个内建的引用表：</p>
+<ol>
+<li>一个map/object/list引用表.</li>
+<li>一个类型定义表(class definition map).</li>
+<li>一个type(class name)表</li>
+</ol>
+<p>值引用表使得<code>Hessian</code>支持arbitrary graphs，还有递归和循环数据结构。
+class和type表通过消除重复字符串而提高了<code>Hessian</code>的效率。</p>
+<h3 id="5-1-值引用"><a href="#5-1-值引用" class="headerlink" title="5.1. 值引用"></a>5.1. 值引用</h3><blockquote>
+<p><code>Hessian</code> supports arbitrary graphs by adding list (list), object (object), and map (map) as it encounters them in the bytecode stream。</p>
+</blockquote>
+<p>解析器必须在引用表中存储每个list, 对象和map。</p>
+<p>被存储的对象能够被引用。</p>
+<h3 id="5-2-class引用"><a href="#5-2-class引用" class="headerlink" title="5.2. class引用"></a>5.2. class引用</h3><p>每个类型定义被自动添加到类型表(class-map)中。解析器必须在初次使用一个类型时把它添加到类型表中，之后对象实例将通过引用来追踪自身的类型。</p>
+<h3 id="5-3-type引用"><a href="#5-3-type引用" class="headerlink" title="5.3. type引用"></a>5.3. type引用</h3><p>map和list的值类型字符串被存储在type map中。解析器必须在初次碰到一个type字符串时把它加入到type map中。</p>
+<h2 id="6-字节码映射表-Bytecode-map"><a href="#6-字节码映射表-Bytecode-map" class="headerlink" title="6. 字节码映射表(Bytecode map)"></a>6. 字节码映射表(Bytecode map)</h2><p><code>Hessian</code>被制定成一个字节码协议。<code>Hessian</code>解析器本质上是一段针对头字节的选择分支语句.</p>
+<p>字节编码</p>
+<table>
+<thead>
+<tr>
+<th>值范围</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>x00 - x1f</td>
+<td>utf-8字符串，长度范围 0-32</td>
+</tr>
+<tr>
+<td>x20 - x2f</td>
+<td>二进制数据，长度范围 0-16</td>
+</tr>
+<tr>
+<td>x30 - x37</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>x38 - x3f</td>
+<td>长整型long 范围从-x40000 到 x3ffff</td>
+</tr>
+<tr>
+<td>x40 - x41</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>x42</td>
+<td>8-bit 二进制数据，表示末尾chunk(‘B’)</td>
+</tr>
+<tr>
+<td>x43</td>
+<td>保留(‘C’ streaming call)</td>
+</tr>
+<tr>
+<td>x44</td>
+<td>64-bit IEEE 规范编码的双精度浮点double (‘D’)</td>
+</tr>
+<tr>
+<td>x45</td>
+<td>保留(‘E’ envelope)</td>
+</tr>
+<tr>
+<td>x46</td>
+<td>boolean false (‘F’)</td>
+</tr>
+<tr>
+<td>x47</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>x48</td>
+<td>保留 (‘H’ header)</td>
+</tr>
+<tr>
+<td>x49</td>
+<td>32-bit有符号整型signed integer (‘I’)</td>
+</tr>
+<tr>
+<td>x4a</td>
+<td>引用(ref)，范围为1-256th</td>
+</tr>
+<tr>
+<td>x4b</td>
+<td>引用(ref)，范围为1-65536th</td>
+</tr>
+<tr>
+<td>x4c</td>
+<td>64-bit有符号长整型long integer (‘L’)</td>
+</tr>
+<tr>
+<td>x4d</td>
+<td>具有可选类型的map (‘M’)</td>
+</tr>
+<tr>
+<td>x4e</td>
+<td>null (‘N’)</td>
+</tr>
+<tr>
+<td>x4f</td>
+<td>类型定义(‘O’)</td>
+</tr>
+<tr>
+<td>x50</td>
+<td>保留(‘P’ streaming message/post)</td>
+</tr>
+<tr>
+<td>x51</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>x52</td>
+<td>引用(ref)，取值范围对应于整型int (‘R’)</td>
+</tr>
+<tr>
+<td>x53</td>
+<td>utf-8字符串，末尾chunk (‘S’)</td>
+</tr>
+<tr>
+<td>x54</td>
+<td>boolean true (‘T’)</td>
+</tr>
+<tr>
+<td>x55</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>x56</td>
+<td>list/vector (‘V’)</td>
+</tr>
+<tr>
+<td>x57 - x62</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>x62</td>
+<td>8-bit二进制数据，非末尾chunk (‘b’)</td>
+</tr>
+<tr>
+<td>x63</td>
+<td>保留 (‘c’ call for RPC)</td>
+</tr>
+<tr>
+<td>x64</td>
+<td>UTC time encoded as 64-bit long milliseconds since epoch (‘d’)</td>
+</tr>
+<tr>
+<td>x65</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>x66</td>
+<td>保留(‘f’ for fault for RPC)</td>
+</tr>
+<tr>
+<td>x67</td>
+<td>double 0.0</td>
+</tr>
+<tr>
+<td>x68</td>
+<td>double 1.0</td>
+</tr>
+<tr>
+<td>x69</td>
+<td>double represented as byte (-128.0 to 127.0)</td>
+</tr>
+<tr>
+<td>x6a</td>
+<td>double represented as short (-32768.0 to 327676.0)</td>
+</tr>
+<tr>
+<td>x6b</td>
+<td>double represented as float</td>
+</tr>
+<tr>
+<td>x6c</td>
+<td>list/vector length (‘l’)</td>
+</tr>
+<tr>
+<td>x6d</td>
+<td>保留 (‘m’ method for RPC call)</td>
+</tr>
+<tr>
+<td>x6e</td>
+<td>list/vector compact length</td>
+</tr>
+<tr>
+<td>x6f</td>
+<td>对象实例(‘o’)</td>
+</tr>
+<tr>
+<td>x70</td>
+<td>保留 (‘p’ - message/post)</td>
+</tr>
+<tr>
+<td>x71</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>x72</td>
+<td>保留(‘r’ reply for message/RPC)</td>
+</tr>
+<tr>
+<td>x73</td>
+<td>utf-8字符串，非末尾chunk (‘s’)</td>
+</tr>
+<tr>
+<td>x74</td>
+<td>map/list type (‘t’)</td>
+</tr>
+<tr>
+<td>x75</td>
+<td>type-ref</td>
+</tr>
+<tr>
+<td>x76</td>
+<td>压缩格式的vector (‘v’)</td>
+</tr>
+<tr>
+<td>x77</td>
+<td>以32-bit整型编码的long</td>
+</tr>
+<tr>
+<td>x78 - x79</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>x7a</td>
+<td>list/map 终止符(‘z’)</td>
+</tr>
+<tr>
+<td>x7b - x7f</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>x80 - xbf</td>
+<td>单字节压缩格式的整型int(-x10 to x3f, x90 is 0)</td>
+</tr>
+<tr>
+<td>xc0 - xcf</td>
+<td>双字节压缩格式的整型int(-x800 to x3ff)</td>
+</tr>
+<tr>
+<td>xd0 - xd7</td>
+<td>三字节压缩格式的整型int(-x40000 to x3ffff)</td>
+</tr>
+<tr>
+<td>xd8 - xef</td>
+<td>单字节压缩格式的长整型long(-x8 to x10, xe0 is 0)</td>
+</tr>
+<tr>
+<td>xf0 - xff</td>
+<td>双字节压缩格式的长整型long (-x800 to x3ff, xf8 is 0)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+  </section>
+
+  
+  <nav class="pagination">
+    
+      <a class="prev" href="/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text">上一页</span>
+      </a>
+    
+    
+  </nav>
+
+
+          </div>
+          
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:canyoutle@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/cytle" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2015 - 
+    
+    2017
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">炒饭</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+
+  </body>
+</html>

@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="HessianJava从U+10000到U+10FFFF的码位传输错误"/>
+
+
+
+
+  <meta name="keywords" content="Hessian UTF-8-MB4 unicode UTF-16, xsp" />
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="xsp">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="https://cytle.github.io/2016/10/13/HessianJava从U+10000到U+10FFFF的码位传输错误/"/>
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.1.1/av-min.js"></script>
+  <script id="leancloud">
+    AV.init({
+      appId: "XX5UNu0LFrK6VkLgVS7GygfL-gzGzoHsz",
+      appKey: "pBlnYAs9URL4nuKQqCu6q4Jp"
+    });
+  </script>
+
+
+
+
+
+    <title> HessianJava从U+10000到U+10FFFF的码位传输错误 - xsp </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">xsp</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            首页
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            归档
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            标签
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">xsp</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          HessianJava从U+10000到U+10FFFF的码位传输错误
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2016-10-13
+        </span>
+        
+        
+        <div class="post-visits"
+             data-url="/2016/10/13/HessianJava从U+10000到U+10FFFF的码位传输错误/"
+             data-title="HessianJava从U+10000到U+10FFFF的码位传输错误">
+            阅读次数
+          </div>
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#现象说明"><span class="toc-text">现象说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#找问题"><span class="toc-text">找问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#解决-未完成方案"><span class="toc-text">解决(未完成方案)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#最后的办法"><span class="toc-text">最后的办法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#说明"><span class="toc-text">说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-text">参考</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <blockquote>
+<p>这段时间使用Hessian传递数据，发现有很多大坑。年久失修的Hessian的PHP实现库在64位下传递数字错误连连。
+之前还发现了传递emoji表情出现了问题，这几天终于追踪到问题所在。</p>
+</blockquote>
+<h2 id="现象说明"><a href="#现象说明" class="headerlink" title="现象说明"></a>现象说明</h2><p>使用PHP作为client调用Java开发的Server，返回的字符串中含有不能被json编码的字符，表现为实际的字符
+串为「你好🌍，abc！」，经过HessianJava和HessianPHP后，结果输出为「你好������，abc！」，
+除了这个「🌍」emoji表情外其它的字符都能正确输出。比较奇怪的是Java到Java没有问题。</p>
+<p>我先在数据库中写了一堆emoji表情，然后在hessian2parse解析字符串的地方拦截其收到内容，打印它们的字节</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">表情</th>
+<th style="text-align:left">Unicode</th>
+<th style="text-align:left">UTF-16</th>
+<th style="text-align:left">UTF-8 bytes</th>
+<th style="text-align:left">服务器收到bytes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">🌍</td>
+<td style="text-align:left">1 F3 0D</td>
+<td style="text-align:left">D8 3C DF 0D</td>
+<td style="text-align:left">F0 9F 8C 8D</td>
+<td style="text-align:left">ED A0 BC ED BC 8D</td>
+</tr>
+<tr>
+<td style="text-align:left">🐁</td>
+<td style="text-align:left">1 F4 01</td>
+<td style="text-align:left">D8 3D DC 01</td>
+<td style="text-align:left">F0 9F 90 81</td>
+<td style="text-align:left">ED A0 BD ED B0 81</td>
+</tr>
+</tbody>
+</table>
+<p>这里选择部分打印出来</p>
+<p>Hessian协议在传递数据时用的字符编码是UTF-8，可变长度，有效的压缩了数据长度，从上面的表格可以发现应
+该是4字节的UTF-8，结果变成6字节，而HessianPHP这边对utf8字符串几乎没有什么处理，这么搞，字符串肯
+定是乱码的。</p>
+<h2 id="找问题"><a href="#找问题" class="headerlink" title="找问题"></a>找问题</h2><p><code>HessianPHP</code>这边对字符几乎的0处理，当然如果当前环境是别的字符集，会将字符串转码。但发现
+<code>HessianPHP</code>读字符串时，只对1-3字节的UTF-8字符有识别，对4字节的UTF-8没有处理。如果把PHP这边同
+时作为服务和客户端测试时，也出现bug，长度读取不对。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;?php</span></div><div class="line">  <span class="comment">// 修改后</span></div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">readUTF8Bytes</span><span class="params">($len)</span></span>&#123;</div><div class="line">        $string = <span class="keyword">$this</span>-&gt;read($len);</div><div class="line">        $pos = <span class="number">0</span>;</div><div class="line">        $pass = <span class="number">1</span>;</div><div class="line"></div><div class="line">        <span class="keyword">while</span>($pass &lt;= $len)&#123;</div><div class="line">            $charCode = ord($string[$pos]);</div><div class="line">            <span class="keyword">if</span>($charCode &lt; <span class="number">0x80</span>)&#123;</div><div class="line">                $pos++;</div><div class="line">            &#125; <span class="keyword">elseif</span>(($charCode &amp; <span class="number">0xe0</span>) == <span class="number">0xc0</span>)&#123;</div><div class="line">                $pos += <span class="number">2</span>;</div><div class="line">                $string .= <span class="keyword">$this</span>-&gt;read(<span class="number">1</span>);</div><div class="line">            &#125; <span class="keyword">elseif</span> (($charCode &amp; <span class="number">0xf0</span>) == <span class="number">0xe0</span>) &#123;</div><div class="line">                $pos += <span class="number">3</span>;</div><div class="line">                $string .= <span class="keyword">$this</span>-&gt;read(<span class="number">2</span>);</div><div class="line">            &#125; <span class="keyword">else</span></div><div class="line">            <span class="comment">// 在此加入4字节字符识别，参考UTF-8编码规则</span></div><div class="line">            <span class="keyword">if</span> (($charCode &amp; <span class="number">0xf8</span>) == <span class="number">0xf0</span>) &#123;</div><div class="line">                $pos += <span class="number">4</span>;</div><div class="line">                $string .= <span class="keyword">$this</span>-&gt;read(<span class="number">3</span>);</div><div class="line">            &#125;</div><div class="line">            $pass++;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span>(! HessianUtils::isInternalUTF8())&#123;</div><div class="line">            $string = utf8_decode($string);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">return</span> $string;</div><div class="line">    &#125;</div><div class="line"><span class="meta">?&gt;</span></div></pre></td></tr></table></figure>
+<p>这么修改后，php之间的传递就没有问题了。详细的UTF-8说明参考这，
+<a href="https://zh.wikipedia.org/wiki/UTF-8" target="_blank" rel="external">wiki:UTF-8</a></p>
+<p>再看Java部分前，有一个背景需要知道，从1.5版开始，Java储存字符使用<code>UTF-16</code>的方式，
+每个char长度为2Bytes。可以参考<a href="https://zh.wikipedia.org/wiki/UTF-16" target="_blank" rel="external">wiki:UTF-16</a>，
+了解其编码方式。</p>
+<blockquote>
+<p>在Unicode的零号平面(BMP)中，<strong>UTF-16数值等价于对应的码位</strong>。
+Unicode中除了BMP外，还有16个辅助平面，码位为U+10000到U+10FFFF。
+在UTF-16中被编码为一对16比特长的码元（即32bit,4Bytes）。</p>
+</blockquote>
+<p>简而言之，就是像ASCII字符、中文字符等这些在零号平面中的字符在Java中由一个char（2Bytes）表示，
+而emoji这样在辅助平面上的字符由2个char（4Bytes）表示，理论上能实现所有的Unicode字符编码了。</p>
+<p>看看Java这边的处理，以下是写入部分
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Prints a string to the stream, encoded as UTF-8</div><div class="line"> *</div><div class="line"> * <span class="doctag">@param</span> v the string to print.</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printString</span><span class="params">(String v, <span class="keyword">int</span> strOffset, <span class="keyword">int</span> length)</span></span></div><div class="line">  <span class="keyword">throws</span> IOException</div><div class="line">&#123;</div><div class="line">  <span class="keyword">int</span> offset = _offset;</div><div class="line">  <span class="keyword">byte</span> []buffer = _buffer;</div><div class="line"></div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; length; i++) &#123;</div><div class="line">    <span class="keyword">if</span> (SIZE &lt;= offset + <span class="number">16</span>) &#123;</div><div class="line">      _offset = offset;</div><div class="line">      flushBuffer();</div><div class="line">      offset = _offset;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">char</span> ch = v.charAt(i + strOffset);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (ch &lt; <span class="number">0x80</span>)</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (ch);</div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (ch &lt; <span class="number">0x800</span>) &#123;</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0xc0</span> + ((ch &gt;&gt; <span class="number">6</span>) &amp; <span class="number">0x1f</span>));</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0x80</span> + (ch &amp; <span class="number">0x3f</span>));</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">else</span> &#123;</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0xe0</span> + ((ch &gt;&gt; <span class="number">12</span>) &amp; <span class="number">0xf</span>));</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0x80</span> + ((ch &gt;&gt; <span class="number">6</span>) &amp; <span class="number">0x3f</span>));</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0x80</span> + (ch &amp; <span class="number">0x3f</span>));</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  _offset = offset;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这部分代码的目的是将字符串从Java下的字符串（UTF-16）转为UTF-8编码，但明显它只能满足在BMP上码位的转码，不能支持辅助平面。</p>
+<p>再来看看读的部分
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Parses a single UTF8 character.</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">parseUTF8Char</span><span class="params">()</span></span></div><div class="line">  <span class="keyword">throws</span> IOException</div><div class="line">&#123;</div><div class="line">  <span class="keyword">int</span> ch = _offset &lt; _length ? (_buffer[_offset++] &amp; <span class="number">0xff</span>) : read();</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (ch &lt; <span class="number">0x80</span>)</div><div class="line">    <span class="keyword">return</span> ch;</div><div class="line">  <span class="keyword">else</span> <span class="keyword">if</span> ((ch &amp; <span class="number">0xe0</span>) == <span class="number">0xc0</span>) &#123;</div><div class="line">    <span class="keyword">int</span> ch1 = read();</div><div class="line">    <span class="keyword">int</span> v = ((ch &amp; <span class="number">0x1f</span>) &lt;&lt; <span class="number">6</span>) + (ch1 &amp; <span class="number">0x3f</span>);</div><div class="line"></div><div class="line">    <span class="keyword">return</span> v;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">else</span> <span class="keyword">if</span> ((ch &amp; <span class="number">0xf0</span>) == <span class="number">0xe0</span>) &#123;</div><div class="line">    <span class="keyword">int</span> ch1 = read();</div><div class="line">    <span class="keyword">int</span> ch2 = read();</div><div class="line">    <span class="keyword">int</span> v = ((ch &amp; <span class="number">0x0f</span>) &lt;&lt; <span class="number">12</span>) + ((ch1 &amp; <span class="number">0x3f</span>) &lt;&lt; <span class="number">6</span>) + (ch2 &amp; <span class="number">0x3f</span>);</div><div class="line"></div><div class="line">    <span class="keyword">return</span> v;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">else</span></div><div class="line">    <span class="keyword">throw</span> error(<span class="string">"bad UTF-8 encoding at "</span> + codeName(ch));</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>Hessian是按UTF-8编码传输，在这个方法中应该是将UTF-8转为UTF-16，按照UTF-8编码方案这里没有处理4字节的字符。</p>
+<p>由于写入的函数只是将每一个字符单独转成UTF-8字符，可能由两个char表示一个字符的，也这样分别被转成两个
+UTF-8字符。读取部分，也是这么分别读，最后获取到的char没有问题，弄拙成巧，Java-Java部分就正常传输了。</p>
+<h2 id="解决-未完成方案"><a href="#解决-未完成方案" class="headerlink" title="解决(未完成方案)"></a>解决(未完成方案)</h2><p>需要java那边把读写的方法修改为支持U+10000到U+10FFFF的码位</p>
+<p>写入修复
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Prints a string to the stream, encoded as UTF-8</div><div class="line"> *</div><div class="line"> * <span class="doctag">@param</span> v the string to print.</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printString</span><span class="params">(String v, <span class="keyword">int</span> strOffset, <span class="keyword">int</span> length)</span></span></div><div class="line">  <span class="keyword">throws</span> IOException</div><div class="line">&#123;</div><div class="line">  <span class="keyword">int</span> offset = _offset;</div><div class="line">  <span class="keyword">byte</span> []buffer = _buffer;</div><div class="line"></div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; length; i++) &#123;</div><div class="line">    <span class="keyword">if</span> (SIZE &lt;= offset + <span class="number">16</span>) &#123;</div><div class="line">      _offset = offset;</div><div class="line">      flushBuffer();</div><div class="line">      offset = _offset;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">char</span> ch = v.charAt(i + strOffset);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (ch &lt; <span class="number">0x80</span>)</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (ch);</div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (ch &lt; <span class="number">0x800</span>) &#123;</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0xc0</span> + ((ch &gt;&gt; <span class="number">6</span>) &amp; <span class="number">0x1f</span>));</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0x80</span> + (ch &amp; <span class="number">0x3f</span>));</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">else</span></div><div class="line"></div><div class="line">    <span class="comment">// three Bytes, D800-DFFF do not allow the existence characters</span></div><div class="line">    <span class="keyword">if</span> (ch &lt; <span class="number">0xD800</span> || ch &gt;= <span class="number">0xE000</span>)) &#123;</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0xe0</span> + ((ch &gt;&gt; <span class="number">12</span>) &amp; <span class="number">0xf</span>));</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0x80</span> + ((ch &gt;&gt; <span class="number">6</span>) &amp; <span class="number">0x3f</span>));</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0x80</span> + (ch &amp; <span class="number">0x3f</span>));</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">else</span></div><div class="line">    &#123;</div><div class="line">      <span class="comment">// 0xD800 - 0xE000 Unicode characters, Supplementary Planes, need four bytes</span></div><div class="line"></div><div class="line">      <span class="comment">// take the next char</span></div><div class="line">      i++;</div><div class="line">      <span class="keyword">char</span> ch1 = v.charAt(i + strOffset);</div><div class="line"></div><div class="line">      <span class="comment">// get unicode code point from two chars</span></div><div class="line">      <span class="comment">// int code = ((ch - 0xD800) &lt;&lt; 10) + ch1 - 0xDC00 + 0x10000;</span></div><div class="line">      <span class="keyword">int</span> code = ((ch - <span class="number">0xD800</span>) &lt;&lt; <span class="number">10</span>) + ch1 + <span class="number">0x2400</span>;</div><div class="line"></div><div class="line">      <span class="comment">// unicode code to utf-8</span></div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0xf0</span> + ((code &gt;&gt; <span class="number">18</span>) &amp; <span class="number">0x7</span>));</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0x80</span> + ((code &gt;&gt; <span class="number">12</span>) &amp; <span class="number">0x3f</span>));</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0x80</span> + ((code &gt;&gt; <span class="number">6</span>) &amp; <span class="number">0x3f</span>));</div><div class="line">      buffer[offset++] = (<span class="keyword">byte</span>) (<span class="number">0x80</span> + (code &amp; <span class="number">0x3f</span>));</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">else</span> &#123;</div><div class="line">      <span class="comment">// throw</span></div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  _offset = offset;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>读取修复，有点蛋疼，在这不能修复，除了<code>parseUTF8Char</code>方法修复，调用此方法的也需要跟踪修复，在此只做了对<code>parseUTF8Char</code>方法的修复。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Parses a single UTF8 character.</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">parseUTF8Char</span><span class="params">()</span></span></div><div class="line">  <span class="keyword">throws</span> IOException</div><div class="line">&#123;</div><div class="line">  <span class="keyword">int</span> ch = _offset &lt; _length ? (_buffer[_offset++] &amp; <span class="number">0xff</span>) : read();</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (ch &lt; <span class="number">0x80</span>)</div><div class="line">    <span class="keyword">return</span> ch;</div><div class="line">  <span class="keyword">else</span> <span class="keyword">if</span> ((ch &amp; <span class="number">0xe0</span>) == <span class="number">0xc0</span>) &#123;</div><div class="line">    <span class="keyword">int</span> ch1 = read();</div><div class="line">    <span class="keyword">int</span> v = ((ch &amp; <span class="number">0x1f</span>) &lt;&lt; <span class="number">6</span>) + (ch1 &amp; <span class="number">0x3f</span>);</div><div class="line"></div><div class="line">    <span class="keyword">return</span> v;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">else</span> <span class="keyword">if</span> ((ch &amp; <span class="number">0xf0</span>) == <span class="number">0xe0</span>) &#123;</div><div class="line">    <span class="keyword">int</span> ch1 = read();</div><div class="line">    <span class="keyword">int</span> ch2 = read();</div><div class="line">    <span class="keyword">int</span> v = ((ch &amp; <span class="number">0x0f</span>) &lt;&lt; <span class="number">12</span>) + ((ch1 &amp; <span class="number">0x3f</span>) &lt;&lt; <span class="number">6</span>) + (ch2 &amp; <span class="number">0x3f</span>);</div><div class="line"></div><div class="line">    <span class="keyword">return</span> v;</div><div class="line">  &#125;</div><div class="line">  <span class="comment">// parse the size of 4 bytes utf-8 characters</span></div><div class="line">  <span class="keyword">else</span> <span class="keyword">if</span> ((ch &amp; <span class="number">0xf8</span>) == <span class="number">0xf0</span>) &#123;</div><div class="line">    <span class="keyword">int</span> ch1 = read();</div><div class="line">    <span class="keyword">int</span> ch2 = read();</div><div class="line">    <span class="keyword">int</span> ch3 = read();</div><div class="line">    <span class="keyword">int</span> v = ((ch &amp; <span class="number">0x7</span>) &lt;&lt; <span class="number">18</span>) + ((ch1 &amp; <span class="number">0x3f</span>) &lt;&lt; <span class="number">12</span>) + ((ch2 &amp; <span class="number">0x3f</span>) &lt;&lt; <span class="number">6</span>) + (ch3 &amp; <span class="number">0x3f</span>);</div><div class="line"></div><div class="line">    <span class="keyword">return</span> v;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">else</span></div><div class="line">    <span class="keyword">throw</span> error(<span class="string">"bad UTF-8 encoding at "</span> + codeName(ch));</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="最后的办法"><a href="#最后的办法" class="headerlink" title="最后的办法"></a>最后的办法</h2><p>java端不进行修改，php端修复根据问题规则修改解析。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;?php</span></div><div class="line"></div><div class="line">  <span class="comment">/**</span></div><div class="line">   * 从Java端返回错误的字符，进行解析</div><div class="line">   *</div><div class="line">   * <span class="doctag">@author</span> 炒饭</div><div class="line">   * 2016年10月14日17:18:54</div><div class="line">   */</div><div class="line">  <span class="function"><span class="keyword">function</span> <span class="title">readUTF8FromBadStr</span><span class="params">($bytes)</span></span></div><div class="line">  &#123;</div><div class="line">    <span class="keyword">if</span> (count($bytes) !== <span class="number">6</span>) &#123;</div><div class="line">      <span class="keyword">return</span> <span class="string">'?'</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">      $bytes = array_map(<span class="function"><span class="keyword">function</span> <span class="params">($v)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> ord($v);</div><div class="line">      &#125;, $bytes);</div><div class="line"></div><div class="line">      <span class="comment">// 获取第一个utf-8码</span></div><div class="line">      $v0 = (($bytes[<span class="number">0</span>] &amp; <span class="number">0xf</span>) &lt;&lt; <span class="number">12</span>) + (($bytes[<span class="number">1</span>] &amp; <span class="number">0x3f</span>) &lt;&lt; <span class="number">6</span>) + ($bytes[<span class="number">2</span>] &amp; <span class="number">0x3f</span>);</div><div class="line"></div><div class="line">      <span class="comment">// 获取第二个utf-8码</span></div><div class="line">      $v1 = (($bytes[<span class="number">3</span>] &amp; <span class="number">0xf</span>) &lt;&lt; <span class="number">12</span>) + (($bytes[<span class="number">4</span>] &amp; <span class="number">0x3f</span>) &lt;&lt; <span class="number">6</span>) + ($bytes[<span class="number">5</span>] &amp; <span class="number">0x3f</span>);</div><div class="line"></div><div class="line">      <span class="comment">// 合并为一个utf-16</span></div><div class="line">      $code = ($v0 &lt;&lt; <span class="number">16</span>) + $v1;</div><div class="line"></div><div class="line">      <span class="comment">// to hex</span></div><div class="line">      $code = base_convert($code, <span class="number">10</span>, <span class="number">16</span>);</div><div class="line"></div><div class="line">      $code = mb_convert_encoding(pack(<span class="string">'H*'</span>, $code), <span class="string">'UTF-8'</span>, <span class="string">'UTF-16BE'</span>);</div><div class="line"></div><div class="line">      <span class="keyword">return</span> $code;</div><div class="line"></div><div class="line">    &#125; <span class="keyword">catch</span> (<span class="keyword">Exception</span> $e) &#123;</div><div class="line">      <span class="keyword">return</span> <span class="string">'?'</span>;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line"></div><div class="line">  <span class="comment">/**</span></div><div class="line">   * 修复支持在错误java端下获取辅助平面字符，原本方法修改名称为readUTF8BytesQuick</div><div class="line">   *</div><div class="line">   * <span class="doctag">@author</span> 炒饭</div><div class="line">   * 2016年10月14日17:18:54</div><div class="line">   */</div><div class="line">  <span class="function"><span class="keyword">function</span> <span class="title">readUTF8Bytes</span><span class="params">($len)</span></span>&#123;</div><div class="line">    $string = <span class="string">''</span>;</div><div class="line"></div><div class="line">    <span class="keyword">for</span>($i = <span class="number">0</span>; $i &lt; $len; $i++)&#123;</div><div class="line">      $ch = <span class="keyword">$this</span>-&gt;read(<span class="number">1</span>);</div><div class="line">      $charCode = ord($ch);</div><div class="line"></div><div class="line">      <span class="keyword">if</span> ($charCode &lt; <span class="number">0x80</span>) &#123;</div><div class="line">        $string .= $ch;</div><div class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (($charCode &amp; <span class="number">0xe0</span>) === <span class="number">0xc0</span>) &#123;</div><div class="line">        $string .= $ch.<span class="keyword">$this</span>-&gt;read(<span class="number">1</span>);</div><div class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> ($charCode === <span class="number">0xed</span>) &#123;</div><div class="line">        <span class="comment">/*</span></div><div class="line">         * 以毒攻毒</div><div class="line">         * 0xD800..0xDBFF</div><div class="line">         * 解出的字符，在[0xD8, 0xDC)区间内，即为U+10000到U+10FFFF码位的字符</div><div class="line">         */</div><div class="line"></div><div class="line">        <span class="comment">// 读取第二个字节</span></div><div class="line">        $ch1 = <span class="keyword">$this</span>-&gt;read();</div><div class="line"></div><div class="line">        $charCode1 = ord($ch1);</div><div class="line"></div><div class="line">        <span class="comment">// 判断第二个4位是否为在[0x8, 0xC)区间内</span></div><div class="line">        $secondFourBit = ($charCode1 &amp; <span class="number">0x3c</span>) &gt;&gt; <span class="number">2</span>;</div><div class="line">        <span class="keyword">if</span> ($secondFourBit &gt;= <span class="number">0x8</span> &amp;&amp; $secondFourBit &lt; <span class="number">0xC</span>) &#123;</div><div class="line">          <span class="comment">// 字符串offset再后移一位</span></div><div class="line">          $i++;</div><div class="line"></div><div class="line">          $bytes = [</div><div class="line">            $ch,</div><div class="line">            $ch1,</div><div class="line">            <span class="keyword">$this</span>-&gt;read(<span class="number">1</span>),</div><div class="line">            <span class="keyword">$this</span>-&gt;read(<span class="number">1</span>),</div><div class="line">            <span class="keyword">$this</span>-&gt;read(<span class="number">1</span>),</div><div class="line">            <span class="keyword">$this</span>-&gt;read(<span class="number">1</span>),</div><div class="line">          ];</div><div class="line"></div><div class="line">          <span class="comment">// 读取问题字符</span></div><div class="line">          $string .= <span class="keyword">$this</span>-&gt;readUTF8FromBadStr($bytes);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">          <span class="comment">// 当做正常的3个字符串输出</span></div><div class="line">          $string .= $ch . $ch1 . <span class="keyword">$this</span>-&gt;read();</div><div class="line">        &#125;</div><div class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (($charCode &amp; <span class="number">0xf0</span>) === <span class="number">0xe0</span>) &#123;</div><div class="line">        <span class="comment">// 3字节字符识别</span></div><div class="line">        $string .= $ch . <span class="keyword">$this</span>-&gt;read(<span class="number">2</span>);</div><div class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (($charCode &amp; <span class="number">0xf8</span>) === <span class="number">0xf0</span>) &#123;</div><div class="line">        <span class="comment">// 4字节字符识别</span></div><div class="line">        $string .= $ch . <span class="keyword">$this</span>-&gt;read(<span class="number">3</span>);</div><div class="line">      &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> HessianParsingException(<span class="string">"Bad utf-8 encoding at pos "</span>.<span class="keyword">$this</span>-&gt;stream-&gt;pos);</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span>(HessianUtils::isInternalUTF8())</div><div class="line">      <span class="keyword">return</span> $string;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> utf8_decode($string);</div><div class="line">  &#125;</div><div class="line"><span class="meta">?&gt;</span></div></pre></td></tr></table></figure>
+<h2 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h2><p>本文使用的<code>HessianPHP</code>版本为<code>v2.0.3</code>，源码来源于此
+<a href="https://code.google.com/archive/p/hessianphp/downloads" target="_blank" rel="external">HessianPHP</a></p>
+<p><code>Java</code>的Hessian包版本为<code>4.0.37</code>，源码来源于此
+<a href="http://hessian.caucho.com/download/hessian-4.0.37-src.jar" target="_blank" rel="external">hessian-4.0.37-src.jar</a></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://www.ibm.com/developerworks/cn/java/j-unicode/" target="_blank" rel="external">使用 Java 语言进行 Unicode 代理编程</a></p>
+<p><a href="https://cytle.github.io/2016/10/12/Unicode、UTF-16、UTF-8相互转换/">Unicode、UTF-16、UTF-8相互转换</a></p>
+<p><a href="http://apps.timwhitlock.info/emoji/tables/unicode" target="_blank" rel="external">Emoji Unicode Tables</a></p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="https://cytle.github.io">炒饭</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="https://cytle.github.io/2016/10/13/HessianJava从U+10000到U+10FFFF的码位传输错误/">https://cytle.github.io/2016/10/13/HessianJava从U+10000到U+10FFFF的码位传输错误/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/Hessian-UTF-8-MB4-unicode-UTF-16/">Hessian UTF-8-MB4 unicode UTF-16</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2016/10/17/Laravel-group-使用/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Laravel-group-使用</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    
+    
+      <a class="next" href="/2016/10/12/unicode、utf-16、utf-8相互转换/">
+        <span class="next-text nav-default">Unicode、UTF-16、UTF-8相互转换</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:canyoutle@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/cytle" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2015 - 
+    
+    2017
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">炒饭</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+
+  </body>
+</html>

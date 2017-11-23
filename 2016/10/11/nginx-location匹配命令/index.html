@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="nginx-location匹配命令"/>
+
+
+
+
+  <meta name="keywords" content="nginx, xsp" />
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="xsp">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="https://cytle.github.io/2016/10/11/nginx-location匹配命令/"/>
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.1.1/av-min.js"></script>
+  <script id="leancloud">
+    AV.init({
+      appId: "XX5UNu0LFrK6VkLgVS7GygfL-gzGzoHsz",
+      appKey: "pBlnYAs9URL4nuKQqCu6q4Jp"
+    });
+  </script>
+
+
+
+
+
+    <title> nginx-location匹配命令 - xsp </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">xsp</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            首页
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            归档
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            标签
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">xsp</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          nginx-location匹配命令
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2016-10-11
+        </span>
+        
+        
+        <div class="post-visits"
+             data-url="/2016/10/11/nginx-location匹配命令/"
+             data-title="nginx-location匹配命令">
+            阅读次数
+          </div>
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#location匹配命令"><span class="toc-text">location匹配命令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#location-匹配的优先级-与location在配置文件中的顺序无关"><span class="toc-text">location 匹配的优先级(与location在配置文件中的顺序无关)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#location-优先级官方文档"><span class="toc-text">location 优先级官方文档</span></a></li></ol></li></ol></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h2 id="location匹配命令"><a href="#location匹配命令" class="headerlink" title="location匹配命令"></a>location匹配命令</h2><table>
+<thead>
+<tr>
+<th style="text-align:center">符合</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">~</td>
+<td style="text-align:left">波浪线表示执行一个正则匹配，区分大小写</td>
+</tr>
+<tr>
+<td style="text-align:center">~*</td>
+<td style="text-align:left">表示执行一个正则匹配，不区分大小写</td>
+</tr>
+<tr>
+<td style="text-align:center">^~</td>
+<td style="text-align:left">^~表示普通字符匹配，如果该选项匹配，只匹配该选项，不匹配别的选项，一般用来匹配目录</td>
+</tr>
+<tr>
+<td style="text-align:center">=</td>
+<td style="text-align:left">进行普通字符精确匹配</td>
+</tr>
+<tr>
+<td style="text-align:center">@</td>
+<td style="text-align:left">“@” 定义一个命名的 location，使用在内部定向时，例如 error_page, try_files</td>
+</tr>
+</tbody>
+</table>
+<h3 id="location-匹配的优先级-与location在配置文件中的顺序无关"><a href="#location-匹配的优先级-与location在配置文件中的顺序无关" class="headerlink" title="location 匹配的优先级(与location在配置文件中的顺序无关)"></a>location 匹配的优先级(与location在配置文件中的顺序无关)</h3><p>= 精确匹配会第一个被处理。如果发现精确匹配，nginx停止搜索其他匹配。
+普通字符匹配，正则表达式规则和长的块规则将被优先和查询匹配，也就是说如果该项匹配还需去看有没有正则表达式匹配和更长的匹配。</p>
+<p>^~ 则只匹配该规则，nginx停止搜索其他匹配，否则nginx会继续处理其他location指令。
+最后匹配理带有”~”和”~*”的指令，如果找到相应的匹配，则nginx停止搜索其他匹配；当没有正则表达式或者没有正则表达式被匹配的情况下，那么匹配程度最高的逐字匹配指令会被使用。</p>
+<h4 id="location-优先级官方文档"><a href="#location-优先级官方文档" class="headerlink" title="location 优先级官方文档"></a>location 优先级官方文档</h4><p>Directives with the = prefix that match the query exactly. If found, searching stops.
+All remaining directives with conventional strings, longest match first. If this match used the ^~ prefix, searching stops.</p>
+<p>Regular expressions, in order of definition in the configuration file.
+If #3 yielded a match, that result is used. Else the match from #2 is used.</p>
+<p>=前缀的指令严格匹配这个查询。如果找到，停止搜索。</p>
+<p>所有剩下的常规字符串，最长的匹配。如果这个匹配使用^〜前缀，搜索停止。</p>
+<p>正则表达式，在配置文件中定义的顺序。</p>
+<p>如果第3条规则产生匹配的话，结果被使用。否则，如同从第2条规则被使用。</p>
+<p>例如</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">location</span>  = / &#123;</div><div class="line">  <span class="comment"># 只匹配"/".</span></div><div class="line">  <span class="comment"># [ configuration A ]</span></div><div class="line">&#125;</div><div class="line"><span class="attribute">location</span>  / &#123;</div><div class="line">  <span class="comment"># 匹配任何请求，因为所有请求都是以"/"开始</span></div><div class="line">  <span class="comment"># 但是更长字符匹配或者正则表达式匹配会优先匹配</span></div><div class="line">  <span class="comment"># [ configuration B ]</span></div><div class="line">&#125;</div><div class="line"><span class="attribute">location</span><span class="regexp"> ^~</span> /images/ &#123;</div><div class="line">  <span class="comment"># 匹配任何以 /images/ 开始的请求，并停止匹配 其它location</span></div><div class="line">  <span class="comment"># [ configuration C ]</span></div><div class="line">&#125;</div><div class="line"><span class="attribute">location</span> <span class="regexp">~* .(gif|jpg|jpeg)$</span> &#123;</div><div class="line">  <span class="comment"># 匹配以 gif, jpg, or jpeg结尾的请求.</span></div><div class="line">  <span class="comment"># 但是所有 /images/ 目录的请求将由 [Configuration C]处理.</span></div><div class="line">  <span class="comment"># [ configuration D ]</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>请求URI例子:</p>
+<p>/ -&gt; 符合configuration A</p>
+<p>/documents/document.html -&gt; 符合configuration B</p>
+<p>/images/1.gif -&gt; 符合configuration C</p>
+<p>/documents/1.jpg -&gt;符合 configuration D</p>
+<p>@location 例子
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">error_page 404 = @fetch;</div><div class="line"></div><div class="line">location @fetch(</div><div class="line">  proxy_pass http://fetch;</div><div class="line">)</div></pre></td></tr></table></figure></p>
+<p>转载请保留: <a href="http://www.nginx.cn/115.html" target="_blank" rel="external">http://www.nginx.cn/115.html</a></p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="https://cytle.github.io">炒饭</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="https://cytle.github.io/2016/10/11/nginx-location匹配命令/">https://cytle.github.io/2016/10/11/nginx-location匹配命令/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/nginx/">nginx</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2016/10/12/unicode、utf-16、utf-8相互转换/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Unicode、UTF-16、UTF-8相互转换</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    
+    
+      <a class="next" href="/2016/09/25/iterm-zsh-tmux/">
+        <span class="next-text nav-default">iterm+zsh+tmux</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:canyoutle@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/cytle" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2015 - 
+    
+    2017
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">炒饭</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+
+  </body>
+</html>

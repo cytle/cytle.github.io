@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="2difre-前端多工程协作环境配置"/>
+
+
+
+
+  <meta name="keywords" content="nginx, xsp" />
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="xsp">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="https://cytle.github.io/2017/02/18/2difre-前端多工程协作环境配置/"/>
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.1.1/av-min.js"></script>
+  <script id="leancloud">
+    AV.init({
+      appId: "XX5UNu0LFrK6VkLgVS7GygfL-gzGzoHsz",
+      appKey: "pBlnYAs9URL4nuKQqCu6q4Jp"
+    });
+  </script>
+
+
+
+
+
+    <title> 2difre-前端多工程协作环境配置 - xsp </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">xsp</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            首页
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            归档
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            标签
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">xsp</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          2difre-前端多工程协作环境配置
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-02-18
+        </span>
+        
+        
+        <div class="post-visits"
+             data-url="/2017/02/18/2difre-前端多工程协作环境配置/"
+             data-title="2difre-前端多工程协作环境配置">
+            阅读次数
+          </div>
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#常见url说明"><span class="toc-text">常见url说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#nginx配置"><span class="toc-text">nginx配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#本地开发配置"><span class="toc-text">本地开发配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-将含变更分支的url重写到本地webpack服务或whereask变更环境"><span class="toc-text">1. 将含变更分支的url重写到本地webpack服务或whereask变更环境</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-将webpack热加载路径重写"><span class="toc-text">2. 将webpack热加载路径重写</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-将apiurl反向代理到http-api-l-whereask-com-变更分支-api-部分"><span class="toc-text">3. 将apiurl反向代理到http://api.l.whereask.com/变更分支/api/...部分</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#项目环境配置-10-1-7-159"><span class="toc-text">项目环境配置(10.1.7.159)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#项目修改细节"><span class="toc-text">项目修改细节</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Gruntfile-js"><span class="toc-text">Gruntfile.js</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#http-js"><span class="toc-text">http.js</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#config-dev-js"><span class="toc-text">config/dev.js</span></a></li></ol></li></ol></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <blockquote>
+<p><strong>问题:</strong>
+原来要打包到项目环境,得修改多个源文件(<code>Gruntfile.js</code>,<code>http.js</code>,<code>config/dev.js</code>),常常引发冲突.
+实际上需要修改的是这三个配置:</p>
+<ol>
+<li>跳转地址</li>
+<li>api基础地址</li>
+<li>资源地址</li>
+</ol>
+<p>另一个<strong>蛋疼</strong>的事是为了各项目协作,需要配置不需要修改的项目(还得经常合并master),部署到本地和项目环境.</p>
+</blockquote>
+<p>以下用<strong>相对路径</strong>(所有路径都使用相对路径,特别是引入<code>/api</code>来表示api地址)来解决上述问题,操作步骤为以下两步</p>
+<ol>
+<li>配置<code>nginx</code>分为本地开发环境和项目测试环境</li>
+<li>项目修改<ul>
+<li>修改<code>Gruntfile.js</code>,<code>http.js</code>,<code>config/dev.js</code></li>
+</ul>
+</li>
+</ol>
+<h2 id="常见url说明"><a href="#常见url说明" class="headerlink" title="常见url说明"></a>常见url说明</h2><p>常见静态资源请求<code>url</code>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">http://api.l.whereask.com /invoice  /meal     /page/checkout.html</div><div class="line">根地址                    /变更分支 /工程名字 /资源地址</div></pre></td></tr></table></figure></p>
+<p>常见api<code>url</code>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">http://api.l.whereask.com /invoice  /api         /orders/v1/get_query_shop_tax</div><div class="line">根地址                    /变更分支 /api特殊名字 /资源地址</div></pre></td></tr></table></figure></p>
+<h2 id="nginx配置"><a href="#nginx配置" class="headerlink" title="nginx配置"></a>nginx配置</h2><h3 id="本地开发配置"><a href="#本地开发配置" class="headerlink" title="本地开发配置"></a>本地开发配置</h3><p>使用如下配置</p>
+<hr>
+<p><strong><code>*</code>: 表示需要经常配置的部分</strong></p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div></pre></td><td class="code"><pre><div class="line"><span class="section">server</span> &#123;</div><div class="line">  <span class="attribute">listen</span> <span class="number">9981</span>;</div><div class="line">  <span class="comment">#rewrite_log on;</span></div><div class="line">  <span class="comment">#access_log /var/log/nginx/2dfire.access.log;</span></div><div class="line">  <span class="comment">#error_log /var/log/nginx/2dfire.error.log notice;</span></div><div class="line"></div><div class="line">  <span class="attribute">server_name</span> <span class="number">127.0.0.1</span>;</div><div class="line"></div><div class="line">  <span class="attribute">location</span><span class="regexp"> ^~</span> / &#123;</div><div class="line">    <span class="comment"># 所有api转到whereask</span></div><div class="line">    <span class="attribute">rewrite</span><span class="regexp"> ^/([^/]*/api/.*)$</span> /whereask/<span class="variable">$1</span> <span class="literal">last</span>;</div><div class="line">    <span class="comment"># 其余重写到dev</span></div><div class="line">    <span class="attribute">rewrite</span><span class="regexp"> ^/(.*)$</span> /dev/<span class="variable">$1</span>;</div><div class="line">  &#125;</div><div class="line">  <span class="attribute">location</span> /whereask/ &#123; <span class="attribute">proxy_pass</span> http://api.l.whereask.com/; &#125;</div><div class="line"></div><div class="line">  <span class="comment"># build后静态资源路径,选用</span></div><div class="line">  <span class="attribute">location</span> /build/ &#123;</div><div class="line">    <span class="attribute">rewrite</span><span class="regexp"> ^/build/[^/]*/(shop|bill|meal|marketing|om)/(.*)$</span>  /build/static-<span class="variable">$1</span>/release/min/<span class="variable">$2</span> <span class="literal">last</span>;</div><div class="line">    <span class="attribute">rewrite</span><span class="regexp"> ^/build/(.*)$</span> /whereask/<span class="variable">$1</span> <span class="literal">last</span>;</div><div class="line">    <span class="comment"># 静态地址</span></div><div class="line">    <span class="attribute">alias</span> /c/src/js/;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment"># A. webpack热加载路径重写*</span></div><div class="line">  <span class="attribute">location</span> /__webpack_hmr &#123;</div><div class="line">    <span class="comment"># 设置需要热加载的工程</span></div><div class="line">    <span class="attribute">rewrite</span><span class="regexp"> ^/(.*)$</span> /dev/meal/<span class="variable">$1</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment"># B. 开发地址部分，根据需要打开相应重写规则*</span></div><div class="line">  <span class="attribute">location</span> /dev/ &#123;</div><div class="line">    <span class="comment">#1. `/daily/meal/` 经过 ``^~ /` 后为 `/dev/daily/meal/`</span></div><div class="line">    <span class="comment">#2. 经过 `/dev/` 变为 `/dev/meal/`</span></div><div class="line">    <span class="comment">#3. 同样shop是不匹配的，则 `/daily/shop/`重写为 `/whereask/daily/shop/`,使用whererask资源</span></div><div class="line"></div><div class="line">    <span class="comment">#rewrite ^/dev/[^/]*/(shop/.*)$ /dev/$1 last;</span></div><div class="line">    <span class="comment">#rewrite ^/dev/[^/]*/(bill/.*)$ /dev/$1 last;</span></div><div class="line">    <span class="comment">#rewrite ^/dev/[^/]*/(marketing/.*)$ /dev/$1 last;</span></div><div class="line">    <span class="attribute">rewrite</span><span class="regexp"> ^/dev/[^/]*/(meal/.*)$</span> /dev/<span class="variable">$1</span> <span class="literal">last</span>;</div><div class="line">    <span class="comment">#rewrite ^/dev/[^/]*/(om/.*)$ /dev/$1 last;</span></div><div class="line">    <span class="attribute">rewrite</span><span class="regexp"> ^/dev/(.*)$</span> /whereask/<span class="variable">$1</span> <span class="literal">last</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment"># 本地webpack服务</span></div><div class="line">  <span class="attribute">location</span> /dev/shop/ &#123; <span class="attribute">proxy_pass</span> http://localhost:8086/; &#125;</div><div class="line">  <span class="attribute">location</span> /dev/bill/ &#123; <span class="attribute">proxy_pass</span> http://localhost:8089/; &#125;</div><div class="line">  <span class="attribute">location</span> /dev/marketing/ &#123; <span class="attribute">proxy_pass</span> http://localhost:8085/; &#125;</div><div class="line">  <span class="attribute">location</span> /dev/meal/ &#123; <span class="attribute">proxy_pass</span> http://localhost:8088/; &#125;</div><div class="line">  <span class="attribute">location</span> /dev/om/ &#123; <span class="attribute">proxy_pass</span> http://localhost:8087/; &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<hr>
+<p>可以实现</p>
+<p><strong><code>==&gt;</code>: 表示最后指向地址</strong></p>
+<h4 id="1-将含变更分支的url重写到本地webpack服务或whereask变更环境"><a href="#1-将含变更分支的url重写到本地webpack服务或whereask变更环境" class="headerlink" title="1. 将含变更分支的url重写到本地webpack服务或whereask变更环境"></a>1. 将含<code>变更分支</code>的url重写到<code>本地webpack服务</code>或<code>whereask变更环境</code></h4><p>即实现根据<code>变更分支</code>自动使用对应变更静态资源</p>
+<p>如根据以下配置
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#开发地址部分，根据需要打开相应重写规则*</span></div><div class="line"><span class="attribute">location</span> /dev/ &#123;</div><div class="line">  <span class="comment">#1. `/daily/meal/` 经过 ``^~ /` 后为 `/dev/daily/meal/`</span></div><div class="line">  <span class="comment">#2. 经过 `/dev/` 变为 `/dev/meal/`</span></div><div class="line">  <span class="comment">#3. 同样shop是不匹配的，则 `/daily/shop/`重写为 `/whereask/daily/shop/`,使用whererask资源</span></div><div class="line"></div><div class="line">  <span class="comment">#rewrite ^/dev/[^/]*/(shop/.*)$ /dev/$1 last;</span></div><div class="line">  <span class="comment">#rewrite ^/dev/[^/]*/(bill/.*)$ /dev/$1 last;</span></div><div class="line">  <span class="comment">#rewrite ^/dev/[^/]*/(marketing/.*)$ /dev/$1 last;</span></div><div class="line">  <span class="attribute">rewrite</span><span class="regexp"> ^/dev/[^/]*/(meal/.*)$</span> /dev/<span class="variable">$1</span> <span class="literal">last</span>;</div><div class="line">  <span class="comment">#rewrite ^/dev/[^/]*/(om/.*)$ /dev/$1 last;</span></div><div class="line">  <span class="attribute">rewrite</span><span class="regexp"> ^/dev/(.*)$</span> /whereask/<span class="variable">$1</span> <span class="literal">last</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>可以将以下url重写到<code>本地webpack服务</code></p>
+<ul>
+<li><code>localhost:9981/invoice/meal</code>/page/checkout.html ==&gt; <code>localhost:8088</code>/page/checkout.html</li>
+<li><code>localhost:9981/fire-one/meal</code>/page/checkout.html ==&gt; <code>localhost:8088</code>/page/checkout.html</li>
+<li><code>localhost:9981/[任意变更分支]/meal</code>/page/checkout.html ==&gt; <code>localhost:8088</code>/page/checkout.html</li>
+</ul>
+<p>将以下非<code>meal</code>工程url反向代理到<code>http://api.l.whereask.com/invoice/...</code>部分</p>
+<ul>
+<li><code>localhost:9981</code>/invoice/om/page/om.html ==&gt; <code>api.l.whereask.com</code>/invoice/om/page/om.html</li>
+</ul>
+<h4 id="2-将webpack热加载路径重写"><a href="#2-将webpack热加载路径重写" class="headerlink" title="2. 将webpack热加载路径重写"></a>2. 将webpack热加载路径重写</h4><ul>
+<li><code>localhost:9981</code>/<strong>webpack_hmr ==&gt; <code>localhost:8088</code>/</strong>webpack_hmr</li>
+</ul>
+<h4 id="3-将apiurl反向代理到http-api-l-whereask-com-变更分支-api-部分"><a href="#3-将apiurl反向代理到http-api-l-whereask-com-变更分支-api-部分" class="headerlink" title="3. 将apiurl反向代理到http://api.l.whereask.com/变更分支/api/...部分"></a>3. 将<code>api</code>url反向代理到<code>http://api.l.whereask.com/变更分支/api/...</code>部分</h4><p>即实现根据<code>变更分支</code>自动使用对应变更api资源</p>
+<ul>
+<li><code>localhost:9981</code>/invoice/api/orders/v1/get_query_shop_tax ==&gt; <code>api.l.whereask.com</code>/invoice/api/orders/v1/get_query_shop_tax</li>
+</ul>
+<h3 id="项目环境配置-10-1-7-159"><a href="#项目环境配置-10-1-7-159" class="headerlink" title="项目环境配置(10.1.7.159)"></a>项目环境配置(10.1.7.159)</h3><p><strong>项目环境各分支作用说明</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">分支名称</th>
+<th style="text-align:left">作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">daily</td>
+<td style="text-align:left">日常环境,大家都可以上的车,代码从master中检出</td>
+</tr>
+<tr>
+<td style="text-align:left">dev_193</td>
+<td style="text-align:left">可以支付的分支</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 工程默认使用daily代码</span></div><div class="line"><span class="attribute">location</span> /invoice/ &#123;</div><div class="line">  <span class="attribute">rewrite</span><span class="regexp"> ^/[\w]*?/(.*)$</span> /daily/<span class="variable">$1</span> <span class="literal">last</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment"># 真实api地址 重写到server_from_meal</span></div><div class="line"><span class="attribute">location</span> /invoice/api/ &#123;</div><div class="line">    <span class="attribute">rewrite</span><span class="regexp"> ^/invoice/api/(.*)$</span>  /invoice_server/<span class="variable">$1</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment"># 假设meal和bill是本次变更会修改的工程,添加以下两条</span></div><div class="line"><span class="attribute">location</span> /invoice/meal/ &#123;</div><div class="line">  <span class="attribute">proxy_pass</span>       http://10.1.4.186/nginx/meal/;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="attribute">location</span> /invoice/bill/ &#123;</div><div class="line">  <span class="attribute">proxy_pass</span>       http://10.1.4.187/nginx/bill/;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<hr>
+<p><strong>配置dev_193</strong></p>
+<p>如果需要dev_193使用invoice分支代码，可以如下修改dev_193配置</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">location</span> /dev_193/ &#123;</div><div class="line">    <span class="comment">#全部重写到invoice</span></div><div class="line">    <span class="attribute">rewrite</span><span class="regexp"> ^/dev_193/(.*)$</span> /invoice/<span class="variable">$1</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="项目修改细节"><a href="#项目修改细节" class="headerlink" title="项目修改细节"></a>项目修改细节</h2><p>static-meal, static-shop, static-om, static-bill, static-markting在项目中都需要做以下修改(只涉及到dev环境打包)</p>
+<h3 id="Gruntfile-js"><a href="#Gruntfile-js" class="headerlink" title="Gruntfile.js"></a>Gruntfile.js</h3><p>删除<code>dev</code>环境替换相对路径的配置</p>
+<hr>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="comment">// ...</span></div><div class="line">    dev: &#123;</div><div class="line">        <span class="attr">replacements</span>: [</div><div class="line">            <span class="comment">/* 为了页面间传递url,需要修改../page为../../&#123;当前工程&#125;/page */</span></div><div class="line">            &#123;</div><div class="line">                <span class="attr">from</span>: <span class="regexp">/(\.\.\/page)/g</span>,</div><div class="line">                <span class="attr">to</span>: <span class="string">'../../meal/page'</span></div><div class="line">            &#125;,</div><div class="line">            <span class="comment">/* 从这开始删除</span></div><div class="line">            &#123;</div><div class="line">                from: /(\.\.\/public)/g,</div><div class="line">                to: 'http://10.1.4.186/nginx/meal/public'</div><div class="line">            &#125;,</div><div class="line">            &#123;</div><div class="line">                from: /(\.\.\/images)/g,</div><div class="line">                to: 'http://10.1.4.186/nginx/meal/images'</div><div class="line">            &#125;,</div><div class="line">            &#123;</div><div class="line">                from: /(\.\.\/css)/g,</div><div class="line">                to: 'http://10.1.4.186/nginx/meal/css'</div><div class="line">            &#125;,</div><div class="line">            &#123;</div><div class="line">                from: /(\.\.\/js)/g,</div><div class="line">                to: 'http://10.1.4.186/nginx/meal/js'</div><div class="line">            &#125;,</div><div class="line">            &#123;</div><div class="line">                from: /(\.\.\/page)/g,</div><div class="line">                to: 'http://api.l.whereask.com/fromMeal/meal/page'</div><div class="line">            &#125;,</div><div class="line">            &#123;</div><div class="line">                from: /(\.\.\/\.\.\/marketing)/g,</div><div class="line">                to: 'http://api.l.whereask.com/fromMeal/marketing'</div><div class="line">            &#125;,</div><div class="line">            &#123;</div><div class="line">                from: /(\.\.\/\.\.\/bill)/g,</div><div class="line">                to: 'http://api.l.whereask.com/fromMeal/bill'</div><div class="line">            &#125;,</div><div class="line">            &#123;</div><div class="line">                from: /(\.\.\/\.\.\/om)/g,</div><div class="line">                to: 'http://api.l.whereask.com/fromMeal/om'</div><div class="line">            &#125;,</div><div class="line">            &#123;</div><div class="line">                from: /(\.\.\/\.\.\/shop)/g,</div><div class="line">                to: 'http://api.l.whereask.com/fromMeal/shop'</div><div class="line">            &#125;,</div><div class="line">            &#123;</div><div class="line">                from: 'grunt_env_dev',</div><div class="line">                to: 'grunt_env_dev'</div><div class="line">            &#125;</div><div class="line">            结束 */</div><div class="line">        ]</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// ...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="http-js"><a href="#http-js" class="headerlink" title="http.js"></a>http.js</h3><p>修改api基础地址为相对路径</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// var API_BASE_URL = 'http://api.l.whereask.com/server_from_meal';</span></div><div class="line"><span class="keyword">var</span> API_BASE_URL = <span class="string">'../../api'</span>;</div><div class="line"></div><div class="line"><span class="comment">// var RETAIL_BASE_URL = 'http://retailweixin.2dfire-dev.com/retail-weidian-api';</span></div><div class="line"><span class="keyword">var</span> RETAIL_BASE_URL = <span class="string">'../../retail-weidian-api'</span>;</div></pre></td></tr></table></figure>
+<h4 id="config-dev-js"><a href="#config-dev-js" class="headerlink" title="config/dev.js"></a>config/dev.js</h4><p>修改api基础地址为相对路径</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">module</span>.exports = &#123;</div><div class="line">    <span class="comment">// API_BASE_URL: 'http://api.l.whereask.com/server_from_meal',</span></div><div class="line">    API_BASE_URL: <span class="string">'../../api'</span>,</div><div class="line"></div><div class="line">    <span class="comment">// RETAIL_BASE_URL: 'http://retailweixin.2dfire-dev.com/retail-weidian-api',</span></div><div class="line">    RETAIL_BASE_URL: <span class="string">'../../retail-weidian-api'</span>,</div><div class="line"></div><div class="line">    <span class="attr">SHARE_BASE_URL</span>: <span class="string">'http://api.l.whereask.com'</span>,</div><div class="line">    <span class="attr">IMAGE_BASE_URL</span>: <span class="string">'http://ifiletest.2dfire.com/'</span>,</div><div class="line">    <span class="attr">API_WEB_SOCKET</span>: <span class="string">'http://10.1.5.114:9003/web_socket'</span></div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="https://cytle.github.io">炒饭</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="https://cytle.github.io/2017/02/18/2difre-前端多工程协作环境配置/">https://cytle.github.io/2017/02/18/2difre-前端多工程协作环境配置/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/nginx/">nginx</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2017/02/22/sublime-packagecontrol-channel-v3/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">sublime-packagecontrol-channel_v3</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/02/18/css3-progress-bar/">
+        <span class="next-text nav-default">css3 progress bar</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:canyoutle@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/cytle" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2015 - 
+    
+    2017
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">炒饭</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+
+  </body>
+</html>

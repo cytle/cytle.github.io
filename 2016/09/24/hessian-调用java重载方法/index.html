@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="hessian-调用java重载方法"/>
+
+
+
+
+  <meta name="keywords" content="Hessian 方法重载 unsafeDeserialize, xsp" />
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="xsp">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="https://cytle.github.io/2016/09/24/hessian-调用java重载方法/"/>
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.1.1/av-min.js"></script>
+  <script id="leancloud">
+    AV.init({
+      appId: "XX5UNu0LFrK6VkLgVS7GygfL-gzGzoHsz",
+      appKey: "pBlnYAs9URL4nuKQqCu6q4Jp"
+    });
+  </script>
+
+
+
+
+
+    <title> hessian-调用java重载方法 - xsp </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">xsp</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            首页
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            归档
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            标签
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">xsp</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          hessian-调用java重载方法
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2016-09-24
+        </span>
+        
+        
+        <div class="post-visits"
+             data-url="/2016/09/24/hessian-调用java重载方法/"
+             data-title="hessian-调用java重载方法">
+            阅读次数
+          </div>
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#问题"><span class="toc-text">问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#源码查看"><span class="toc-text">源码查看</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#产生方法列表"><span class="toc-text">产生方法列表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#获取方法"><span class="toc-text">获取方法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#例子"><span class="toc-text">例子</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <blockquote>
+<p>重载(overloading) 是在一个类里面，方法名字相同，而参数不同。返回类型可以相同也可以不同。每个重
+载的方法（或者构造函数）都有一个独一无二的参数类型列表。</p>
+</blockquote>
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p>Hessian的客户端（调用者，如PHP）不能也不会识别调用的参数类型，从而传递相应的参数列表。另一方面java
+端接受请求后，只通过方法名和参数数量来取得方法。</p>
+<p>在使用像php这样的弱类型语言通过<code>Hessian</code>调用java端服务时，重载方法的使用存在问题。</p>
+<h3 id="源码查看"><a href="#源码查看" class="headerlink" title="源码查看"></a>源码查看</h3><p>下面来看服务端的源码：</p>
+<h4 id="产生方法列表"><a href="#产生方法列表" class="headerlink" title="产生方法列表"></a>产生方法列表</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// com.caucho.services.server.AbstractSkeleton</span></div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">protected</span> <span class="title">AbstractSkeleton</span><span class="params">(Class apiClass)</span></span></div><div class="line">  &#123;</div><div class="line">    _apiClass = apiClass;</div><div class="line">    Method []methodList = apiClass.getMethods();</div><div class="line"></div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; methodList.length; i++) &#123;</div><div class="line">      Method method = methodList[i];</div><div class="line"></div><div class="line">      <span class="comment">// put 方法名</span></div><div class="line">      <span class="keyword">if</span> (_methodMap.get(method.getName()) == <span class="keyword">null</span>)</div><div class="line">        _methodMap.put(method.getName(), methodList[i]);</div><div class="line"></div><div class="line">      Class []param = method.getParameterTypes();</div><div class="line"></div><div class="line">      <span class="comment">// put 方法名 + 参数数量</span></div><div class="line">      String mangledName = method.getName() + <span class="string">"__"</span> + param.length;</div><div class="line">      _methodMap.put(mangledName, methodList[i]);</div><div class="line"></div><div class="line">      <span class="comment">// put 方法名 + 每个参数类型(不完整的类型名)</span></div><div class="line">      _methodMap.put(mangleName(method, <span class="keyword">false</span>), methodList[i]);</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">//...</span></div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">mangleName</span><span class="params">(Method method, <span class="keyword">boolean</span> isFull)</span></span></div><div class="line">  &#123;</div><div class="line">    StringBuffer sb = <span class="keyword">new</span> StringBuffer();</div><div class="line"></div><div class="line">    sb.append(method.getName());</div><div class="line"></div><div class="line">    <span class="comment">// 获取方法的参数列表</span></div><div class="line">    Class []params = method.getParameterTypes();</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; params.length; i++) &#123;</div><div class="line">      sb.append(<span class="string">'_'</span>);</div><div class="line"></div><div class="line">      <span class="comment">// 参数的类型</span></div><div class="line">      sb.append(mangleClass(params[i], isFull));</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> sb.toString();</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>在上面这段程序中，我们可以知道hessian按以下三种方式作为key存了方法</p>
+<ul>
+<li>方法名</li>
+<li>方法名 + 参数数量</li>
+<li>方法名 + 每个参数类型(不完整的类型名)</li>
+</ul>
+<h4 id="获取方法"><a href="#获取方法" class="headerlink" title="获取方法"></a>获取方法</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// com.caucho.hessian.server.HessianSkeleton extends AbstractSkeleton</span></div><div class="line"></div><div class="line">  <span class="comment">// ...</span></div><div class="line">  <span class="comment">// Line 247,254</span></div><div class="line">    Method method;</div><div class="line">    <span class="comment">// 通过方法名 + 参数数量 获取</span></div><div class="line">    method = getMethod(methodName + <span class="string">"__"</span> + argLength);</div><div class="line"></div><div class="line">    <span class="comment">// 通过方法名获取</span></div><div class="line">    <span class="keyword">if</span> (method == <span class="keyword">null</span>)</div><div class="line">      method = getMethod(methodName);</div></pre></td></tr></table></figure>
+<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><p>当有以下一个接口时</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">TestService</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">(User user)</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">(<span class="keyword">int</span> uid)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>将产生以下方法</p>
+<ul>
+<li>getName</li>
+<li>getName__1</li>
+<li>getName_User</li>
+<li>getName_int</li>
+</ul>
+<p>如果我们在客户端中调用时</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;?php</span></div><div class="line"></div><div class="line">getUser(<span class="number">1</span>);</div><div class="line"></div><div class="line"><span class="comment">// 假设 $user 是一个对象</span></div><div class="line">getUser($user);</div></pre></td></tr></table></figure>
+<p>这样调用，java端会选择同一个方法，getName__1，可能是<code>getName(User user)</code>或者
+<code>getName(int uid)</code>，很有可能就报<code>unsafeDeserialize</code>异常了。</p>
+<p>在使用这样参数数量相同的重载方法时，按照java端的获取规则，我们可以这么调用</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;?php</span></div><div class="line"></div><div class="line">getUser_int(<span class="number">1</span>);</div><div class="line"></div><div class="line"><span class="comment">// 直接跟上参数类型</span></div><div class="line">getUser_User($user);</div><div class="line"></div><div class="line"><span class="comment">// 如果多个继续在后面加尾缀，类型大小写和java一致</span></div><div class="line"><span class="comment">// getUser_User_int_String($user);</span></div></pre></td></tr></table></figure>
+<p>这样就可以完美调用重载的方法了。</p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="https://cytle.github.io">炒饭</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="https://cytle.github.io/2016/09/24/hessian-调用java重载方法/">https://cytle.github.io/2016/09/24/hessian-调用java重载方法/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/Hessian-方法重载-unsafeDeserialize/">Hessian 方法重载 unsafeDeserialize</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2016/09/25/iterm-zsh-tmux/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">iterm+zsh+tmux</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    
+    
+      <a class="next" href="/2016/09/22/Hessian-2-0序列化协议规范/">
+        <span class="next-text nav-default">Hessian-2.0序列化协议规范</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:canyoutle@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/cytle" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2015 - 
+    
+    2017
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">炒饭</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+
+  </body>
+</html>

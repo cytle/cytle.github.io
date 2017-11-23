@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="记一次微信开发者工具debug"/>
+
+
+
+
+  <meta name="keywords" content="chrome nwjs 微信开发者工具, xsp" />
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="xsp">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="https://cytle.github.io/2017/06/18/记一次微信开发者工具debug/"/>
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.1.1/av-min.js"></script>
+  <script id="leancloud">
+    AV.init({
+      appId: "XX5UNu0LFrK6VkLgVS7GygfL-gzGzoHsz",
+      appKey: "pBlnYAs9URL4nuKQqCu6q4Jp"
+    });
+  </script>
+
+
+
+
+
+    <title> 记一次微信开发者工具debug - xsp </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">xsp</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            首页
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            归档
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            标签
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">xsp</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          记一次微信开发者工具debug
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-06-18
+        </span>
+        
+        
+        <div class="post-visits"
+             data-url="/2017/06/18/记一次微信开发者工具debug/"
+             data-title="记一次微信开发者工具debug">
+            阅读次数
+          </div>
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#原因和解决方式如下："><span class="toc-text">原因和解决方式如下：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <p>在维护的项目<a href="https://github.com/cytle/wechat_web_devtools" target="_blank" rel="external">Linux微信web开发者工具</a>中，有多个issues报小程序请求返回不成功，并且终端报异常</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">[7031:7031:0601/201040:ERROR:CONSOLE(1588)] &quot;TypeError: Cannot read property &apos;certificateDetailsPromise&apos; of undefined TypeError: Cannot read property &apos;certificateDetailsPromise&apos; of undefined</div><div class="line">    at r (&lt;anonymous&gt;:1:1116)</div><div class="line">    at WebInspector.NetworkManager.dispatchEventToListeners (chrome-devtools://devtools/bundled/inspector.js:737:185)</div><div class="line">    at WebInspector.NetworkDispatcher.responseReceived (chrome-devtools://devtools/bundled/inspector.js:7384:236)</div><div class="line">    at Object.dispatch (chrome-devtools://devtools/bundled/inspector.js:4608:63)</div><div class="line">    at WebInspector.MainConnection.dispatch (chrome-devtools://devtools/bundled/inspector.js:4548:31)</div><div class="line">    at WebInspector.MainConnection._dispatchMessage (chrome-devtools://devtools/bundled/inspector.js:10773:7)</div><div class="line">    at WebInspector.Object.dispatchEventToListeners (chrome-devtools://devtools/bundled/inspector.js:737:185)</div><div class="line">    at innerDispatch (chrome-devtools://devtools/bundled/inspector.js:1588:58)</div><div class="line">    at InspectorFrontendAPIImpl._dispatch (chrome-devtools://devtools/bundled/inspector.js:1587:1)</div><div class="line">    at DevToolsAPIImpl._dispatchOnInspectorFrontendAPI (devtools_compatibility.js:62:21)</div><div class="line">    at DevToolsAPIImpl.dispatchMessage (devtools_compatibility.js:147:14)&quot;, source: chrome-devtools://devtools/bundled/inspector.js (1588)</div></pre></td></tr></table></figure>
+<h2 id="原因和解决方式如下："><a href="#原因和解决方式如下：" class="headerlink" title="原因和解决方式如下："></a>原因和解决方式如下：</h2><p><strong>本文运行环境为</strong></p>
+<ul>
+<li>nw.js: linux 0.19.4 chrome版本55</li>
+<li>小程序: 0.17.172600</li>
+</ul>
+<p>在<code>package.nw/app/dist/inject/devtools.js</code>中有如下代码，</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> a, r = <span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</div><div class="line">  <span class="comment">/**</span></div><div class="line">   * @typedef &#123;WebInspector.NetworkRequest&#125;</div><div class="line">   */</div><div class="line">  <span class="keyword">var</span> t = e.data;</div><div class="line">  a || (a = <span class="built_in">document</span>.getElementsByTagName(<span class="string">"iframe"</span>)[<span class="number">0</span>]);</div><div class="line">  <span class="comment">// 1. 请求的安全信息</span></div><div class="line">  <span class="keyword">var</span> n = t.securityDetails(),</div><div class="line">    o = &#123; <span class="attr">command</span>: <span class="string">"securityDetails"</span>, <span class="attr">url</span>: t.url, <span class="attr">statusCode</span>: t.statusCode, <span class="attr">remoteAddress</span>: t._remoteAddress &#125;;</div><div class="line">  <span class="keyword">if</span> (n) &#123;</div><div class="line">    o.protocol = n.protocol, o.securityState = t.securityState();</div><div class="line">    <span class="keyword">new</span> <span class="built_in">Date</span>;</div><div class="line">    <span class="comment">// 0. 在运行时t.target()并没有对象networkManager，在此引发错误</span></div><div class="line">    t.target().networkManager.certificateDetailsPromise(n.certificateId).then(<span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</div><div class="line">        <span class="keyword">var</span> t = e.issuer ? e.issuer.toLocaleLowerCase() : <span class="string">""</span>;</div><div class="line">        t.indexOf(<span class="string">"rapidssl"</span>) === <span class="number">-1</span></div><div class="line">        &amp;&amp; t.indexOf(<span class="string">"symantec"</span>) === <span class="number">-1</span></div><div class="line">        &amp;&amp; t.indexOf(<span class="string">"geotrust"</span>) === <span class="number">-1</span></div><div class="line">        &amp;&amp; t.indexOf(<span class="string">"thawte"</span>) === <span class="number">-1</span></div><div class="line">        &amp;&amp; t.indexOf(<span class="string">"trustasia"</span>) === <span class="number">-1</span></div><div class="line">        || (o.securityState = <span class="string">"secure"</span>);</div><div class="line">        a.contentWindow.postMessage(o, <span class="string">"*"</span>)</div><div class="line">    &#125;)</div><div class="line">  &#125; <span class="keyword">else</span></div><div class="line">      a.contentWindow.postMessage(o, <span class="string">"*"</span>)</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>在注释0处发生上文终端所报异常,利用<code>nw --remote-debugging-port=9222</code>进行远程debug,
+打印出<code>t</code>,类型为<code>WebInspector.NetworkRequest</code>，t.target()类型为<code>WebInspector.Target</code>
+并没有属性<code>networkManager</code>，因此运行时类似</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="literal">undefined</span>.certificateDetailsPromise(n.certificateId).then(<span class="comment">/* ... */</span>)</div></pre></td></tr></table></figure>
+<p>根据<code>WebInspector</code>、<code>NetworkRequest</code>关键词能找到这里用的是chrome开发者工具的sdk，
+项目地址为<a href="https://github.com/ChromeDevTools/devtools-frontend" target="_blank" rel="external">devtools-frontend</a></p>
+<p>在此项目下，关键词<code>certificateDetailsPromise</code>出现的地方只有一处<a href="https://github.com/ChromeDevTools/devtools-frontend/blob/c03abd24fb64d646bc4845699b7ff428dddbd507/front_end/security/SecurityPanel.js#L361" target="_blank" rel="external">front_end/security/SecurityPanel.js:361</a></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * @typedef &#123;Object&#125;</div><div class="line"> * @property &#123;!Protocol.Security.SecurityState&#125; securityState - Current security state of the origin.</div><div class="line"> * @property &#123;?Protocol.Network.SecurityDetails&#125; securityDetails - Security details of the origin, if available.</div><div class="line"> * @property &#123;?Promise&lt;&gt;&#125; *certificateDetailsPromise* - Certificate details of the origin.</div><div class="line"> * @property &#123;?Security.SecurityOriginView&#125; originView - Current SecurityOriginView corresponding to origin.</div><div class="line"> */</div><div class="line">Security.SecurityPanel.OriginState;</div></pre></td></tr></table></figure>
+<p><code>Security.SecurityPanel.OriginState</code>离我们的<code>WebInspector.NetworkRequest</code>有点距离，<strong>而解决这类问题我的宗旨是尽量少改源码</strong>，这条路有点远先放一旁。</p>
+<p>上文异常代码中，在<code>certificateDetailsPromise</code>的then中获得到数据就是<code>issuer</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> t = e.issuer ? e.issuer.toLocaleLowerCase() : <span class="string">""</span>;</div></pre></td></tr></table></figure>
+<p>那么issuer是什么含义呢？</p>
+<p>在<code>devtools-frontend</code>搜索下</p>
+<p>这个关键字只出现了一次在
+<a href="https://github.com/ChromeDevTools/devtools-frontend/blob/c03abd24fb64d646bc4845699b7ff428dddbd507/front_end/security/SecurityPanel.js#L907" target="_blank" rel="external">front_end/security/SecurityPanel.js:907</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">table.addRow(Common.UIString(&apos;Issuer&apos;), originState.securityDetails.issuer);</div></pre></td></tr></table></figure>
+<p>而这里的<code>originState.securityDetails</code>和上文注释1处获取的<code>t.securityDetails()</code>好像是同一个，惊不惊喜，意不意外！！</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">var n = t.securityDetails(),</div></pre></td></tr></table></figure>
+<p>使用远程断点，看到<code>n</code>变量真有属性<code>issuer</code>,值为:”TrustAsia DV SSL CA - G5”</p>
+<p>既然如此，现在的sdk是不是想让我们直接使用<code>securityDetails</code>，而不用通过<code>certificateDetailsPromise</code>来获取<code>issuer</code>呢？</p>
+<p>将有问题的代码，修改为以下代码</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 声明issuer</span></div><div class="line"><span class="keyword">var</span> issuer, t = e.data;</div><div class="line"></div><div class="line">a || (a = <span class="built_in">document</span>.getElementsByTagName(<span class="string">"iframe"</span>)[<span class="number">0</span>]);</div><div class="line"><span class="keyword">var</span> n = t.securityDetails(),</div><div class="line">  o = &#123; <span class="attr">command</span>: <span class="string">"securityDetails"</span>, <span class="attr">url</span>: t.url, <span class="attr">statusCode</span>: t.statusCode, <span class="attr">remoteAddress</span>: t._remoteAddress &#125;;</div><div class="line"><span class="keyword">if</span> (n) &#123;</div><div class="line">  <span class="built_in">console</span>.error(n);</div><div class="line"></div><div class="line">  o.protocol = n.protocol, o.securityState = t.securityState();</div><div class="line">  <span class="keyword">new</span> <span class="built_in">Date</span>;</div><div class="line">  <span class="comment">// 移除certificateDetailsPromise，从n取issuer</span></div><div class="line">  issuer = n.issuer ? n.issuer.toLocaleLowerCase() : <span class="string">""</span>;</div><div class="line">  issuer.indexOf(<span class="string">"rapidssl"</span>) === <span class="number">-1</span></div><div class="line">  &amp;&amp; issuer.indexOf(<span class="string">"symantec"</span>) === <span class="number">-1</span></div><div class="line">  &amp;&amp; issuer.indexOf(<span class="string">"geotrust"</span>) === <span class="number">-1</span></div><div class="line">  &amp;&amp; issuer.indexOf(<span class="string">"thawte"</span>) === <span class="number">-1</span></div><div class="line">  &amp;&amp; issuer.indexOf(<span class="string">"trustasia"</span>) === <span class="number">-1</span></div><div class="line">  || (o.securityState = <span class="string">"secure"</span>), a.contentWindow.postMessage(o, <span class="string">"*"</span>)</div><div class="line">&#125; <span class="keyword">else</span></div><div class="line">  a.contentWindow.postMessage(o, <span class="string">"*"</span>)</div></pre></td></tr></table></figure>
+<p><em>6/23更新: 为了替换更方便使用如下方式替换</em></p>
+<p><code>t.target().networkManager.certificateDetailsPromise(n.certificateId)</code> 替换为 <code>Promise.resolve(n)</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> a, r = <span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</div><div class="line">  <span class="keyword">var</span> t = e.data;</div><div class="line">  a || (a = <span class="built_in">document</span>.getElementsByTagName(<span class="string">"iframe"</span>)[<span class="number">0</span>]);</div><div class="line">  <span class="keyword">var</span> n = t.securityDetails(),</div><div class="line">    o = &#123; <span class="attr">command</span>: <span class="string">"securityDetails"</span>, <span class="attr">url</span>: t.url, <span class="attr">statusCode</span>: t.statusCode, <span class="attr">remoteAddress</span>: t._remoteAddress &#125;;</div><div class="line">  <span class="keyword">if</span> (n) &#123;</div><div class="line">    o.protocol = n.protocol, o.securityState = t.securityState();</div><div class="line">    <span class="keyword">new</span> <span class="built_in">Date</span>;</div><div class="line">    <span class="built_in">Promise</span>.resolve(n).then(<span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</div><div class="line">        <span class="keyword">var</span> t = e.issuer ? e.issuer.toLocaleLowerCase() : <span class="string">""</span>;</div><div class="line">        t.indexOf(<span class="string">"rapidssl"</span>) === <span class="number">-1</span></div><div class="line">        &amp;&amp; t.indexOf(<span class="string">"symantec"</span>) === <span class="number">-1</span></div><div class="line">        &amp;&amp; t.indexOf(<span class="string">"geotrust"</span>) === <span class="number">-1</span></div><div class="line">        &amp;&amp; t.indexOf(<span class="string">"thawte"</span>) === <span class="number">-1</span></div><div class="line">        &amp;&amp; t.indexOf(<span class="string">"trustasia"</span>) === <span class="number">-1</span></div><div class="line">        || (o.securityState = <span class="string">"secure"</span>);</div><div class="line">        a.contentWindow.postMessage(o, <span class="string">"*"</span>)</div><div class="line">    &#125;)</div><div class="line">  &#125; <span class="keyword">else</span></div><div class="line">      a.contentWindow.postMessage(o, <span class="string">"*"</span>)</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>运行成功</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>查了下，<code>issuer</code>是指域名型证书型号，而TrustAsia（亚洲诚信）是一证书机构，”TrustAsia DV SSL CA - G5”是证书型号。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">issuer.indexOf(<span class="string">"rapidssl"</span>) === <span class="number">-1</span></div><div class="line">&amp;&amp; issuer.indexOf(<span class="string">"symantec"</span>) === <span class="number">-1</span></div><div class="line">&amp;&amp; issuer.indexOf(<span class="string">"geotrust"</span>) === <span class="number">-1</span></div><div class="line">&amp;&amp; issuer.indexOf(<span class="string">"thawte"</span>) === <span class="number">-1</span></div><div class="line">&amp;&amp; issuer.indexOf(<span class="string">"trustasia"</span>) === <span class="number">-1</span></div><div class="line">|| (o.securityState = <span class="string">"secure"</span>)</div></pre></td></tr></table></figure>
+<p>rapidssl、symantec、geotrust、thawte和trustasia一样是各证书机构。
+这部分代码的意思是只有当<code>issuer</code>中有这些机构关键字，就认为是有证书的，把<code>securityState</code>设置为”secure”，然后把信息传给业务层。</p>
+<p><strong>这次还有个需要纠结的地方是<code>networkManager.certificateDetailsPromise()</code>为毛没了，而小程序在用，mac和windows下没有问题，这是以后linux微信小程序升级需要注意的地方。</strong></p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="https://cytle.github.io">炒饭</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="https://cytle.github.io/2017/06/18/记一次微信开发者工具debug/">https://cytle.github.io/2017/06/18/记一次微信开发者工具debug/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/chrome-nwjs-微信开发者工具/">chrome nwjs 微信开发者工具</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+    
+      <a class="next" href="/2017/03/20/微信web开发者工具linux支持/">
+        <span class="next-text nav-default">微信web开发者工具linux支持</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:canyoutle@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/cytle" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2015 - 
+    
+    2017
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">炒饭</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+
+  </body>
+</html>
