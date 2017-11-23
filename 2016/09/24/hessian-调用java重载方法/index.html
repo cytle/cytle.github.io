@@ -17,12 +17,12 @@
 
 
 
-  <meta name="description" content="hessian-调用java重载方法"/>
+  <meta name="description" content="Hessian-调用java重载方法"/>
 
 
 
 
-  <meta name="keywords" content="Hessian 方法重载 unsafeDeserialize, xsp" />
+  <meta name="keywords" content="php, Hessian, java, 方法重载, unsafeDeserialize, xsp" />
 
 
 
@@ -42,7 +42,7 @@
 
 
 
-<link rel="canonical" href="https://cytle.github.io/2016/09/24/hessian-调用java重载方法/"/>
+<link rel="canonical" href="https://cytle.github.io/2016/09/24/Hessian-调用java重载方法/"/>
 
 
 <link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
@@ -87,7 +87,7 @@
 
 
 
-    <title> hessian-调用java重载方法 - xsp </title>
+    <title> Hessian-调用java重载方法 - xsp </title>
   </head>
 
   <body><div id="mobile-navbar" class="mobile-navbar">
@@ -185,7 +185,7 @@
     <header class="post-header">
       <h1 class="post-title">
         
-          hessian-调用java重载方法
+          Hessian-调用java重载方法
         
       </h1>
 
@@ -196,8 +196,8 @@
         
         
         <div class="post-visits"
-             data-url="/2016/09/24/hessian-调用java重载方法/"
-             data-title="hessian-调用java重载方法">
+             data-url="/2016/09/24/Hessian-调用java重载方法/"
+             data-title="Hessian-调用java重载方法">
             阅读次数
           </div>
         
@@ -224,16 +224,16 @@
 端接受请求后，只通过方法名和参数数量来取得方法。</p>
 <p>在使用像php这样的弱类型语言通过<code>Hessian</code>调用java端服务时，重载方法的使用存在问题。</p>
 <h3 id="源码查看"><a href="#源码查看" class="headerlink" title="源码查看"></a>源码查看</h3><p>下面来看服务端的源码：</p>
-<h4 id="产生方法列表"><a href="#产生方法列表" class="headerlink" title="产生方法列表"></a>产生方法列表</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// com.caucho.services.server.AbstractSkeleton</span></div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">protected</span> <span class="title">AbstractSkeleton</span><span class="params">(Class apiClass)</span></span></div><div class="line">  &#123;</div><div class="line">    _apiClass = apiClass;</div><div class="line">    Method []methodList = apiClass.getMethods();</div><div class="line"></div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; methodList.length; i++) &#123;</div><div class="line">      Method method = methodList[i];</div><div class="line"></div><div class="line">      <span class="comment">// put 方法名</span></div><div class="line">      <span class="keyword">if</span> (_methodMap.get(method.getName()) == <span class="keyword">null</span>)</div><div class="line">        _methodMap.put(method.getName(), methodList[i]);</div><div class="line"></div><div class="line">      Class []param = method.getParameterTypes();</div><div class="line"></div><div class="line">      <span class="comment">// put 方法名 + 参数数量</span></div><div class="line">      String mangledName = method.getName() + <span class="string">"__"</span> + param.length;</div><div class="line">      _methodMap.put(mangledName, methodList[i]);</div><div class="line"></div><div class="line">      <span class="comment">// put 方法名 + 每个参数类型(不完整的类型名)</span></div><div class="line">      _methodMap.put(mangleName(method, <span class="keyword">false</span>), methodList[i]);</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">//...</span></div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">mangleName</span><span class="params">(Method method, <span class="keyword">boolean</span> isFull)</span></span></div><div class="line">  &#123;</div><div class="line">    StringBuffer sb = <span class="keyword">new</span> StringBuffer();</div><div class="line"></div><div class="line">    sb.append(method.getName());</div><div class="line"></div><div class="line">    <span class="comment">// 获取方法的参数列表</span></div><div class="line">    Class []params = method.getParameterTypes();</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; params.length; i++) &#123;</div><div class="line">      sb.append(<span class="string">'_'</span>);</div><div class="line"></div><div class="line">      <span class="comment">// 参数的类型</span></div><div class="line">      sb.append(mangleClass(params[i], isFull));</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> sb.toString();</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<h4 id="产生方法列表"><a href="#产生方法列表" class="headerlink" title="产生方法列表"></a>产生方法列表</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// com.caucho.services.server.AbstractSkeleton</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">protected</span> <span class="title">AbstractSkeleton</span><span class="params">(Class apiClass)</span></span></span><br><span class="line"><span class="function">  </span>&#123;</span><br><span class="line">    _apiClass = apiClass;</span><br><span class="line">    Method []methodList = apiClass.getMethods();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; methodList.length; i++) &#123;</span><br><span class="line">      Method method = methodList[i];</span><br><span class="line"></span><br><span class="line">      <span class="comment">// put 方法名</span></span><br><span class="line">      <span class="keyword">if</span> (_methodMap.get(method.getName()) == <span class="keyword">null</span>)</span><br><span class="line">        _methodMap.put(method.getName(), methodList[i]);</span><br><span class="line"></span><br><span class="line">      Class []param = method.getParameterTypes();</span><br><span class="line"></span><br><span class="line">      <span class="comment">// put 方法名 + 参数数量</span></span><br><span class="line">      String mangledName = method.getName() + <span class="string">"__"</span> + param.length;</span><br><span class="line">      _methodMap.put(mangledName, methodList[i]);</span><br><span class="line"></span><br><span class="line">      <span class="comment">// put 方法名 + 每个参数类型(不完整的类型名)</span></span><br><span class="line">      _methodMap.put(mangleName(method, <span class="keyword">false</span>), methodList[i]);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">mangleName</span><span class="params">(Method method, <span class="keyword">boolean</span> isFull)</span></span></span><br><span class="line"><span class="function">  </span>&#123;</span><br><span class="line">    StringBuffer sb = <span class="keyword">new</span> StringBuffer();</span><br><span class="line"></span><br><span class="line">    sb.append(method.getName());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取方法的参数列表</span></span><br><span class="line">    Class []params = method.getParameterTypes();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; params.length; i++) &#123;</span><br><span class="line">      sb.append(<span class="string">'_'</span>);</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 参数的类型</span></span><br><span class="line">      sb.append(mangleClass(params[i], isFull));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> sb.toString();</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
 <p>在上面这段程序中，我们可以知道hessian按以下三种方式作为key存了方法</p>
 <ul>
 <li>方法名</li>
 <li>方法名 + 参数数量</li>
 <li>方法名 + 每个参数类型(不完整的类型名)</li>
 </ul>
-<h4 id="获取方法"><a href="#获取方法" class="headerlink" title="获取方法"></a>获取方法</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// com.caucho.hessian.server.HessianSkeleton extends AbstractSkeleton</span></div><div class="line"></div><div class="line">  <span class="comment">// ...</span></div><div class="line">  <span class="comment">// Line 247,254</span></div><div class="line">    Method method;</div><div class="line">    <span class="comment">// 通过方法名 + 参数数量 获取</span></div><div class="line">    method = getMethod(methodName + <span class="string">"__"</span> + argLength);</div><div class="line"></div><div class="line">    <span class="comment">// 通过方法名获取</span></div><div class="line">    <span class="keyword">if</span> (method == <span class="keyword">null</span>)</div><div class="line">      method = getMethod(methodName);</div></pre></td></tr></table></figure>
+<h4 id="获取方法"><a href="#获取方法" class="headerlink" title="获取方法"></a>获取方法</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// com.caucho.hessian.server.HessianSkeleton extends AbstractSkeleton</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="comment">// Line 247,254</span></span><br><span class="line">    Method method;</span><br><span class="line">    <span class="comment">// 通过方法名 + 参数数量 获取</span></span><br><span class="line">    method = getMethod(methodName + <span class="string">"__"</span> + argLength);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 通过方法名获取</span></span><br><span class="line">    <span class="keyword">if</span> (method == <span class="keyword">null</span>)</span><br><span class="line">      method = getMethod(methodName);</span><br></pre></td></tr></table></figure>
 <h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><p>当有以下一个接口时</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">TestService</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">(User user)</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">(<span class="keyword">int</span> uid)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">TestService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">(User user)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">(<span class="keyword">int</span> uid)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>将产生以下方法</p>
 <ul>
 <li>getName</li>
@@ -242,11 +242,11 @@
 <li>getName_int</li>
 </ul>
 <p>如果我们在客户端中调用时</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;?php</span></div><div class="line"></div><div class="line">getUser(<span class="number">1</span>);</div><div class="line"></div><div class="line"><span class="comment">// 假设 $user 是一个对象</span></div><div class="line">getUser($user);</div></pre></td></tr></table></figure>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">getUser(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 假设 $user 是一个对象</span></span><br><span class="line">getUser($user);</span><br></pre></td></tr></table></figure>
 <p>这样调用，java端会选择同一个方法，getName__1，可能是<code>getName(User user)</code>或者
 <code>getName(int uid)</code>，很有可能就报<code>unsafeDeserialize</code>异常了。</p>
 <p>在使用这样参数数量相同的重载方法时，按照java端的获取规则，我们可以这么调用</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;?php</span></div><div class="line"></div><div class="line">getUser_int(<span class="number">1</span>);</div><div class="line"></div><div class="line"><span class="comment">// 直接跟上参数类型</span></div><div class="line">getUser_User($user);</div><div class="line"></div><div class="line"><span class="comment">// 如果多个继续在后面加尾缀，类型大小写和java一致</span></div><div class="line"><span class="comment">// getUser_User_int_String($user);</span></div></pre></td></tr></table></figure>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">getUser_int(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 直接跟上参数类型</span></span><br><span class="line">getUser_User($user);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 如果多个继续在后面加尾缀，类型大小写和java一致</span></span><br><span class="line"><span class="comment">// getUser_User_int_String($user);</span></span><br></pre></td></tr></table></figure>
 <p>这样就可以完美调用重载的方法了。</p>
 
       
@@ -263,7 +263,7 @@
     </p>
     <p class="copyright-item">
       <span>原文链接: </span>
-      <a href="https://cytle.github.io/2016/09/24/hessian-调用java重载方法/">https://cytle.github.io/2016/09/24/hessian-调用java重载方法/</a>
+      <a href="https://cytle.github.io/2016/09/24/Hessian-调用java重载方法/">https://cytle.github.io/2016/09/24/Hessian-调用java重载方法/</a>
     </p>
     <p class="copyright-item">
       <span>许可协议: </span>
@@ -283,7 +283,15 @@
         
           <div class="post-tags">
             
-              <a href="/tags/Hessian-方法重载-unsafeDeserialize/">Hessian 方法重载 unsafeDeserialize</a>
+              <a href="/tags/php/">php</a>
+            
+              <a href="/tags/Hessian/">Hessian</a>
+            
+              <a href="/tags/java/">java</a>
+            
+              <a href="/tags/方法重载/">方法重载</a>
+            
+              <a href="/tags/unsafeDeserialize/">unsafeDeserialize</a>
             
           </div>
         

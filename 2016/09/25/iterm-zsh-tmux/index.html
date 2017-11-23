@@ -22,7 +22,7 @@
 
 
 
-  <meta name="keywords" content="zsh tmux unix vim, xsp" />
+  <meta name="keywords" content="zsh, tmux, unix, vim, xsp" />
 
 
 
@@ -217,18 +217,18 @@
     <div class="post-content">
       
         <p><img src="/uploads/iterm-zsh-tmux/效果.png" alt="效果"></p>
-<h2 id="tmux"><a href="#tmux" class="headerlink" title="tmux"></a>tmux</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-get install tmux</div></pre></td></tr></table></figure>
-<h2 id="YADR"><a href="#YADR" class="headerlink" title="YADR"></a>YADR</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">sudo apt-get install rake</div><div class="line"><span class="meta"></span></div><div class="line"># install YADR</div><div class="line"><span class="meta">#</span> http://www.agileventures.org/articles/setting-up-yadr-on-ubuntu</div><div class="line">sh -c "`curl -fsSL https://raw.githubusercontent.com/skwp/dotfiles/master/install.sh`"</div><div class="line"></div><div class="line">nautilus ~/.yadr/fonts/</div></pre></td></tr></table></figure>
+<h2 id="tmux"><a href="#tmux" class="headerlink" title="tmux"></a>tmux</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install tmux</span><br></pre></td></tr></table></figure>
+<h2 id="YADR"><a href="#YADR" class="headerlink" title="YADR"></a>YADR</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install rake</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> install YADR</span><br><span class="line"><span class="meta">#</span> http://www.agileventures.org/articles/setting-up-yadr-on-ubuntu</span><br><span class="line">sh -c "`curl -fsSL https://raw.githubusercontent.com/skwp/dotfiles/master/install.sh`"</span><br><span class="line"></span><br><span class="line">nautilus ~/.yadr/fonts/</span><br></pre></td></tr></table></figure>
 <p>终端配色方案修改为<code>solarized</code></p>
 <p>编辑 &gt; 编辑配置文件 &gt; 颜色</p>
 <p><img src="/uploads/iterm-zsh-tmux/终端配置.png" alt="终端配置"></p>
-<h2 id="tmux-powerline"><a href="#tmux-powerline" class="headerlink" title="tmux-powerline"></a>tmux-powerline</h2><p><a href="https://github.com/erikw/tmux-powerline" target="_blank" rel="external">tmux-powerline</a></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">TMUX_POWERLINE_PATH=~/.tmux-powerline</div><div class="line">git clone https://github.com/erikw/tmux-powerline.git $TMUX_POWERLINE_PATH</div></pre></td></tr></table></figure>
+<h2 id="tmux-powerline"><a href="#tmux-powerline" class="headerlink" title="tmux-powerline"></a>tmux-powerline</h2><p><a href="https://github.com/erikw/tmux-powerline" target="_blank" rel="noopener">tmux-powerline</a></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">TMUX_POWERLINE_PATH=~/.tmux-powerline</span><br><span class="line">git clone https://github.com/erikw/tmux-powerline.git $TMUX_POWERLINE_PATH</span><br></pre></td></tr></table></figure>
 <p>编辑<code>.tmux.conf</code></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">set-option -g status on</div><div class="line">set-option -g status-interval 2</div><div class="line">set-option -g status-justify "centre"</div><div class="line">set-option -g status-left-length 60</div><div class="line">set-option -g status-right-length 90</div><div class="line">set-option -g status-left "#(~/path/to/tmux-powerline/powerline.sh left)"</div><div class="line">set-option -g status-right "#(~/path/to/tmux-powerline/powerline.sh right)"</div><div class="line"></div><div class="line">set-window-option -g window-status-current-format "#[fg=colour235, bg=colour27]⮀#[fg=colour255, bg=colour27] #I ⮁ #W #[fg=colour27, bg=colour235]⮀"</div><div class="line"><span class="meta"></span></div><div class="line"># You can toggle the visibility of the statusbars</div><div class="line">bind C-[ run '~/path/to/tmux-powerline/mute_powerline.sh left'      # Mute left statusbar.</div><div class="line">bind C-] run '~/path/to/tmux-powerline/mute_powerline.sh right'     # Mute right statusbar.</div></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">set-option -g status on</span><br><span class="line">set-option -g status-interval 2</span><br><span class="line">set-option -g status-justify "centre"</span><br><span class="line">set-option -g status-left-length 60</span><br><span class="line">set-option -g status-right-length 90</span><br><span class="line">set-option -g status-left "#(~/path/to/tmux-powerline/powerline.sh left)"</span><br><span class="line">set-option -g status-right "#(~/path/to/tmux-powerline/powerline.sh right)"</span><br><span class="line"></span><br><span class="line">set-window-option -g window-status-current-format "#[fg=colour235, bg=colour27]⮀#[fg=colour255, bg=colour27] #I ⮁ #W #[fg=colour27, bg=colour235]⮀"</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> You can toggle the visibility of the statusbars</span><br><span class="line">bind C-[ run '~/path/to/tmux-powerline/mute_powerline.sh left'      # Mute left statusbar.</span><br><span class="line">bind C-] run '~/path/to/tmux-powerline/mute_powerline.sh right'     # Mute right statusbar.</span><br></pre></td></tr></table></figure>
 <h3 id="配置城市"><a href="#配置城市" class="headerlink" title="配置城市"></a>配置城市</h3><p>…</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://www.drbunsen.org/the-text-triumvirate/" target="_blank" rel="external">The Text Triumvirate</a></p>
-<p><a href="https://github.com/skwp/dotfiles" target="_blank" rel="external">YADR</a></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://www.drbunsen.org/the-text-triumvirate/" target="_blank" rel="noopener">The Text Triumvirate</a></p>
+<p><a href="https://github.com/skwp/dotfiles" target="_blank" rel="noopener">YADR</a></p>
 
       
     </div>
@@ -264,7 +264,13 @@
         
           <div class="post-tags">
             
-              <a href="/tags/zsh-tmux-unix-vim/">zsh tmux unix vim</a>
+              <a href="/tags/zsh/">zsh</a>
+            
+              <a href="/tags/tmux/">tmux</a>
+            
+              <a href="/tags/unix/">unix</a>
+            
+              <a href="/tags/vim/">vim</a>
             
           </div>
         
@@ -279,8 +285,8 @@
       </a>
     
     
-      <a class="next" href="/2016/09/24/hessian-调用java重载方法/">
-        <span class="next-text nav-default">hessian-调用java重载方法</span>
+      <a class="next" href="/2016/09/24/Hessian-调用java重载方法/">
+        <span class="next-text nav-default">Hessian-调用java重载方法</span>
         <span class="prev-text nav-mobile">下一篇</span>
         <i class="iconfont icon-right"></i>
       </a>

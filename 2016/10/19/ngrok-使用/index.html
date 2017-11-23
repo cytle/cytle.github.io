@@ -217,16 +217,16 @@
     <div class="post-content">
       
         <h3 id="安装ngrok客户端"><a href="#安装ngrok客户端" class="headerlink" title="安装ngrok客户端"></a>安装ngrok客户端</h3><p>mac下使用brew安装(来自cask)</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">$</span> brew cask install ngork</div></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> brew cask install ngork</span><br></pre></td></tr></table></figure>
 <h3 id="得到一个服务器"><a href="#得到一个服务器" class="headerlink" title="得到一个服务器"></a>得到一个服务器</h3><h4 id="直接使用ngrok-com"><a href="#直接使用ngrok-com" class="headerlink" title="直接使用ngrok.com"></a>直接使用ngrok.com</h4><p>比较坑，需要翻墙。代理的域名也要翻墙访问。。</p>
-<p><a href="https://dashboard.ngrok.com/user/signup" target="_blank" rel="external">ngrok.com注册</a></p>
+<p><a href="https://dashboard.ngrok.com/user/signup" target="_blank" rel="noopener">ngrok.com注册</a></p>
 <p>ngrok.com会提供一个<code>authtoken</code></p>
 <h4 id="这里应该有配置自己的服务器"><a href="#这里应该有配置自己的服务器" class="headerlink" title="这里应该有配置自己的服务器"></a>这里应该有配置自己的服务器</h4><p>挖一个坑</p>
 <h3 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h3><p>在客户端终端执行
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">$</span> ngrok authtoken xxxxxxxxxxxxxxxxxxxxxxxxxxxx</div></pre></td></tr></table></figure></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> ngrok authtoken xxxxxxxxxxxxxxxxxxxxxxxxxxxx</span><br></pre></td></tr></table></figure></p>
 <p>绑定本地端口，并且启动
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">$</span> ngrok http 80</div></pre></td></tr></table></figure></p>
-<p>访问<a href="http://127.0.0.1:4040/可以看到ngrok运行状态" target="_blank" rel="external">http://127.0.0.1:4040/可以看到ngrok运行状态</a></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> ngrok http 80</span><br></pre></td></tr></table></figure></p>
+<p>访问<a href="http://127.0.0.1:4040/可以看到ngrok运行状态" target="_blank" rel="noopener">http://127.0.0.1:4040/可以看到ngrok运行状态</a></p>
 <p><img src="/uploads/ngrok-使用/界面截图.png" alt="界面截图"></p>
 
       
