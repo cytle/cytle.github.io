@@ -17,12 +17,12 @@
 
 
 
-  <meta name="description" content="Laravel-group-使用"/>
+  <meta name="description" content="iterm zsh tmux配置--yadr使用"/>
 
 
 
 
-  <meta name="keywords" content="Larvel, php, xsp" />
+  <meta name="keywords" content="zsh, tmux, unix, vim, xsp" />
 
 
 
@@ -42,7 +42,7 @@
 
 
 
-<link rel="canonical" href="https://cytle.github.io/2016/10/17/Laravel-group-使用/"/>
+<link rel="canonical" href="https://cytle.github.io/2016/09/25/iterm-zsh-tmux配置--yadr使用/"/>
 
 
 <link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
@@ -87,7 +87,7 @@
 
 
 
-    <title> Laravel-group-使用 - xsp </title>
+    <title> iterm zsh tmux配置--yadr使用 - xsp </title>
   </head>
 
   <body><div id="mobile-navbar" class="mobile-navbar">
@@ -185,19 +185,19 @@
     <header class="post-header">
       <h1 class="post-title">
         
-          Laravel-group-使用
+          iterm zsh tmux配置--yadr使用
         
       </h1>
 
       <div class="post-meta">
         <span class="post-time">
-          2016-10-17
+          2016-09-25
         </span>
         
         
         <div class="post-visits"
-             data-url="/2016/10/17/Laravel-group-使用/"
-             data-title="Laravel-group-使用">
+             data-url="/2016/09/25/iterm-zsh-tmux配置--yadr使用/"
+             data-title="iterm zsh tmux配置--yadr使用">
             阅读次数
           </div>
         
@@ -206,13 +206,29 @@
 
     
     
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#tmux"><span class="toc-text">tmux</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#YADR"><span class="toc-text">YADR</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#tmux-powerline"><span class="toc-text">tmux-powerline</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#配置城市"><span class="toc-text">配置城市</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-text">参考</span></a></li></ol>
+    </div>
+  </div>
+
 
     <div class="post-content">
       
-        <p>group接受这几个属性，namespace、prefix、where、as。同时group可以嵌套使用。</p>
-<p>以下两段代码功能相同</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    Route::group([<span class="string">'prefix'</span> =&gt; <span class="string">'users'</span>, <span class="string">'namespace'</span> =&gt; <span class="string">'User'</span>], <span class="function"><span class="keyword">function</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Route::post(<span class="string">''</span>, [</span><br><span class="line">            <span class="string">'as'</span> =&gt; <span class="string">'新增用户'</span>,</span><br><span class="line">            <span class="string">'uses'</span> =&gt; <span class="string">'UserController@store'</span></span><br><span class="line">            ]);</span><br><span class="line"></span><br><span class="line">        Route::get(<span class="string">'&#123;id&#125;'</span>, [</span><br><span class="line">            <span class="string">'as'</span> =&gt; <span class="string">'用户详情'</span>,</span><br><span class="line">            <span class="string">'uses'</span> =&gt; <span class="string">'UserController@show'</span></span><br><span class="line">            ])-&gt;where([<span class="string">'id'</span> =&gt; <span class="string">'\\d+'</span>]);</span><br><span class="line">    &#125;);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    Route::post(<span class="string">'users'</span>, [</span><br><span class="line">        <span class="string">'as'</span> =&gt; <span class="string">'新增用户'</span>,</span><br><span class="line">        <span class="string">'uses'</span> =&gt; <span class="string">'User\UserController@store'</span></span><br><span class="line">        ]);</span><br><span class="line"></span><br><span class="line">    Route::get(<span class="string">'users\&#123;id&#125;'</span>, [</span><br><span class="line">        <span class="string">'as'</span> =&gt; <span class="string">'用户详情'</span>,</span><br><span class="line">        <span class="string">'uses'</span> =&gt; <span class="string">'User\UserController@show'</span></span><br><span class="line">        ])-&gt;where([<span class="string">'id'</span> =&gt; <span class="string">'\\d+'</span>]);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+        <p><img src="/uploads/iterm-zsh-tmux/效果.png" alt="效果"></p>
+<h2 id="tmux"><a href="#tmux" class="headerlink" title="tmux"></a>tmux</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install tmux</span><br></pre></td></tr></table></figure>
+<h2 id="YADR"><a href="#YADR" class="headerlink" title="YADR"></a>YADR</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install rake</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> install YADR</span><br><span class="line"><span class="meta">#</span> http://www.agileventures.org/articles/setting-up-yadr-on-ubuntu</span><br><span class="line">sh -c "`curl -fsSL https://raw.githubusercontent.com/skwp/dotfiles/master/install.sh`"</span><br><span class="line"></span><br><span class="line">nautilus ~/.yadr/fonts/</span><br></pre></td></tr></table></figure>
+<p>终端配色方案修改为<code>solarized</code></p>
+<p>编辑 &gt; 编辑配置文件 &gt; 颜色</p>
+<p><img src="/uploads/iterm-zsh-tmux/终端配置.png" alt="终端配置"></p>
+<h2 id="tmux-powerline"><a href="#tmux-powerline" class="headerlink" title="tmux-powerline"></a>tmux-powerline</h2><p><a href="https://github.com/erikw/tmux-powerline" target="_blank" rel="noopener">tmux-powerline</a></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">TMUX_POWERLINE_PATH=~/.tmux-powerline</span><br><span class="line">git clone https://github.com/erikw/tmux-powerline.git $TMUX_POWERLINE_PATH</span><br></pre></td></tr></table></figure>
+<p>编辑<code>.tmux.conf</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">set-option -g status on</span><br><span class="line">set-option -g status-interval 2</span><br><span class="line">set-option -g status-justify "centre"</span><br><span class="line">set-option -g status-left-length 60</span><br><span class="line">set-option -g status-right-length 90</span><br><span class="line">set-option -g status-left "#(~/path/to/tmux-powerline/powerline.sh left)"</span><br><span class="line">set-option -g status-right "#(~/path/to/tmux-powerline/powerline.sh right)"</span><br><span class="line"></span><br><span class="line">set-window-option -g window-status-current-format "#[fg=colour235, bg=colour27]⮀#[fg=colour255, bg=colour27] #I ⮁ #W #[fg=colour27, bg=colour235]⮀"</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> You can toggle the visibility of the statusbars</span><br><span class="line">bind C-[ run '~/path/to/tmux-powerline/mute_powerline.sh left'      # Mute left statusbar.</span><br><span class="line">bind C-] run '~/path/to/tmux-powerline/mute_powerline.sh right'     # Mute right statusbar.</span><br></pre></td></tr></table></figure>
+<h3 id="配置城市"><a href="#配置城市" class="headerlink" title="配置城市"></a>配置城市</h3><p>…</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://www.drbunsen.org/the-text-triumvirate/" target="_blank" rel="noopener">The Text Triumvirate</a></p>
+<p><a href="https://github.com/skwp/dotfiles" target="_blank" rel="noopener">YADR</a></p>
 
       
     </div>
@@ -228,7 +244,7 @@
     </p>
     <p class="copyright-item">
       <span>Link: </span>
-      <a href="https://cytle.github.io/2016/10/17/Laravel-group-使用/">https://cytle.github.io/2016/10/17/Laravel-group-使用/</a>
+      <a href="https://cytle.github.io/2016/09/25/iterm-zsh-tmux配置--yadr使用/">https://cytle.github.io/2016/09/25/iterm-zsh-tmux配置--yadr使用/</a>
     </p>
     <p class="copyright-item">
       <span>License: </span>
@@ -248,9 +264,13 @@
         
           <div class="post-tags">
             
-              <a href="/tags/Larvel/">Larvel</a>
+              <a href="/tags/zsh/">zsh</a>
             
-              <a href="/tags/php/">php</a>
+              <a href="/tags/tmux/">tmux</a>
+            
+              <a href="/tags/unix/">unix</a>
+            
+              <a href="/tags/vim/">vim</a>
             
           </div>
         
@@ -258,15 +278,15 @@
         
   <nav class="post-nav">
     
-      <a class="prev" href="/2016/10/19/ngrok-使用/">
+      <a class="prev" href="/2016/10/11/nginx-location匹配命令/">
         <i class="iconfont icon-left"></i>
-        <span class="prev-text nav-default">ngrok-使用</span>
+        <span class="prev-text nav-default">nginx-location匹配命令</span>
         <span class="prev-text nav-mobile">Prev</span>
       </a>
     
     
-      <a class="next" href="/2016/10/13/HessianJava从U+10000到U+10FFFF的码位传输错误/">
-        <span class="next-text nav-default">HessianJava从U+10000到U+10FFFF的码位传输错误</span>
+      <a class="next" href="/2016/09/24/Hessian-调用java重载方法/">
+        <span class="next-text nav-default">Hessian-调用java重载方法</span>
         <span class="prev-text nav-mobile">Next</span>
         <i class="iconfont icon-right"></i>
       </a>
